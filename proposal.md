@@ -163,3 +163,34 @@
 - Footer
 
 # Tasks
+
+## Frontend
+
+- [ ] Create project scaffolding with npx create-react-app (~5min)
+- [ ] Create files for each component (~10min)
+- [ ] Install react-router, create navigation bar and implement routes (~20min)
+- [ ] Create and style Footer.js (20min)
+- [ ] Create dummy recipe/comment data to test displays (~10min)
+- [ ] Create and style RecipeCard.js with dummy recipe data (~30min)
+- [ ] Create and style Home.js with dummy recipe data (~45min)
+- [ ] Create and style page to add/edit recipes (~1hr)
+- [ ] Create and style Explore page with dummy recipe data (~30min)
+- [ ] Create and style User page with dummy data (~45min)
+- [ ] Create and style Comment.js with dummy comment data (~20min)
+- [ ] Create and style individual recipe page (including comment area) with dummy recipe data (~45min)
+- [ ] Create and style About Us page (~30min)
+- [ ] Create and style 404 page (~20min)
+- [ ] Implement FETCH for homepage and replace dummy data (~45min)
+- [ ] Implement POST call for uploading a new recipe (~45min)
+- [ ] Implement PUT call for updating recipe (~45min)
+- [ ] Implement DELETE call for deleting recipe (~45min)
+- [ ] Install JWT, implement login, logout features (~2hrs)
+- [ ] Implement logic for conditional rendering for logged in users/logged out users (~30min)
+- [ ] Implement FETCH for users to view favorited recipes + their own recipes, replace dummy data (~45min)
+- [ ] Implement ability for users to add upvotes (~45min)
+- [ ] Implement admin ability to add, delete, edit categories on user page (~2hr)
+- [ ] Implement admin ability to delete comments (~45min)
+- [ ] Implement admin ability to delete users (~45min)
+- [ ] Implement admin ability to toggle featured recipes (~45min)
+- [ ] Implement search functionality (~2hr)
+- [ ] Implement filtration for search results (~1hr)
