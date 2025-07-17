@@ -125,10 +125,6 @@
   - We anticipate struggling to dynamically load search results. We plan to use dummy data to test and figure this out.
   - If we can search for recipes by criteria and get meaningful results we will consider this goal achieved.
 
-# Class Diagram
-
-# Class List
-
 ## React Components
 
 ### Pages:
@@ -163,6 +159,29 @@
 - Footer
 
 # Tasks
+
+## Backend
+### Data Layer
+- [ ] Create User model
+- [ ] Create Recipe model
+- [ ] Create Role enum
+- [ ] Create Comment model
+- [ ] Create Favorite model
+- [ ] Create Instruction model
+- [ ] Create Ingredient model
+- [ ] Create RecipeIngredient model
+- [ ] Create Difficulty enum
+- [ ] Create Category model
+- [ ] Create Unit enum
+- [ ] Create DataException file
+- [ ] Create UserRepository and implement UserFileRepository
+- [ ] Create RecipeRepository and implement RecipeFileRepository
+- [ ] Create CommentRepository and implement CommentFileRepository
+- [ ] Create InstructionRepository and implement InstructionFileRepository
+- [ ] Create FavoriteRepository and implement FavoriteFileRepository
+- [ ] Create IngredientRepository and implement IngredientFileRepository
+- [ ] Create RecipeIngredientRepository and implement RecipeIngredientFileRepository
+- [ ] Create CategoryRepository and implement CategoryFileRepository
 
 ## Frontend
 
