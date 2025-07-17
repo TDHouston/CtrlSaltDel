@@ -161,7 +161,7 @@
 # Tasks
 
 ## Backend
-### Data Layer
+### Model Layer
 - [ ] Create User model
 - [ ] Create Recipe model
 - [ ] Create Role enum
@@ -173,7 +173,8 @@
 - [ ] Create Difficulty enum
 - [ ] Create Category model
 - [ ] Create Unit enum
-- [ ] Create DataException file
+
+### Data Layer
 - [ ] Create UserRepository and implement UserFileRepository
 - [ ] Create RecipeRepository and implement RecipeFileRepository
 - [ ] Create CommentRepository and implement CommentFileRepository
