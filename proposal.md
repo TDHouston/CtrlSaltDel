@@ -193,6 +193,13 @@
 - [ ] Create and implement Favorite Service (~20min)
 - [ ] Create and implement Ingredient Service (~45min)
 - [ ] Create and implement Instruction Service (~45min)
+- [ ] Test Recipe Service (~15min)
+- [ ] Test Comment Service (~15min)
+- [ ] Test Category Service (~15min)
+- [ ] Test User Service (~15min)
+- [ ] Test Favorite Service (~15min)
+- [ ] Test Ingredient Service (~15min)
+- [ ] Test Instruction Service (~15min)
 
 ## Frontend
 
