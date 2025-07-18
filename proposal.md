@@ -158,6 +158,99 @@
   - Includes comment author + comment contents; to display beneath recipe info on detailed recipe page
 - Footer
 
+
+## Package/Class Overview
+
+src
+├───main
+│   └───java
+│       └───capstone
+│           └───round_table
+│               │   App.java                      -- app entry point
+│               │
+│               ├───data
+│               │       mappers (folder w/ mappers to deserialize JSON to object instances)
+│               │       DataException.java        -- data layer custom exception
+│               │       UserRepository.java  
+│               │       UserFileRepository.java      
+│               │       RecipeFileRepository.java      
+│               │       RecipeRepository.java  
+│               │       CommentFileRepository.java      
+│               │       CommentRepository.java  
+│               │       InstructionRepository.java  
+│               │       InstructionFileRepository.java      
+│               │       FavoriteRepository.java  
+│               │       FavoriteFileRepository.java      
+│               │       IngredientRepository.java  
+│               │       IngredientFileRepository.java      
+│               │       RecipeIngredientRepository.java  
+│               │       RecipeIngredientFileRepository.java      
+│               │       CategoryRepository.java  
+│               │       CategoryFileRepository.java   
+│               │
+│               ├───domain
+│               │       Result.java          
+│               │       UserService.java
+│               │       RecipeService.java
+│               │       CommentService.java
+│               │       FavoriteService.java
+│               │       IngredientService.java
+│               │       CategoryService.java
+│               │       InstructionService.java
+│               │
+│               ├───models
+│               │       User.java             
+│               │       Recipe.java                
+│               │       Role.java (enum)               
+│               │       Comment.java                
+│               │       Favorite.java                
+│               │       Instruction.java                
+│               │       Ingredient.java                
+│               │       RecipeIngredient.java                
+│               │       Difficulty.java (enum)                
+│               │       Category.java
+│               │       Unit.java (enum)  
+│               │
+│               └───controller
+│                       GlobalExceptionHandler.java
+│                       UserController.java
+│                       RecipeController.java
+│                       RoleController.java
+│                       CommentController.java
+│                       FavoriteController.java
+│                       InstructionController.java
+│                       IngredientController.java
+│                       RecipeIngredientController.java
+│                       CategoryController.java
+│
+└───test
+    └───java
+        └───capstone
+            └───round_table
+               │
+               ├───controller (if we have time)
+               │
+               ├───data
+               │       UserFileRepositoryTest.java      
+               │       RecipeFileRepositoryTest.java      
+               │       CommentFileRepositoryTest.java      
+               │       InstructionFileRepositoryTest.java      
+               │       FavoriteFileRepositoryTest.java      
+               │       IngredientFileRepositoryTest.java      
+               │       RecipeIngredientFileRepositoryTest.java      
+               │       CategoryFileRepositoryTest.java      
+               │
+               └───domain
+                       UserServiceTest.java
+                       RecipeServiceTest.java
+                       CommentServiceTest.java
+                       FavoriteServiceTest.java
+                       IngredientServiceTest.java
+                       CategoryServiceTest.java
+                       InstructionServiceTest.java
+                       RecipeIngredientServiceTest.java
+
+
 # Tasks
 
 ## Backend
