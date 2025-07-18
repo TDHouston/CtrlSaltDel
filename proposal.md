@@ -162,27 +162,27 @@
 
 ## Backend
 ### Model Layer
-- [ ] Create User model
-- [ ] Create Recipe model
-- [ ] Create Role enum
-- [ ] Create Comment model
-- [ ] Create Favorite model
-- [ ] Create Instruction model
-- [ ] Create Ingredient model
-- [ ] Create RecipeIngredient model
-- [ ] Create Difficulty enum
-- [ ] Create Category model
-- [ ] Create Unit enum
+- [ ] Create User model (~2 minutes)
+- [ ] Create Recipe model (~2 minutes)
+- [ ] Create Role enum (~2 minute)
+- [ ] Create Comment model (~2 minutes)
+- [ ] Create Favorite model (~2 minutes)
+- [ ] Create Instruction model (~2 minutes)
+- [ ] Create Ingredient model (~2 minutes)
+- [ ] Create RecipeIngredient model (~2 minutes)
+- [ ] Create Difficulty enum (~2 minutes)
+- [ ] Create Category model (~2 minutes)
+- [ ] Create Unit enum (~2 minutes)
 
 ### Data Layer
-- [ ] Create UserRepository and implement UserFileRepository
-- [ ] Create RecipeRepository and implement RecipeFileRepository
-- [ ] Create CommentRepository and implement CommentFileRepository
-- [ ] Create InstructionRepository and implement InstructionFileRepository
-- [ ] Create FavoriteRepository and implement FavoriteFileRepository
-- [ ] Create IngredientRepository and implement IngredientFileRepository
-- [ ] Create RecipeIngredientRepository and implement RecipeIngredientFileRepository
-- [ ] Create CategoryRepository and implement CategoryFileRepository
+- [ ] Create UserRepository, UserFileRepository, and testing (~1 hour or so)
+- [ ] Create RecipeRepository, RecipeFileRepository, and testing (~1 hour or so)
+- [ ] Create CommentRepository, CommentFileRepository, and testing (~1 hour or so)
+- [ ] Create InstructionRepository, InstructionFileRepository, and testing (~1 hour or so)
+- [ ] Create FavoriteRepository, FavoriteFileRepository, and testing (~1 hour or so)
+- [ ] Create IngredientRepository, IngredientFileRepository, and testing (~1 hour or so)
+- [ ] Create RecipeIngredientRepository, RecipeIngredientFileRepository, and testing (~1 hour or so)
+- [ ] Create CategoryRepository, CategoryFileRepository, and testing (~1 hour or so)
 
 ### Domain Layer
 - [ ] Create and implement Result Service (~5min)
@@ -200,6 +200,16 @@
 - [ ] Test Favorite Service (~15min)
 - [ ] Test Ingredient Service (~15min)
 - [ ] Test Instruction Service (~15min)
+
+### Controller Layer
+- [ ] Create UserController and test (~30 minutes or so)
+- [ ] Create RecipeController and test (~30 minutes or so)
+- [ ] Create CommentController and test (~30 minutes or so)
+- [ ] Create InstructionController and test (~30 minutes or so)
+- [ ] Create FavoriteController and test (~30 minutes or so)
+- [ ] Create IngredientController and test (~30 minutes or so)
+- [ ] Create RecipeController and test (~30 minutes or so)
+- [ ] Create CategoryController and test (~30 minutes or so)
 
 ## Frontend
 
