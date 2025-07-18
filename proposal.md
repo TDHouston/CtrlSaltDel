@@ -184,6 +184,16 @@
 - [ ] Create RecipeIngredientRepository and implement RecipeIngredientFileRepository
 - [ ] Create CategoryRepository and implement CategoryFileRepository
 
+### Domain Layer
+- [ ] Create and implement Result Service (~5min)
+- [ ] Create and implement Recipe Service (30~)
+- [ ] Create and implement Comment Service (30~)
+- [ ] Create and implement Category Service (30~)
+- [ ] Create and implement User Service (~30min)
+- [ ] Create and implement Favorite Service (~20min)
+- [ ] Create and implement Ingredient Service (~45min)
+- [ ] Create and implement Instruction Service (~45min)
+
 ## Frontend
 
 - [ ] Create project scaffolding with npx create-react-app (~5min)
