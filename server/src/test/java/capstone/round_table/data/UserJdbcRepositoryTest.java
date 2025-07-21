@@ -1,5 +1,6 @@
 package capstone.round_table.data;
 
+import capstone.round_table.models.Role;
 import capstone.round_table.models.User;
 import capstone.round_table.repository.UserJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +26,10 @@ class UserJdbcRepositoryTest {
         knownGoodState.set();
     }
 
-    // first user for finding
-    // second user for updating
+    // 1 user for finding
+    // 2 user for updating
+    // 3 user for delete
+    // 4 user for add
 
     @Test
     void findAllUser() {
@@ -54,5 +57,25 @@ class UserJdbcRepositoryTest {
         User user = repository.findByEmail("alice@example.com");
         assertNotNull(user);
         assertEquals("alice@example.com", user.getEmail());
+    }
+
+    @Test
+    void shouldAddUser() {
+        User user = generateUser();
+        User actual = repository.addUser(user);
+        assertNotNull(actual);
+        assertEquals(4, actual.getUserId());
+    }
+
+    private User generateUser() {
+        User user = new User();
+        user.setEmail("Test@gmail.com");
+        user.setRole(Role.ADMIN);
+        user.setPassword("123");
+        user.setUsername("test");
+        user.setLastName("Mob");
+        user.setFirstName("Gray");
+
+        return user;
     }
 }

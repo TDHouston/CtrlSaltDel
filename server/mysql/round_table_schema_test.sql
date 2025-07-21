@@ -123,6 +123,7 @@ create procedure set_known_good_state()
 begin
 	DELETE FROM recipe;
 	DELETE FROM user;
+    alter table user auto_increment = 1;
 
 	INSERT INTO user (user_id, role, first_name, last_name, username, email, password) VALUES
 		(1, 'ADMIN', 'Alice', 'Smith', 'alice', 'alice@example.com', 'hashed_password_1'),
