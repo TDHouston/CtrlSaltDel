@@ -9,7 +9,7 @@ import java.util.List;
 public class User implements UserDetails {
     private int userId;
     private List<GrantedAuthority> authorities;
-    private List<Role> roles;
+    private Role role;
     private String username;
     private String firstName;
     private String lastName;
@@ -99,7 +99,24 @@ public class User implements UserDetails {
         this.authorities = authorities;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return this.role;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", role=" + role +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

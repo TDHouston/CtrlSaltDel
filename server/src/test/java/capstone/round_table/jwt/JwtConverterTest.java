@@ -1,9 +1,7 @@
-package capstone.round_table.jwt.Jwt;
+package capstone.round_table.jwt;
 
-import capstone.round_table.jwt.JwtConverter;
 import capstone.round_table.models.User;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;

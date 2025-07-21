@@ -2,7 +2,6 @@ DROP DATABASE IF EXISTS round_table_test;
 CREATE DATABASE round_table_test;
 USE round_table_test;
 
-
 -- USER TABLE
 CREATE TABLE `user` (
 	user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,7 +37,7 @@ CREATE TABLE recipe (
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
-    difficulty VARCHAR(15),
+    difficulty VARCHAR(10),
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
@@ -119,3 +118,16 @@ CREATE TABLE recipe_ingredient (
         REFERENCES ingredient(ingredient_id)
 );
 
+delimiter //
+create procedure set_known_good_state()
+begin
+	DELETE FROM recipe;
+	DELETE FROM user;
+
+	INSERT INTO user (user_id, role, first_name, last_name, username, email, password) VALUES
+		(1, 'ADMIN', 'Alice', 'Smith', 'alice', 'alice@example.com', 'hashed_password_1'),
+		(2, 'USER', 'Bob', 'Johnson', 'bobbyj', 'bob@example.com', 'hashed_password_2'),
+		(3, 'USER', 'Charlie', 'Brown', 'charlieb', 'charlie@example.com', 'hashed_password_3');
+
+end //
+delimiter ;
