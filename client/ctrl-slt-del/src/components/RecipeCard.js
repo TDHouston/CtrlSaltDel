@@ -1,22 +1,9 @@
-import { useState } from "react";
-
-const PLACEHOLDER_RECIPE = {
-  name: "Crispy Chicken",
-  description: "Delicious crispy chicken with a sweet chili dipping sauce!",
-  difficulty: 3,
-  cookTime: 30,
-  upvotes: 100,
-  user: "cookingmama",
-  img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
-};
-
-function RecipeCard() {
-  const [recipe, setRecipe] = useState(PLACEHOLDER_RECIPE);
+function RecipeCard({ recipe }) {
   return (
     <div className="recipe-card flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800">
       <img
         className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-        src="https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg" // TODO: replace with image source
+        src={recipe.img}
         alt={recipe.description}
       />
       <div className="flex flex-col justify-between p-4 leading-normal">
