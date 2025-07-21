@@ -58,4 +58,9 @@ public class CategoryJdbcRepositoryTest {
         assertTrue(repository.updateCategory(category));
     }
 
+    @Test
+    void shouldDeleteCategory() {
+        assertTrue(repository.deleteCategory(3));
+    }
+
 }

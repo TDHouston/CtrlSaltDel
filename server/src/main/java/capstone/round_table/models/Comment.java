@@ -6,7 +6,7 @@ public class Comment {
     private int commentId;
     private int userId;
     private int recipeId;
-    private int content;
+    private String content;
 
     public Comment() {
     }
@@ -35,11 +35,11 @@ public class Comment {
         this.recipeId = recipeId;
     }
 
-    public int getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(int content) {
+    public void setContent(String content) {
         this.content = content;
     }
 

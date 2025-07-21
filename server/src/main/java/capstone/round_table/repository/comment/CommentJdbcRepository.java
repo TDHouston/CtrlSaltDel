@@ -1,13 +1,15 @@
 package capstone.round_table.repository.comment;
 
 import capstone.round_table.models.Comment;
+import capstone.round_table.repository.mappers.CommentMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class CommentJdbcRepository implements CommentRepository {
 
-    // TODO: Complete category first
     private final JdbcTemplate jdbcTemplate;
 
     public CommentJdbcRepository(JdbcTemplate jdbcTemplate) {
@@ -16,11 +18,10 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public List<Comment> findAll() {
-//        final String sql = "select comment_id, user_id, recipe_id, content " +
-//                "from comment;";
-//
-//        return jdbcTemplate.query(sql, new CommentMapper());
-        return List.of();
+        final String sql = "select comment_id, user_id, recipe_id, content " +
+                "from comment;";
+
+        return jdbcTemplate.query(sql, new CommentMapper());
     }
 
     @Override
