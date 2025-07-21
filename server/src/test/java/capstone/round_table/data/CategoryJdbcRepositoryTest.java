@@ -35,4 +35,10 @@ public class CategoryJdbcRepositoryTest {
         assertTrue(actual.size() >= 4);
     }
 
+    @Test
+    void shouldFindByCategoryId() {
+        Category actual = repository.findById(1);
+        assertEquals("fish", actual.getName());
+    }
+
 }

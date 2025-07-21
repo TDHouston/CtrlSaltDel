@@ -28,7 +28,7 @@ public class CategoryJdbcRepository implements CategoryRepository {
     public Category findById(int categoryId) {
         final String sql = "select category_id, name " +
                 "from category " +
-                "where categoryId = ?;";
+                "where category_id = ?;";
 
         return jdbcTemplate.query(sql, new CategoryMapper(), categoryId).stream()
                 .findFirst().orElse(null);
