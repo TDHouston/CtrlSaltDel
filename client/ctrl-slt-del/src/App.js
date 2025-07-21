@@ -1,11 +1,11 @@
-import React from 'react'
-
+import React from "react";
+import RecipeCard from "./components/RecipeCard";
 function App() {
   return (
-     <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
+    <div>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+    </div>
+  );
 }
 
-export default App
+export default App;
