@@ -1,6 +1,5 @@
 package capstone.round_table.models;
 
-public class recipe {
+public class Recipe {
     private int userId;
-    private
 }

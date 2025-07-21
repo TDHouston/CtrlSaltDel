@@ -1,14 +1,15 @@
 package capstone.round_table.models;
 
-public enum difficulty {
+public enum Difficulty {
     EASY("easy"),
     INTERMEDIATE("intermediate"),
     ADVANCED("advanced"),
-    EXPERT("expert");
+    EXPERT("expert")
+    ;
 
     private String level;
 
-    difficulty(String level) {
+    Difficulty(String level) {
         this.level = level;
     }
 
