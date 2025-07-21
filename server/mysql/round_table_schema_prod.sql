@@ -38,7 +38,7 @@ CREATE TABLE recipe (
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
-    difficulty VARCHAR(15),
+    difficulty VARCHAR(10),
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
@@ -70,6 +70,7 @@ CREATE TABLE `comment` (
 	comment_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     recipe_id INT NOT NULL,
+    content VARCHAR(255) NOT NULL,
     -- Foreign Keys
 	CONSTRAINT fk_comment_user
 		FOREIGN KEY (user_id)

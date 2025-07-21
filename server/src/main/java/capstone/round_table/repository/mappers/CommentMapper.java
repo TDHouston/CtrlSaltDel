@@ -1,4 +1,19 @@
 package capstone.round_table.repository.mappers;
 
-public class CommentMapper {
+import capstone.round_table.models.Comment;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class CommentMapper implements RowMapper<Comment> {
+    @Override
+    public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Comment comment = new Comment();
+        comment.setCommentId(rs.getInt("comment_id"));
+        comment.setContent(rs.getInt("content"));
+        comment.setRecipeId(rs.getInt("recipe_id"));
+        comment.setUserId(rs.getInt("user_id"));
+        return comment;
+    }
 }

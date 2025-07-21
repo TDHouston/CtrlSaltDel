@@ -69,6 +69,7 @@ CREATE TABLE `comment` (
 	comment_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     recipe_id INT NOT NULL,
+    content VARCHAR(255) NOT NULL,
     -- Foreign Keys
 	CONSTRAINT fk_comment_user
 		FOREIGN KEY (user_id)
@@ -121,7 +122,13 @@ CREATE TABLE recipe_ingredient (
 delimiter //
 create procedure set_known_good_state()
 begin
+	
+    DELETE FROM category;
+    alter table category auto_increment = 1;
+    DELETE FROM comment;
+    alter table comment auto_increment = 1;
 	DELETE FROM recipe;
+    alter table recipe auto_increment = 1;
 	DELETE FROM user;
     alter table user auto_increment = 1;
 
@@ -129,6 +136,16 @@ begin
 		(1, 'ADMIN', 'Alice', 'Smith', 'alice', 'alice@example.com', 'hashed_password_1'),
 		(2, 'USER', 'Bob', 'Johnson', 'bobbyj', 'bob@example.com', 'hashed_password_2'),
 		(3, 'USER', 'Charlie', 'Brown', 'charlieb', 'charlie@example.com', 'hashed_password_3');
-
+	
+    INSERT INTO category (category_id, name) VALUES
+		(1, "fish"),
+        (2, "tomatoes"),
+        (3, "eggs"),
+        (4, "cheese");
+        
+	-- INSERT INTO comment (comment_id, user_id, recipe_id, content) VALUES
+-- 		(1, 1, 1, "Great Recipe"),
+--         (2, 2, 1, "Looks Great!"),
+--         (3, 3, 1, "Recommended Recipe");
 end //
 delimiter ;

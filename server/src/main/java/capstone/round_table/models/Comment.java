@@ -6,7 +6,7 @@ public class Comment {
     private int commentId;
     private int userId;
     private int recipeId;
-    private int comment;
+    private int content;
 
     public Comment() {
     }
@@ -35,23 +35,23 @@ public class Comment {
         this.recipeId = recipeId;
     }
 
-    public int getComment() {
-        return comment;
+    public int getContent() {
+        return content;
     }
 
-    public void setComment(int comment) {
-        this.comment = comment;
+    public void setContent(int content) {
+        this.content = content;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment1 = (Comment) o;
-        return commentId == comment1.commentId && userId == comment1.userId && recipeId == comment1.recipeId && comment == comment1.comment;
+        return commentId == comment1.commentId && userId == comment1.userId && recipeId == comment1.recipeId && content == comment1.content;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(commentId, userId, recipeId, comment);
+        return Objects.hash(commentId, userId, recipeId, content);
     }
 }

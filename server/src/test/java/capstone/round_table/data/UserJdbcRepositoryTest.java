@@ -2,7 +2,7 @@ package capstone.round_table.data;
 
 import capstone.round_table.models.Role;
 import capstone.round_table.models.User;
-import capstone.round_table.repository.UserJdbcRepository;
+import capstone.round_table.repository.user.UserJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
