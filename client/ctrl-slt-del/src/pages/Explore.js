@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
+
 const RECIPES_DEFAULT = [
   {
     id: 1,
