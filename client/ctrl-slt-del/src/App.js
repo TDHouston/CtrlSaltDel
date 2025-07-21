@@ -1,14 +1,18 @@
-import React from 'react'
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
+import Home from "./pages/Home";
+import RecipeCard from "./components/RecipeCard";
 
 function App() {
   return (
-    <Router>
+     <Router>
       <Nav/>
+        <Routes>
+          <Route path="/" element=<Home /> />
+         </Routes>
+      </Router>
+  );
 
-    </Router>
-  )
-}
-
-export default App
+export default App;
+  
