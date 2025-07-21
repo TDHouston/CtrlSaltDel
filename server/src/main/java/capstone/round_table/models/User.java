@@ -96,7 +96,6 @@ public class User implements UserDetails {
     }
 
     public void setAuthorities(List<GrantedAuthority> authorities) {
-        this.authorities.forEach(i -> roles.add(Role.valueOf(i.getAuthority().toLowerCase())));
         this.authorities = authorities;
     }
 

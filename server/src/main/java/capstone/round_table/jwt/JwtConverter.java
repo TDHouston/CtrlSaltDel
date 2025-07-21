@@ -2,33 +2,32 @@ package capstone.round_table.jwt;
 
 
 import capstone.round_table.models.User;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class JwtConverter {
-    
-    @Value("${app.secret}")
-    private String secret;
+
+    private String secret = "Secret for now but this needs to be changed";
     private Key key;
     private final String ISSUER = "CtrlSaltDel";
     private final int EXPIRATION_MINUTES = 5;
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
 
-
-    // This runs after dependency injection is done on key
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
     public String getTokenFromUser(User user) {
+
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
         String roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
