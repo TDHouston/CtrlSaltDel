@@ -5,6 +5,8 @@ import capstone.round_table.models.Recipe;
 import java.util.List;
 
 public interface RecipeRepository {
+    // TODO: transaction annotations and getUserFavorite method
+
     Recipe addRecipe(Recipe recipe);
     List<Recipe> findAll();
     Recipe findByRecipeId(int recipeId);

@@ -1,8 +1,11 @@
 package capstone.round_table.models;
 
+import java.util.List;
+
 public class Ingredient {
     private int ingredientId;
     private String name;
+    private List<RecipeIngredient> recipeIngredientList;
 
     public Ingredient(){}
 
@@ -20,5 +23,13 @@ public class Ingredient {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<RecipeIngredient> getRecipeIngredientList() {
+        return recipeIngredientList;
+    }
+
+    public void setRecipeIngredientList(List<RecipeIngredient> recipeIngredientList) {
+        this.recipeIngredientList = recipeIngredientList;
     }
 }

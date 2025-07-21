@@ -16,7 +16,7 @@ public class RecipeMapper implements RowMapper<Recipe> {
         recipe.setRecipeId(resultSet.getInt("recipe_id"));
         recipe.setUserId(resultSet.getInt("user_id"));
         recipe.setCategoryId(resultSet.getInt("category_id"));
-        recipe.setName(resultSet.getString("`name`"));
+        recipe.setName(resultSet.getString("recipe_name"));
         recipe.setDifficulty(Difficulty.valueOf(resultSet.getString("difficulty")));
         recipe.setCookTime(resultSet.getInt("cook_time"));
         recipe.setServings(resultSet.getInt("servings"));

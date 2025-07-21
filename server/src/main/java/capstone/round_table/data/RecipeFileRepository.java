@@ -63,7 +63,7 @@ public class RecipeFileRepository implements RecipeRepository {
             "recipe_id, " +
             "user_id, " +
             "category_id, " +
-            "`name`, " +
+            "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
@@ -81,7 +81,7 @@ public class RecipeFileRepository implements RecipeRepository {
             "recipe_id, " +
             "user_id, " +
             "category_id, " +
-            "`name`, " +
+            "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
@@ -122,30 +122,6 @@ public class RecipeFileRepository implements RecipeRepository {
         return result;
     }
 
-    /**
-     * -- RECIPE TABLE
-     * CREATE TABLE recipe (
-     * 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
-     *     user_id INT NOT NULL,
-     *     category_id INT NOT NULL,
-     *     `name` VARCHAR(150) NOT NULL,
-     *     difficulty VARCHAR(15),
-     *     cook_time INT,
-     *     servings INT,
-     *     `description` VARCHAR(200),
-     *     upvotes INT,
-     *     -- Foreign Keys
-     *     CONSTRAINT fk_user
-     * 		FOREIGN KEY (user_id)
-     *         REFERENCES `user`(user_id),
-     * 	CONSTRAINT fk_category
-     * 		FOREIGN KEY (category_id)
-     *         REFERENCES category(category_id)
-     * );
-     * @param recipe
-     * @return
-     */
-
     @Override
     public boolean updateRecipe(Recipe recipe) {
         final String sql = "UPDATE recipe SET " +
@@ -177,7 +153,7 @@ public class RecipeFileRepository implements RecipeRepository {
         Recipe recipe = findByRecipeId(recipeId);
 
         // Tables that reference recipe: favorite, comment, recipe_category, recipe_ingredient, instruction
-        // TODO: wait for Jason to finish other repos first
+        // TODO: more complex, will come back
         return true;
     }
 }
