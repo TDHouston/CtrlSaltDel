@@ -76,6 +76,11 @@ class UserJdbcRepositoryTest {
         assertTrue(repository.updateUser(user));
     }
 
+    @Test
+    void shouldDeleteUser() {
+        assertTrue(repository.deleteUser(3));
+    }
+
     private User generateUser() {
         User user = new User();
         user.setEmail("Test@gmail.com");
