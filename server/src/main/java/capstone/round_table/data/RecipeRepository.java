@@ -1,4 +1,12 @@
 package capstone.round_table.data;
 
-public class RecipeRepository {
+import capstone.round_table.models.Recipe;
+
+import java.util.List;
+
+public interface RecipeRepository {
+    List<Recipe> findAll();
+    Recipe findByUserId(int userId);
+    boolean updateRecipe(Recipe recipe);
+    boolean deleteRecipeById(int recipeId);
 }
