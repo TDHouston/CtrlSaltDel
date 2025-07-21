@@ -35,4 +35,21 @@ class CommentJdbcRepositoryTest {
         List<Comment> actual = repository.findAll();
         assertTrue(actual.size() >= 3);
     }
+
+    @Test
+    void shouldFindByUserId() {
+        List<Comment> actual = repository.findByUserId(1);
+        assertNotNull(actual);
+        assertFalse(actual.isEmpty());
+        assertEquals("This was easy!", actual.get(0).getContent());
+    }
+
+    @Test
+    void shouldFindByRecipeId() {
+        List<Comment> actual = repository.findByUserId(1);
+        assertNotNull(actual);
+        assertFalse(actual.isEmpty());
+        assertEquals("This was easy!", actual.get(0).getContent());
+    }
+
 }

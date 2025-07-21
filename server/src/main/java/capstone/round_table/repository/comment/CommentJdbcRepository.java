@@ -26,12 +26,18 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public List<Comment> findByUserId(int userId) {
-        return List.of();
+        final String sql = "select comment_id, user_id, recipe_id, content " +
+                "from comment " +
+                "where user_id = ?;";
+        return jdbcTemplate.query(sql, new CommentMapper(), userId);
     }
 
     @Override
     public List<Comment> findByRecipeId(int recipeId) {
-        return List.of();
+        final String sql = "select comment_id, user_id, recipe_id, content " +
+                "from comment " +
+                "where recipe_id = ?;";
+        return jdbcTemplate.query(sql, new CommentMapper(), recipeId);
     }
 
     @Override
