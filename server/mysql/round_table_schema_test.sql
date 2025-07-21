@@ -35,20 +35,15 @@ CREATE TABLE ingredient (
 CREATE TABLE recipe (
 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
-    category_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
     difficulty VARCHAR(10),
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
-    upvotes INT,
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
-        REFERENCES `user`(user_id),
-	CONSTRAINT fk_category
-		FOREIGN KEY (category_id)
-        REFERENCES category(category_id)
+        REFERENCES `user`(user_id)
 );
 
 -- FAVORITE TABLE
@@ -143,9 +138,17 @@ begin
         (3, "eggs"),
         (4, "cheese");
         
-	-- INSERT INTO comment (comment_id, user_id, recipe_id, content) VALUES
--- 		(1, 1, 1, "Great Recipe"),
---         (2, 2, 1, "Looks Great!"),
---         (3, 3, 1, "Recommended Recipe");
+	INSERT INTO recipe (recipe_id, user_id, name, difficulty, cook_time, servings, description) VALUES
+		(1, 1, "fish soup", "medium", 30, 5, "fish in soup"),
+        (2, 1, "scramble eggs", "hard", 10, 2, "Very difficult egg"),
+        (3, 3, "grill cheese", "easy", 5, 1, "easy grill cheese");
+	
+    INSERT INTO comment (comment_id, user_id, recipe_id, content) VALUES
+		(1, 1, 1, "This was easy!"),
+        (2, 2, 1, "This was hard!"),
+        (3, 1, 2, "This was very difficult!");
+        
+        
+
 end //
 delimiter ;
