@@ -2,6 +2,7 @@ package capstone.round_table.data;
 
 import capstone.round_table.models.Category;
 import capstone.round_table.repository.category.CategoryJdbcRepository;
+import capstone.round_table.repository.category.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,22 @@ public class CategoryJdbcRepositoryTest {
     void shouldFindByCategoryId() {
         Category actual = repository.findById(1);
         assertEquals("fish", actual.getName());
+    }
+
+    @Test
+    void shouldAddCategory() {
+        Category category = new Category();
+        category.setName("chicken");
+        Category actual = repository.addCategory(category);
+        assertEquals(5, actual.getCategoryId());
+
+    }
+
+    @Test
+    void shouldUpdateCategory() {
+        Category category = repository.findById(2);
+        category.setName("duck");
+        assertTrue(repository.updateCategory(category));
     }
 
 }

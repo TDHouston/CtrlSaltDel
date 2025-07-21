@@ -4,8 +4,12 @@ import capstone.round_table.models.Category;
 import capstone.round_table.repository.mappers.CategoryMapper;
 import capstone.round_table.repository.mappers.UserMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -36,12 +40,29 @@ public class CategoryJdbcRepository implements CategoryRepository {
 
     @Override
     public Category addCategory(Category category) {
-        return null;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        final String sql = "insert into category (name)" +
+                " values (?);";
+
+        int rowsAffected = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, category.getName());
+            return ps;
+        }, keyHolder);
+
+        if (rowsAffected <= 0) {
+            return null;
+        }
+        category.setCategoryId(keyHolder.getKey().intValue());
+        return category;
     }
 
     @Override
     public boolean updateCategory(Category category) {
-        return false;
+        final String sql = "update category set " +
+                "name = ? " +
+                "where category_id = ?";
+        return jdbcTemplate.update(sql, category.getName(), category.getCategoryId()) > 0;
     }
 
     @Override
