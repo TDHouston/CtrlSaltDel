@@ -83,7 +83,23 @@ public class UserJdbcRepository implements UserRepository {
 
     @Override
     public boolean updateUser(User user) {
-        return false;
+        final String sql = "update user set "
+                + "role = ?, "
+                + "first_name = ?, "
+                + "last_name = ?, "
+                + "username = ?, "
+                + "password = ?, "
+                + "email = ? "
+                + "where user_id = ?;";
+
+        return jdbcTemplate.update(sql,
+                user.getRole().getRole(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getUserId()) > 0;
     }
 
     @Override

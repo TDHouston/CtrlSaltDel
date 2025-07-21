@@ -67,6 +67,15 @@ class UserJdbcRepositoryTest {
         assertEquals(4, actual.getUserId());
     }
 
+    @Test
+    void shouldUpdateUser() {
+        User user = repository.findById(2);
+        user.setUsername("new username");
+        user.setRole(Role.USER);
+        user.setPassword("new password");
+        assertTrue(repository.updateUser(user));
+    }
+
     private User generateUser() {
         User user = new User();
         user.setEmail("Test@gmail.com");
