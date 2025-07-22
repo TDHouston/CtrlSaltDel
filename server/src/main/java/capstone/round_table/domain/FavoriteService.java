@@ -15,22 +15,35 @@ public class FavoriteService {
     }
 
     public List<Recipe> findTopFavorites(int num) {
-       return List.of();
+       return favoriteRepository.findTopFavorites(num);
     }
 
     public List<Recipe> findUserFavorites(int userId) {
-        return List.of();
+        return favoriteRepository.findUserFavorites(userId);
     }
 
-    public Result<Integer> findRecipeFavoriteCount(int recipeId) {
-        return null;
+    public int findRecipeFavoriteCount(int recipeId) {
+        return favoriteRepository.findRecipeFavoriteCount(recipeId);
     }
 
     public Result<Boolean> addFavorites(int userId, int recipeId) {
-        return null;
+        Result<Boolean> result = new Result<>();
+        if (userId == 0 || recipeId == 0) {
+            result.addMessage("User Id and Recipe Id must be set", ResultType.INVALID);
+            return result;
+        }
+        result.setPayload(favoriteRepository.addFavorites(userId, recipeId));
+        return result;
     }
 
     public Result<Boolean> deleteFavorites(int userId, int recipeId) {
-        return null;
+        Result<Boolean> result = new Result<>();
+        if (userId == 0 || recipeId == 0) {
+            result.addMessage("User Id and Recipe Id must be set", ResultType.INVALID);
+            return result;
+        }
+        result.setPayload(favoriteRepository.deleteFavorites(userId, recipeId));
+        return result;
     }
+
 }
