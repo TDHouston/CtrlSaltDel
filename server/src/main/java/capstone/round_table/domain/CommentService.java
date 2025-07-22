@@ -15,30 +15,74 @@ public class CommentService {
     }
 
     public List<Comment> findAll() {
-        return List.of();
+        return commentRepository.findAll();
     }
 
     public List<Comment> findByUserId(int userId) {
-        return List.of();
+        return commentRepository.findByUserId(userId);
     }
 
     public List<Comment> findByRecipeId(int recipeId) {
-        return List.of();
+        return commentRepository.findByRecipeId(recipeId);
     }
 
     public Result<Comment> addComment(Comment comment) {
-        return null;
+        Result<Comment> result = validate(comment);
+
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        if (comment.getCommentId() != 0) {
+            result.addMessage("Comment Id cannot be set", ResultType.INVALID);
+            return result;
+        }
+        result.setPayload(comment);
+        return result;
     }
 
     public Result<Comment> updatecomment(Comment comment) {
-        return null;
+        Result<Comment> result = validate(comment);
+
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        if (comment.getCommentId() == 0) {
+            result.addMessage("Comment Id must be set", ResultType.INVALID);
+            return result;
+        }
+        return result;
     }
 
-    public Result<Void> deleteComment(int commentId) {
-        return null;
+    public boolean deleteComment(int commentId) {
+        return commentRepository.deleteComment(commentId);
     }
 
     private Result<Comment> validate (Comment comment) {
-        return null;
+        Result<Comment> result = new Result<>();
+
+        if (comment == null) {
+            result.addMessage("Comment cannot be null", ResultType.INVALID);
+            return result;
+        }
+
+        if (comment.getUserId() == 0) {
+            result.addMessage("User Id must be set", ResultType.INVALID);
+            return result;
+        }
+
+        if (comment.getRecipeId() == 0) {
+            result.addMessage("Recipe Id must be set", ResultType.INVALID);
+            return result;
+        }
+
+
+        if (comment.getContent().isEmpty()) {
+            result.addMessage("Content must not be empty", ResultType.MISSING_INFO);
+            return result;
+        }
+
+        return result;
     }
 }
