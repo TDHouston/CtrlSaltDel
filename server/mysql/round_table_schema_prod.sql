@@ -11,7 +11,7 @@ CREATE TABLE `user` (
     username VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     `password` VARCHAR(60) NOT NULL,
-    -- Unique Constraintcategory_id
+    -- Unique Constraint
     CONSTRAINT uc_user UNIQUE (username, email)
 );
 
