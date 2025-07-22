@@ -6,9 +6,9 @@ import capstone.round_table.models.RecipeIngredient;
 import java.util.List;
 
 public interface RecipeIngredientRepository {
-    List<Ingredient> findAllIngredientsByRecipeId(int recipeId);
-
     RecipeIngredient addRecipeIngredient(RecipeIngredient recipeIngredient);
+
+    List<RecipeIngredient> findAllIngredientsByRecipeId(int recipeId);
 
     boolean updateRecipeIngredient(RecipeIngredient recipeIngredient);
 

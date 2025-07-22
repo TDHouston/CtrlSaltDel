@@ -32,7 +32,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description` " +
+            "`description`" +
             ") " +
             "VALUES (?, ?, ?, ?, ?, ?);";
 
@@ -145,7 +145,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
         // Tables that reference recipe table: favorite, comment, recipe_category, recipe_ingredient, instruction
         List<String> tables = Arrays.asList("favorite", "comment", "recipe_category", "recipe_ingredient", "instruction");
 
-        String sql = "DELETE FROM %s WHERE recipe_id = ?";
+        String sql = "DELETE FROM %s WHERE recipe_id = ?;";
         for (String table : tables) {
             jdbcTemplate.update(String.format(sql, table), recipeId);
         }
@@ -157,7 +157,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
         final String sql = "SELECT c.category_id, c.`name` " +
             "FROM category c " +
             "JOIN recipe_category rc ON c.category_id = rc.category_id " +
-            "WHERE rc.recipe_id = ?";
+            "WHERE rc.recipe_id = ?" +
+            ";";
 
         var categories = jdbcTemplate.query(sql, new CategoryMapper(), recipe.getRecipeId());
         recipe.setCategories(categories);

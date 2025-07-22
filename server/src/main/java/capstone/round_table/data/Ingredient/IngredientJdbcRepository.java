@@ -3,7 +3,6 @@ package capstone.round_table.data.Ingredient;
 import capstone.round_table.data.mappers.IngredientMapper;
 import capstone.round_table.data.mappers.RecipeIngredientMapper;
 import capstone.round_table.models.Ingredient;
-import capstone.round_table.models.RecipeIngredient;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -82,21 +81,22 @@ public class IngredientJdbcRepository implements IngredientRepository {
         // Recipe_Ingredient has Ingredient as FK
         // Delete ingredient from Recipe_Ingredient table first
         // Then delete ingredient from Ingredient table
-        jdbcTemplate.update("DELETE FROM recipe_ingredient WHERE ingredient_id = ?", ingredientId);
-        return jdbcTemplate.update("DELETE FROM ingredient WHERE ingredient_id = ?", ingredientId) > 0;
+        jdbcTemplate.update("DELETE FROM recipe_ingredient WHERE ingredient_id = ?;", ingredientId);
+        return jdbcTemplate.update("DELETE FROM ingredient WHERE ingredient_id = ?;", ingredientId) > 0;
     }
 
     private void addRecipeIngredient(Ingredient ingredient) {
         final String sql = "SELECT " +
             "recipe_id, " +
-            "ingredient_id, " +
+            "ri.ingredient_id, " +
             "unit, " +
-            "quantity " +
-            "FROM recipe_ingredient " +
-            "WHERE ingredient_id = ?" +
+            "quantity, " +
+            "`name` AS ingredient_name " +
+            "FROM recipe_ingredient ri JOIN ingredient i ON ri.ingredient_id = i.ingredient_id " +
+            "WHERE ri.ingredient_id = ?" +
             ";";
 
         var recipeIngredients = jdbcTemplate.query(sql, new RecipeIngredientMapper(), ingredient.getIngredientId());
-        ingredient.setRecipeIngredientList(recipeIngredients);
+        ingredient.setRecipesWithIngredient(recipeIngredients);
     }
 }

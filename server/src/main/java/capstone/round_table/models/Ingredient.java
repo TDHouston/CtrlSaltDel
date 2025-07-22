@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Ingredient {
     private int ingredientId;
     private String name;
-    private List<RecipeIngredient> recipeIngredientList;
+    private List<RecipeIngredient> recipesWithIngredient;
 
     public Ingredient(){}
 
@@ -30,12 +30,12 @@ public class Ingredient {
         this.name = name;
     }
 
-    public List<RecipeIngredient> getRecipeIngredientList() {
-        return recipeIngredientList;
+    public List<RecipeIngredient> getRecipesWithIngredient() {
+        return recipesWithIngredient;
     }
 
-    public void setRecipeIngredientList(List<RecipeIngredient> recipeIngredientList) {
-        this.recipeIngredientList = recipeIngredientList;
+    public void setRecipesWithIngredient(List<RecipeIngredient> recipesWithIngredient) {
+        this.recipesWithIngredient = recipesWithIngredient;
     }
 
     @Override
@@ -47,6 +47,6 @@ public class Ingredient {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ingredientId, name, recipeIngredientList);
+        return Objects.hash(ingredientId, name, recipesWithIngredient);
     }
 }

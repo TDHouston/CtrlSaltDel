@@ -40,7 +40,7 @@ class IngredientJdbcRepositoryTest {
     void shouldFindById() {
         Ingredient ingredient = repo.findById(2);
         assertEquals("flour", ingredient.getName());
-        assertEquals(1, ingredient.getRecipeIngredientList().size());
+        assertEquals(1, ingredient.getRecipesWithIngredient().size());
     }
 
     @Test

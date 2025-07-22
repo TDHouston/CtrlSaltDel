@@ -111,7 +111,8 @@ CREATE TABLE recipe_ingredient (
         REFERENCES recipe(recipe_id),
 	CONSTRAINT fk_ingredient
 		FOREIGN KEY (ingredient_id)
-        REFERENCES ingredient(ingredient_id)
+        REFERENCES ingredient(ingredient_id),
+	UNIQUE(recipe_id, ingredient_id)
 );
 
 delimiter //

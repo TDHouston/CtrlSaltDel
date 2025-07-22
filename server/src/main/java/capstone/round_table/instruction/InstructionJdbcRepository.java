@@ -61,7 +61,8 @@ public class InstructionJdbcRepository implements InstructionRepository {
             "step_number, " +
             "description " +
             "FROM instruction " +
-            "WHERE recipe_id = ?";
+            "WHERE recipe_id = ?" +
+            ";";
 
         List<Instruction> result = jdbcTemplate.query(sql, new InstructionMapper(), recipeId);
         return result;
@@ -98,6 +99,6 @@ public class InstructionJdbcRepository implements InstructionRepository {
 
     @Override
     public boolean deleteInstructionById(int instructionId) {
-        return jdbcTemplate.update("DELETE FROM instruction WHERE instruction_id = ?", instructionId) > 0;
+        return jdbcTemplate.update("DELETE FROM instruction WHERE instruction_id = ?;", instructionId) > 0;
     }
 }
