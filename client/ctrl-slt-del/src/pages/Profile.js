@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
+import AccountForm from "../components/AccountForm";
 
 const DEFAULT_USER = {
-  role: "user", // Change to 'admin' to test admin panel
+  role: "user",
   first_name: "Julian",
-  last_name: "",
-  username: "",
-  email: "",
-  password: "",
+  last_name: "Houston",
+  username: "JH",
+  email: "trentdhouston@gmail.com",
+  password: "password",
 };
 
 const RECIPES_DEFAULT = [
@@ -64,10 +65,45 @@ const RECIPES_DEFAULT = [
   },
 ];
 
+const FAVORITES_DEFAULT = [
+  {
+    id: 1,
+    name: "Crispy Chicken",
+    description: "Delicious crispy chicken with a sweet chili dipping sauce!",
+    difficulty: 3,
+    cookTime: 30,
+    upvotes: 300,
+    user: "cookingmama",
+    img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
+  },
+  {
+    id: 2,
+    name: "Tofu Stir-Fry",
+    description: "Garlic tofu stir-fry with green beans and onions",
+    difficulty: 5,
+    cookTime: 45,
+    upvotes: 200,
+    user: "cookingmama",
+    img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
+  },
+  {
+    id: 3,
+    name: "Chocolate cupcakes",
+    description:
+      "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
+    difficulty: 2,
+    cookTime: 60,
+    upvotes: 100,
+    user: "cookingmama",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
+  },
+];
+
 function Profile() {
   const [user, setUser] = useState(DEFAULT_USER);
   const [activeTab, setActiveTab] = useState("account");
   const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
+  const [favorites, setFavorites] = useState(FAVORITES_DEFAULT);
 
   return (
     <section className="flex min-h-screen bg-gray-100">
@@ -130,13 +166,17 @@ function Profile() {
       {/* Main content */}
       <main className="flex-1 p-10">
         {activeTab === "account" && (
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-2xl font-semibold text-gray-800 text-center">
               Account Settings
             </h1>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-gray-600 text-center">
               Manage your profile information.
             </p>
+
+            <div className="mt-8 bg-white p-6 rounded-lg shadow-sm">
+              <AccountForm account={user} />
+            </div>
           </div>
         )}
 
@@ -153,19 +193,50 @@ function Profile() {
 
             <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
               {recipes.map((recipe) => (
-                <RecipeCard recipe={recipe} key={recipe.id} />
+                <div>
+                  <RecipeCard recipe={recipe} key={recipe.id} />
+                  <div
+                    className="inline-flex rounded-md shadow-xs"
+                    role="group"
+                  >
+                    <button
+                      type="button"
+                      className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="button"
+                      className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
         )}
 
         {activeTab === "favorites" && (
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800">Favorites</h1>
-            <p className="mt-2 text-gray-600">
-              Your saved and liked recipes appear here.
-            </p>
-          </div>
+          <section>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-800">
+                Favorites
+              </h1>
+              <p className="mt-2 text-gray-600">
+                Your saved and liked recipes appear here.
+              </p>
+            </div>
+
+            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+              {favorites.map((recipe) => (
+                <div>
+                  <RecipeCard recipe={recipe} key={recipe.id} />
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </main>
     </section>
