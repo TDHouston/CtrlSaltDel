@@ -21,7 +21,7 @@ public class InstructionController {
         return null;
     }
 
-    @PostMapping
+    @PostMapping("/batch")
     public ResponseEntity<Object> batchAdd(@RequestBody List<Instruction> instructions) {
         return null;
     }
