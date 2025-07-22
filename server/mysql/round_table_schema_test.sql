@@ -11,7 +11,7 @@ CREATE TABLE `user` (
     username VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
     `password` VARCHAR(60) NOT NULL,
-    -- Unique Constraint
+    -- Unique Constraintcategory_id
     CONSTRAINT uc_user UNIQUE (username, email)
 );
 
@@ -37,6 +37,7 @@ CREATE TABLE recipe (
     user_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
     difficulty VARCHAR(10),
+    upvote INT,
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
@@ -118,6 +119,7 @@ delimiter //
 create procedure set_known_good_state()
 begin
 	
+    DELETE FROM favorite;
     DELETE FROM category;
     alter table category auto_increment = 1;
     DELETE FROM comment;
@@ -148,6 +150,11 @@ begin
         (2, 2, 1, "This was hard!"),
         (3, 1, 2, "This was very difficult!");
         
+	INSERT INTO favorite (user_id, recipe_id) VALUES
+		(1, 1),
+        (1, 2),
+        (2, 1),
+        (2, 2);
         
 
 end //
