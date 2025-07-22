@@ -65,6 +65,14 @@ function Nav() {
                 Explore Recipes
               </Link>
             </li>
+            <li>
+              <Link
+                to="/about"
+                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                About
+              </Link>
+            </li>
             {isAuth ? (
               <li>
                 <div className="relative">
@@ -120,7 +128,10 @@ function Nav() {
             ) : (
               <li>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                  <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
+                  <Link
+                    to="/login"
+                    className="text-sm/6 font-semibold text-gray-900"
+                  >
                     Sign Up / Log In <span aria-hidden="true">&rarr;</span>
                   </Link>
                 </div>
