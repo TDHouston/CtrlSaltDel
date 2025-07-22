@@ -26,9 +26,12 @@ class CommentJdbcRepositoryTest {
     }
 
     // 1 for finding
-    // 2 for updating
-    // 3 for delete
-    // 4 for add
+    // 2 for finding
+    // 3 for updating
+    // 4 for updating
+    // 5 for delete
+    // 6 for delete
+    // Add for rest
 
     @Test
     void shouldFindAll() {
@@ -41,7 +44,7 @@ class CommentJdbcRepositoryTest {
         List<Comment> actual = repository.findByUserId(1);
         assertNotNull(actual);
         assertFalse(actual.isEmpty());
-        assertEquals("This was easy!", actual.get(0).getContent());
+        assertEquals(3, actual.size());
     }
 
     @Test
@@ -49,7 +52,7 @@ class CommentJdbcRepositoryTest {
         List<Comment> actual = repository.findByUserId(1);
         assertNotNull(actual);
         assertFalse(actual.isEmpty());
-        assertEquals("This was easy!", actual.get(0).getContent());
+        assertEquals(3, actual.size());
     }
 
     @Test
@@ -59,22 +62,22 @@ class CommentJdbcRepositoryTest {
         comment.setRecipeId(1);
         comment.setContent("More comments!");
         Comment actual = repository.addComment(comment);
-        assertEquals(4, actual.getCommentId());
+        assertEquals(11, actual.getCommentId());
     }
 
     @Test
     void shouldUpdateComment() {
         Comment comment = new Comment();
-        comment.setUserId(2);
-        comment.setRecipeId(1);
-        comment.setCommentId(2);
-        comment.setContent("Update comment!");
+        comment.setUserId(3);
+        comment.setRecipeId(4);
+        comment.setCommentId(3);
+        comment.setContent("Updated comment!");
         assertTrue(repository.updateComment(comment));
     }
 
     @Test
     void shouldDeleteComment() {
-        assertTrue(repository.deleteComment(3));
+        assertTrue(repository.deleteComment(5));
     }
 
 }
