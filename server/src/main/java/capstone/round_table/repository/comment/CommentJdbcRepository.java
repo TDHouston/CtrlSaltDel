@@ -80,6 +80,6 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public boolean deleteComment(int commentId) {
-        return false;
+        return jdbcTemplate.update("delete from comment where comment_id = ?;", commentId) > 0;
     }
 }

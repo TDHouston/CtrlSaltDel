@@ -71,6 +71,10 @@ class CommentJdbcRepositoryTest {
         comment.setContent("Update comment!");
         assertTrue(repository.updateComment(comment));
     }
-    
+
+    @Test
+    void shouldDeleteComment() {
+        assertTrue(repository.deleteComment(3));
+    }
 
 }
