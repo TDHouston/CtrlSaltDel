@@ -107,6 +107,28 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     @Transactional
     public boolean deleteUser(int userId) {
+        List<String> tables = Arrays.asList("favorite", "comment", "recipe_category", "recipe_ingredient", "instruction");
 
+        String recipesQuery = "select u.user_id, r.recipe_id " +
+                "from user u join recipe r on u.user_id = r.user_id " +
+                "where u.user_id = ?;";
+
+        // Get all user's recipe id
+        List<Integer> recipeIdList = jdbcTemplate.query(recipesQuery,  (resultSet, rowNum) -> resultSet.getInt("recipe_id"), userId);
+
+        boolean success = true;
+        String deleteRecipeFk = "DELETE FROM %s WHERE recipe_id = ?;";
+        for (int recipeId : recipeIdList) {
+            for (String table : tables) {
+                jdbcTemplate.update(String.format(deleteRecipeFk, table), recipeId);
+            }
+            jdbcTemplate.update(String.format(deleteRecipeFk, "recipe"), recipeId);
+        }
+
+        jdbcTemplate.update("delete from favorite where user_id = ?;", userId);
+        jdbcTemplate.update("delete from comment where user_id = ?;", userId);
+
+        // Only care the user is able to delete. Other tables might or might not be affected but doesn't matter
+        return jdbcTemplate.update("delete from user where user_id = ?;", userId) > 0;
     }
 }
