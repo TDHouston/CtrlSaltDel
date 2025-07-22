@@ -3,8 +3,12 @@ package capstone.round_table.repository.comment;
 import capstone.round_table.models.Comment;
 import capstone.round_table.repository.mappers.CommentMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -42,7 +46,23 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public Comment addComment(Comment comment) {
-        return null;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        final String sql = "insert into comment (user_id, recipe_id, content)" +
+                " values (?,?,?);";
+
+        int rowsAffected = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, comment.getUserId());
+            ps.setInt(2, comment.getRecipeId());
+            ps.setString(3, comment.getContent());
+            return ps;
+        }, keyHolder);
+
+        if (rowsAffected <= 0) {
+            return null;
+        }
+        comment.setCommentId(keyHolder.getKey().intValue());
+        return comment;
     }
 
     @Override

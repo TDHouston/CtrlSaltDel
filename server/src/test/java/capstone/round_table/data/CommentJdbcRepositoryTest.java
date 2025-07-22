@@ -52,4 +52,14 @@ class CommentJdbcRepositoryTest {
         assertEquals("This was easy!", actual.get(0).getContent());
     }
 
+    @Test
+    void shouldAddComment() {
+        Comment comment = new Comment();
+        comment.setUserId(1);
+        comment.setRecipeId(1);
+        comment.setContent("More comments!");
+        Comment actual = repository.addComment(comment);
+        assertEquals(4, actual.getCommentId());
+    }
+
 }
