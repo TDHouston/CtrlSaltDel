@@ -1,7 +1,7 @@
-package capstone.round_table.repository.user;
+package capstone.round_table.data.user;
 
 import capstone.round_table.models.User;
-import capstone.round_table.repository.mappers.UserMapper;
+import capstone.round_table.data.mappers.UserMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;

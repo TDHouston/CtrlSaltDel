@@ -1,4 +1,4 @@
-package capstone.round_table.repository.mappers;
+package capstone.round_table.data.mappers;
 
 import capstone.round_table.models.Role;
 import capstone.round_table.models.User;

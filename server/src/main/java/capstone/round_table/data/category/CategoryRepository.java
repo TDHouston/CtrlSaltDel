@@ -1,4 +1,4 @@
-package capstone.round_table.repository.category;
+package capstone.round_table.data.category;
 
 import capstone.round_table.models.Category;
 

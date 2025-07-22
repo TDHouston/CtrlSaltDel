@@ -1,4 +1,4 @@
-package capstone.round_table.data;
+package capstone.round_table.data.Ingredient;
 
 import capstone.round_table.data.mappers.IngredientMapper;
 import capstone.round_table.models.Ingredient;

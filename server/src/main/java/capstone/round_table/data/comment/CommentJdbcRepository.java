@@ -1,7 +1,7 @@
-package capstone.round_table.repository.comment;
+package capstone.round_table.data.comment;
 
 import capstone.round_table.models.Comment;
-import capstone.round_table.repository.mappers.CommentMapper;
+import capstone.round_table.data.mappers.CommentMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;

@@ -1,4 +1,4 @@
-package capstone.round_table.repository.comment;
+package capstone.round_table.data.comment;
 
 import capstone.round_table.models.Comment;
 

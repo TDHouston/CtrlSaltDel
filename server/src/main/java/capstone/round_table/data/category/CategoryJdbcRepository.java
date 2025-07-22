@@ -1,8 +1,7 @@
-package capstone.round_table.repository.category;
+package capstone.round_table.data.category;
 
 import capstone.round_table.models.Category;
-import capstone.round_table.repository.mappers.CategoryMapper;
-import capstone.round_table.repository.mappers.UserMapper;
+import capstone.round_table.data.mappers.CategoryMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;

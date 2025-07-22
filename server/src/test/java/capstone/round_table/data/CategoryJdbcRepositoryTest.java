@@ -1,8 +1,7 @@
 package capstone.round_table.data;
 
 import capstone.round_table.models.Category;
-import capstone.round_table.repository.category.CategoryJdbcRepository;
-import capstone.round_table.repository.category.CategoryRepository;
+import capstone.round_table.data.category.CategoryJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

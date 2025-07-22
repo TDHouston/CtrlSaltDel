@@ -1,4 +1,4 @@
-package capstone.round_table.repository.favorite;
+package capstone.round_table.data.favorite;
 
 import capstone.round_table.models.Recipe;
 

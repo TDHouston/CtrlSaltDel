@@ -1,4 +1,4 @@
-package capstone.round_table.data;
+package capstone.round_table.instruction;
 
 import capstone.round_table.models.Instruction;
 

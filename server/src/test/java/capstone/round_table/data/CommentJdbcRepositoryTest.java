@@ -1,7 +1,7 @@
 package capstone.round_table.data;
 
 import capstone.round_table.models.Comment;
-import capstone.round_table.repository.comment.CommentJdbcRepository;
+import capstone.round_table.data.comment.CommentJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
