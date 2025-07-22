@@ -85,7 +85,7 @@ class UserJdbcRepositoryTest {
 
     @Test
     void shouldDeleteUser() {
-        assertTrue(repository.deleteUser(3));
+        assertTrue(repository.deleteUser(5));
     }
 
     private User generateUser() {
