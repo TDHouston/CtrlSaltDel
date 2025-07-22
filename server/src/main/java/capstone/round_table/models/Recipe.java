@@ -31,6 +31,24 @@ public class Recipe {
         this.description = description;
     }
 
+    public Recipe(
+        int recipeId,
+        int userId,
+        String name,
+        Difficulty difficulty,
+        int cookTime,
+        int servings,
+        String description
+    ) {
+        this.recipeId = recipeId;
+        this.userId = userId;
+        this.name = name;
+        this.difficulty = difficulty;
+        this.cookTime = cookTime;
+        this.servings = servings;
+        this.description = description;
+    }
+
     public int getRecipeId() {
         return recipeId;
     }
@@ -100,6 +118,12 @@ public class Recipe {
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
         return recipeId == recipe.recipeId && userId == recipe.userId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description);
+    }
+
+    public boolean equalsAnother(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name.toLowerCase(), recipe.name.toLowerCase()) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description);
     }
 
     @Override
