@@ -47,9 +47,30 @@ function RecipeForm() {
   const [errors, setErrors] = useState([]);
 
   const [ingredients, setIngredients] = useState([]);
-  const [steps, setSteps] = useState([]);
+  const [ingredient, setIngredient] = useState({});
+
+  const [instruction, setInstruction] = useState("");
+  const [instructions, setInstructions] = useState([]);
 
   const { id } = useParams();
+
+  const addIngredient = (ingredient) => {
+    setIngredients([...ingredients, ingredient]);
+  };
+
+  const handleIngredientChange = (event) => {
+    const newIngredient = { ...ingredient };
+    newIngredient[event.target.name] = event.target.value;
+    setIngredient(newIngredient);
+  };
+
+  const handleInstructionChange = (event) => {
+    setInstruction(event.target.value);
+  };
+
+  const addInstruction = (instruction) => {
+    setInstructions([...instructions, instruction]);
+  };
 
   return (
     <>
@@ -85,25 +106,125 @@ function RecipeForm() {
             ></textarea>
           </div>
           <div className="mb-5">
-            <label
-              for="ingredients"
-              className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white"
-            >
+            <h1 className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white">
               Ingredients
-            </label>
-            <button className="bg-blue-700 hover:bg-blue-400 text-white p-2 rounded-xl">
-              Add ingredient
-            </button>
-            {ingredients.map((ingredient) => (
+            </h1>
+            <div>
+              {ingredients.map((ingredient) => (
+                <p>
+                  {ingredient.ingredientQuantity}{" "}
+                  {ingredient.ingredientUnit.toString().toLowerCase()}{" "}
+                  {ingredient.ingredientName}
+                </p>
+              ))}
+            </div>
+            <div className="mb-5">
+              <label
+                for="ingredientName"
+                className="block mb-2 text- font-semibold text-center font-medium text-gray-900 dark:text-white"
+              >
+                Ingredient Name
+              </label>
               <input
                 type="text"
-                id={ingredient.name}
+                name="ingredientName"
+                id="ingredientName"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Amazing Recipe"
+                placeholder="Egg"
+                value={ingredient.ingredientName}
+                onChange={handleIngredientChange}
                 required
               />
+              <div className="mb-5">
+                <label
+                  for="ingredientQuantity"
+                  className="block mb-2 text-l font-semibold text-center font-medium text-gray-900 dark:text-white"
+                >
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  name="ingredientQuantity"
+                  id="ingredientQuantity"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="3"
+                  value={ingredient.ingredientQuantity}
+                  onChange={handleIngredientChange}
+                  required
+                />
+              </div>
+              <div className="mb-5">
+                <label
+                  for="ingredientUnit"
+                  className="block mb-2 text-l font-semibold text-center font-medium text-gray-900 dark:text-white"
+                >
+                  Unit
+                </label>
+                <select
+                  id="ingredientUnit"
+                  name="ingredientUnit"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={ingredient.ingredientUnit}
+                  onChange={handleIngredientChange}
+                >
+                  <option value="">n/a</option>
+                  <option value="TEASPOON">tsp</option>
+                  <option value="TABLESPOON">tbsp</option>
+                  <option value="CUP">cup</option>
+                  <option value="FLUID_OUNCE">fl oz</option>
+                  <option value="PINT">pt</option>
+                  <option value="QUART">qt</option>
+                  <option value="GALLON">gal</option>
+                  <option value="OUNCE">oz</option>
+                  <option value="POUND">lb</option>
+                  <option value="MILLILITER">mL</option>
+                  <option value="LITER">L</option>
+                  <option value="GRAM">g</option>
+                  <option value="KILOGRAM">kg</option>
+                  <option value="PINCH">pinch</option>
+                  <option value="SLICE">slice</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="bg-blue-700 mb-3 hover:bg-blue-400 text-white p-2 rounded-xl"
+            onClick={() => addIngredient(ingredient)}
+          >
+            Add ingredient
+          </button>
+          <h1 className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white">
+            Instructions
+          </h1>
+          <div>
+            {instructions.map((instruction) => (
+              <p>{instruction}</p>
             ))}
           </div>
+          <label
+            for="instruction"
+            className="block mb-2 text- font-semibold text-center font-medium text-gray-900 dark:text-white"
+          >
+            Instruction Name
+          </label>
+          <input
+            type="text"
+            name="ingredientName"
+            id="ingredientName"
+            class=" mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Beat until stiff peaks form"
+            value={instruction}
+            onChange={handleInstructionChange}
+            required
+          />
+          <button
+            type="button"
+            className="bg-blue-700 mb-3 hover:bg-blue-400 text-white p-2 rounded-xl"
+            onClick={() => addInstruction(instruction)}
+          >
+            Add instruction
+          </button>
         </form>
       </section>
     </>
