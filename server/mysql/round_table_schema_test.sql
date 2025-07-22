@@ -1,8 +1,6 @@
 DROP DATABASE IF EXISTS round_table_test;
 CREATE DATABASE round_table_test;
-USE round_table_test;
-
--- USER TABLE
+USE round_table_test;-- USER TABLE
 CREATE TABLE `user` (
 	user_id INT PRIMARY KEY AUTO_INCREMENT,
     `role` VARCHAR(10) NOT NULL,
@@ -13,31 +11,24 @@ CREATE TABLE `user` (
     `password` VARCHAR(60) NOT NULL,
     -- Unique Constraintcategory_id
     CONSTRAINT uc_user UNIQUE (username, email)
-);
-
--- CATEGORY TABLE
+);-- CATEGORY TABLE
 CREATE TABLE category (
 	category_id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(25) NOT NULL,
     -- Unique Constraint
     UNIQUE(`name`)
-);
-
--- INGREDIENT TABLE
+);-- INGREDIENT TABLE
 CREATE TABLE ingredient (
 	ingredient_id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     -- Unique Constraint
     UNIQUE(`name`)
-);
-
--- RECIPE TABLE
+);-- RECIPE TABLE
 CREATE TABLE recipe (
 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
     difficulty VARCHAR(15),
-    upvote INT,
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
@@ -45,9 +36,7 @@ CREATE TABLE recipe (
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
         REFERENCES `user`(user_id)
-);
-
--- FAVORITE TABLE
+);-- FAVORITE TABLE
 CREATE TABLE favorite (
 	user_id INT NOT NULL,
     recipe_id INT NOT NULL,
@@ -58,9 +47,7 @@ CREATE TABLE favorite (
 	CONSTRAINT fk_fave_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- COMMENT TABLE
+);-- COMMENT TABLE
 CREATE TABLE `comment` (
 	comment_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -73,9 +60,7 @@ CREATE TABLE `comment` (
 	CONSTRAINT fk_comment_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- INSTRUCTION TABLE
+);-- INSTRUCTION TABLE
 CREATE TABLE instruction (
 	instruction_id INT PRIMARY KEY AUTO_INCREMENT,
     recipe_id INT NOT NULL,
@@ -85,9 +70,7 @@ CREATE TABLE instruction (
     CONSTRAINT fk_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- RECIPE_CATEGORY TABLE
+);-- RECIPE_CATEGORY TABLE
 CREATE TABLE recipe_category (
 	recipe_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -98,13 +81,11 @@ CREATE TABLE recipe_category (
 	CONSTRAINT fk_rc_category
 		FOREIGN KEY (category_id)
         REFERENCES category(category_id)
-);
-
--- RECIPE_INGREDIENT TABLE
+);-- RECIPE_INGREDIENT TABLE
 CREATE TABLE recipe_ingredient (
 	recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
-    unit VARCHAR(15) NOT NULL,
+    unit VARCHAR(15),
     quantity DECIMAL(3, 2),
     -- Foreign Keys
 	CONSTRAINT fk_ri_recipe
@@ -113,9 +94,7 @@ CREATE TABLE recipe_ingredient (
 	CONSTRAINT fk_ingredient
 		FOREIGN KEY (ingredient_id)
         REFERENCES ingredient(ingredient_id)
-);
-
-delimiter //
+);delimiter //
 create procedure set_known_good_state()
 begin
 	
@@ -127,33 +106,42 @@ begin
 	DELETE FROM recipe;
     alter table recipe auto_increment = 1;
 	DELETE FROM user;
-    alter table user auto_increment = 1;
-
-	INSERT INTO user (user_id, role, first_name, last_name, username, email, password) VALUES
+    alter table user auto_increment = 1;	INSERT INTO user (user_id, `role`, first_name, last_name, username, email, `password`) VALUES
 		(1, 'ADMIN', 'Alice', 'Smith', 'alice', 'alice@example.com', 'hashed_password_1'),
 		(2, 'USER', 'Bob', 'Johnson', 'bobbyj', 'bob@example.com', 'hashed_password_2'),
 		(3, 'USER', 'Charlie', 'Brown', 'charlieb', 'charlie@example.com', 'hashed_password_3');
 	
-    INSERT INTO category (category_id, name) VALUES
+    INSERT INTO category (category_id, `name`) VALUES
 		(1, "fish"),
         (2, "tomatoes"),
         (3, "eggs"),
-        (4, "cheese");
-        
-	INSERT INTO recipe (recipe_id, user_id, name, difficulty, cook_time, servings, description) VALUES
+        (4, "cheese");	INSERT INTO recipe (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`) VALUES
 		(1, 1, "fish soup", "intermediate", 30, 5, "fish in soup"),
         (2, 1, "scramble eggs", "expert", 10, 2, "Very difficult egg"),
         (3, 3, "grill cheese", "easy", 5, 1, "easy grill cheese");
 	
-    INSERT INTO comment (comment_id, user_id, recipe_id, content) VALUES
+    INSERT INTO `comment` (comment_id, user_id, recipe_id, content) VALUES
 		(1, 1, 1, "This was easy!"),
         (2, 2, 1, "This was hard!"),
-        (3, 1, 2, "This was very difficult!");
-        
-	INSERT INTO favorite (user_id, recipe_id) VALUES
+        (3, 1, 2, "This was very difficult!");	INSERT INTO favorite (user_id, recipe_id) VALUES
 		(1, 1),
         (1, 2),
-        (2, 1);
-
-end //
+        (2, 1),
+        (2, 2);	INSERT INTO ingredient (ingredient_id, `name`) VALUES
+		(1, "egg"),
+        (2, "flour"),
+        (3, "sugar"),
+        (4, "salt"),
+        (5, "white bread"),
+        (6, "cheese"),
+        (7, "salmon"),
+        (8, "butter");
+	
+	INSERT INTO recipe_ingredient (recipe_id, ingredient_id, unit, quantity) VALUES
+		(2, 1, NULL, 3),
+        (2, 8, "tbsp", 1),
+        (1, 7, NULL, 1),
+        (3, 6, "slice", 2),
+        (3, 4, "slice", 2),
+        (3, 8, "tbsp", 1);end //
 delimiter ;

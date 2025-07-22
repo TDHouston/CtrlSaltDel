@@ -1,9 +1,6 @@
 DROP DATABASE IF EXISTS round_table;
 CREATE DATABASE round_table;
-USE round_table;
-
-
--- USER TABLE
+USE round_table;-- USER TABLE
 CREATE TABLE `user` (
 	user_id INT PRIMARY KEY AUTO_INCREMENT,
     `role` VARCHAR(10) NOT NULL,
@@ -14,25 +11,19 @@ CREATE TABLE `user` (
     `password` VARCHAR(60) NOT NULL,
     -- Unique Constraint
     CONSTRAINT uc_user UNIQUE (username, email)
-);
-
--- CATEGORY TABLE
+);-- CATEGORY TABLE
 CREATE TABLE category (
 	category_id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(25) NOT NULL,
     -- Unique Constraint
     UNIQUE(`name`)
-);
-
--- INGREDIENT TABLE
+);-- INGREDIENT TABLE
 CREATE TABLE ingredient (
 	ingredient_id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     -- Unique Constraint
     UNIQUE(`name`)
-);
-
--- RECIPE TABLE
+);-- RECIPE TABLE
 CREATE TABLE recipe (
 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -42,7 +33,6 @@ CREATE TABLE recipe (
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
-    upvotes INT,
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
@@ -50,9 +40,7 @@ CREATE TABLE recipe (
 	CONSTRAINT fk_category
 		FOREIGN KEY (category_id)
         REFERENCES category(category_id)
-);
-
--- FAVORITE TABLE
+);-- FAVORITE TABLE
 CREATE TABLE favorite (
 	user_id INT NOT NULL,
     recipe_id INT NOT NULL,
@@ -63,9 +51,7 @@ CREATE TABLE favorite (
 	CONSTRAINT fk_fave_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- COMMENT TABLE
+);-- COMMENT TABLE
 CREATE TABLE `comment` (
 	comment_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -78,9 +64,7 @@ CREATE TABLE `comment` (
 	CONSTRAINT fk_comment_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- INSTRUCTION TABLE
+);-- INSTRUCTION TABLE
 CREATE TABLE instruction (
 	instruction_id INT PRIMARY KEY AUTO_INCREMENT,
     recipe_id INT NOT NULL,
@@ -90,9 +74,7 @@ CREATE TABLE instruction (
     CONSTRAINT fk_recipe
 		FOREIGN KEY (recipe_id)
         REFERENCES recipe(recipe_id)
-);
-
--- RECIPE_CATEGORY TABLE
+);-- RECIPE_CATEGORY TABLE
 CREATE TABLE recipe_category (
 	recipe_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -103,9 +85,7 @@ CREATE TABLE recipe_category (
 	CONSTRAINT fk_rc_category
 		FOREIGN KEY (category_id)
         REFERENCES category(category_id)
-);
-
--- RECIPE_INGREDIENT TABLE
+);-- RECIPE_INGREDIENT TABLE
 CREATE TABLE recipe_ingredient (
 	recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
@@ -119,4 +99,3 @@ CREATE TABLE recipe_ingredient (
 		FOREIGN KEY (ingredient_id)
         REFERENCES ingredient(ingredient_id)
 );
-
