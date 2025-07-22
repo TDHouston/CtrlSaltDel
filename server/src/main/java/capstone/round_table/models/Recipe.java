@@ -1,20 +1,35 @@
 package capstone.round_table.models;
 
+import java.util.List;
+import java.util.Objects;
+
 public class Recipe {
     private int recipeId;
     private int userId;
-    private int categoryId;
     private String name;
     private Difficulty difficulty;
     private int cookTime;
     private int servings;
     private String description;
-    private int upvotes;
+    private List<Category> categories;
 
-    /**
-     * difficulty, cook_time, servings, description, upvotes values aren't required
-     */
     public Recipe(){}
+
+    public Recipe(
+        int userId,
+        String name,
+        Difficulty difficulty,
+        int cookTime,
+        int servings,
+        String description
+    ) {
+        this.userId = userId;
+        this.name = name;
+        this.difficulty = difficulty;
+        this.cookTime = cookTime;
+        this.servings = servings;
+        this.description = description;
+    }
 
     public int getRecipeId() {
         return recipeId;
@@ -30,14 +45,6 @@ public class Recipe {
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getName() {
@@ -80,11 +87,23 @@ public class Recipe {
         this.description = description;
     }
 
-    public int getUpvotes() {
-        return upvotes;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setUpvotes(int upvotes) {
-        this.upvotes = upvotes;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return recipeId == recipe.recipeId && userId == recipe.userId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(recipeId, userId, name, difficulty, cookTime, servings, description, categories);
     }
 }

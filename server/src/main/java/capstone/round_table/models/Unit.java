@@ -14,7 +14,8 @@ public enum Unit {
     LITER("L"),
     GRAM("g"),
     KILOGRAM("kg"),
-    PINCH("pinch");
+    PINCH("pinch"),
+    SLICE("slice");
 
     private String abbreviation;
 
@@ -24,5 +25,14 @@ public enum Unit {
 
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    public static Unit getUnit(String abbreviation) {
+        for (Unit u : Unit.values()) {
+            if (u.abbreviation.equals(abbreviation)) {
+                return u;
+            }
+        }
+        return null;
     }
 }
