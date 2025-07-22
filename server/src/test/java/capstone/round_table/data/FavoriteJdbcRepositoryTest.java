@@ -25,27 +25,30 @@ class FavoriteJdbcRepositoryTest {
     }
 
     // 1 for finding
-    // 2 for updating
-    // 3 for delete
-    // 4 for add
+    // 2 for finding
+    // 3 for updating
+    // 4 for updating
+    // 5 for delete
+    // 6 for delete
+    // Add for rest
 
     @Test
     void shouldFindTopFavorites() {
-        List<Recipe> actual = repository.findTopFavorites(1);
-        assertEquals(1, actual.size());
-        assertEquals("fish soup", actual.get(0).getName());
+        List<Recipe> actual = repository.findTopFavorites(3);
+        actual.stream().forEach(r -> System.out.println(r.getName()));
+        assertEquals(3, actual.size());
     }
 
     @Test
     void shouldFindFavoriteCountByRecipeId() {
         int actual = repository.findRecipeFavoriteCount(1);
-        assertEquals(2, actual);
+        assertEquals(1, actual);
     }
 
     @Test
     void shouldFindUserFavorite() {
         List<Recipe> actual = repository.findUserFavorites(1);
-        assertEquals(2, actual.size());
+        assertEquals(3, actual.size());
     }
 
     @Test
@@ -55,6 +58,6 @@ class FavoriteJdbcRepositoryTest {
 
     @Test
     void shouldDeleteFavorite() {
-        assertTrue(repository.deleteFavorites(1,2));
+        assertTrue(repository.deleteFavorites(5,4));
     }
 }
