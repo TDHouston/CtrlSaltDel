@@ -26,10 +26,13 @@ class UserJdbcRepositoryTest {
         knownGoodState.set();
     }
 
-    // 1 user for finding
-    // 2 user for updating
-    // 3 user for delete
-    // 4 user for add
+    // 1 for finding
+    // 2 for finding
+    // 3 for updating
+    // 4 for updating
+    // 5 for delete
+    // 6 for delete
+    // Add for rest
 
     @Test
     void findAllUser() {
@@ -47,16 +50,20 @@ class UserJdbcRepositoryTest {
 
     @Test
     void findUserByUsername() {
-        User user = repository.findByUsername("alice");
+        User user = repository.findByUsername("jsmith");
         assertNotNull(user);
-        assertEquals("alice", user.getUsername());
+        assertEquals("jsmith", user.getUsername());
+        assertEquals("jsmith@example.com", user.getEmail());
+        assertEquals("smith", user.getPassword());
     }
 
     @Test
     void findUserByEmail() {
-        User user = repository.findByEmail("alice@example.com");
+        User user = repository.findByEmail("bburn@example.com");
         assertNotNull(user);
-        assertEquals("alice@example.com", user.getEmail());
+        assertEquals("bburn", user.getUsername());
+        assertEquals("bburn@example.com", user.getEmail());
+        assertEquals("burn", user.getPassword());
     }
 
     @Test
@@ -64,12 +71,12 @@ class UserJdbcRepositoryTest {
         User user = generateUser();
         User actual = repository.addUser(user);
         assertNotNull(actual);
-        assertEquals(4, actual.getUserId());
+        assertEquals(7, actual.getUserId());
     }
 
     @Test
     void shouldUpdateUser() {
-        User user = repository.findById(2);
+        User user = repository.findById(3);
         user.setUsername("new username");
         user.setRole(Role.USER);
         user.setPassword("new password");

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -106,7 +107,6 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     @Transactional
     public boolean deleteUser(int userId) {
-        // TODO: Need to delete favorite, comments, and recipe when deleting user. Deleting only user for now
-        return jdbcTemplate.update("delete from user where user_id = ?;", userId) > 0;
+
     }
 }
