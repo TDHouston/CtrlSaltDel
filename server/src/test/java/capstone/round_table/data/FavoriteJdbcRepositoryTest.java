@@ -47,4 +47,14 @@ class FavoriteJdbcRepositoryTest {
         List<Recipe> actual = repository.findUserFavorites(1);
         assertEquals(2, actual.size());
     }
+
+    @Test
+    void shouldAddFavorite() {
+        assertTrue(repository.addFavorites(2,2));
+    }
+
+    @Test
+    void shouldDeleteFavorite() {
+        assertTrue(repository.deleteFavorites(1,2));
+    }
 }

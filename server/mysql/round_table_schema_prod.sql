@@ -109,7 +109,7 @@ CREATE TABLE recipe_category (
 CREATE TABLE recipe_ingredient (
 	recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
-    unit VARCHAR(15) NOT NULL,
+    unit VARCHAR(15),
     quantity DECIMAL(3, 2),
     -- Foreign Keys
 	CONSTRAINT fk_ri_recipe

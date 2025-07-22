@@ -51,11 +51,13 @@ public class FavoriteJdbcRepository implements FavoriteRepository {
 
     @Override
     public boolean addFavorites(int userId, int recipeId) {
-        return false;
+        final String sql = "insert into favorite (user_id, recipe_id)" +
+                " values (?,?);";
+        return jdbcTemplate.update(sql, userId, recipeId) > 0;
     }
 
     @Override
     public boolean deleteFavorites(int userId, int recipeId) {
-        return false;
+        return jdbcTemplate.update("delete from favorite where user_id = ? and recipe_id = ?;", userId, recipeId) > 0;
     }
 }
