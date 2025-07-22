@@ -59,6 +59,7 @@ public class UserServiceTest {
         assertNull(actual);
     }
 
+
     @Test
     void shouldNotFindById() {
         when(repository.findById(55)).thenReturn(null);
@@ -96,6 +97,12 @@ public class UserServiceTest {
         user.setUserId(0);
         user.setUsername("");
         Result<User> result = service.addUser(user);
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    void shouldNotAddNullUser() {
+        Result<User> result = service.addUser(null);
         assertFalse(result.isSuccess());
     }
 
@@ -156,7 +163,7 @@ public class UserServiceTest {
     @Test
     void shouldNotUpdateUser() {
         User user = generateUser();
-        user.setEmail("");
+        user.setUserId(0);
         Result<User> result = service.updateUser(user);
         assertFalse(result.isSuccess());
     }
