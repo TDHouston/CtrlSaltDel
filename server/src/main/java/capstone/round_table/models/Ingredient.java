@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Ingredient {
     private int ingredientId;
     private String name;
-    private List<RecipeIngredient> recipesWithIngredient;
+    private List<Recipe> recipesWithIngredient;
 
     public Ingredient(){}
 
@@ -30,11 +30,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public List<RecipeIngredient> getRecipesWithIngredient() {
+    public List<Recipe> getRecipesWithIngredient() {
         return recipesWithIngredient;
     }
 
-    public void setRecipesWithIngredient(List<RecipeIngredient> recipesWithIngredient) {
+    public void setRecipesWithIngredient(List<Recipe> recipesWithIngredient) {
         this.recipesWithIngredient = recipesWithIngredient;
     }
 

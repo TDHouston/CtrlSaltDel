@@ -1,4 +1,4 @@
-package capstone.round_table.data.Ingredient;
+package capstone.round_table.data.ingredient;
 
 import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.models.Ingredient;

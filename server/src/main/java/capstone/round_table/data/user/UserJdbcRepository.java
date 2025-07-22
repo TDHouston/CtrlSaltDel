@@ -107,6 +107,6 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     @Transactional
     public boolean deleteUser(int userId) {
-
+        return false;
     }
 }
