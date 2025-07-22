@@ -25,9 +25,12 @@ public class CategoryJdbcRepositoryTest {
     }
 
     // 1 for finding
-    // 2 for updating
-    // 3 for delete
-    // 4 for add
+    // 2 for finding
+    // 3 for updating
+    // 4 for updating
+    // 5 for delete
+    // 6 for delete
+    // Add for rest
 
     @Test
     void shouldFindAllCategory() {
@@ -38,7 +41,7 @@ public class CategoryJdbcRepositoryTest {
     @Test
     void shouldFindByCategoryId() {
         Category actual = repository.findById(1);
-        assertEquals("fish", actual.getName());
+        assertEquals("vegan", actual.getName());
     }
 
     @Test
@@ -46,20 +49,20 @@ public class CategoryJdbcRepositoryTest {
         Category category = new Category();
         category.setName("chicken");
         Category actual = repository.addCategory(category);
-        assertEquals(5, actual.getCategoryId());
+        assertEquals(7, actual.getCategoryId());
 
     }
 
     @Test
     void shouldUpdateCategory() {
-        Category category = repository.findById(2);
-        category.setName("duck");
+        Category category = repository.findById(3);
+        category.setName("Mediterranean");
         assertTrue(repository.updateCategory(category));
     }
 
     @Test
     void shouldDeleteCategory() {
-        assertTrue(repository.deleteCategory(3));
+        assertTrue(repository.deleteCategory(5));
     }
 
 }

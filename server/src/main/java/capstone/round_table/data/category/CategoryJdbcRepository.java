@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -65,7 +66,10 @@ public class CategoryJdbcRepository implements CategoryRepository {
     }
 
     @Override
+    @Transactional
     public boolean deleteCategory(int categoryId) {
-        return jdbcTemplate.update("delete from category where category_id = ?;", categoryId) > 0;
+        boolean deletedRecipeCategory = jdbcTemplate.update("delete from recipe_category where category_id = ?;", categoryId) > 0;
+        boolean deleteCategory = jdbcTemplate.update("delete from category where category_id = ?;", categoryId) > 0;
+        return deletedRecipeCategory && deleteCategory;
     }
 }
