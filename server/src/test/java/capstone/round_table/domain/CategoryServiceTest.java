@@ -88,7 +88,7 @@ public class CategoryServiceTest {
     void shouldNotUpdateCategory() {
         Category category = generateCategory();
         category.setCategoryId(0);
-        Result<Category> result = service.addCategory(category);
+        Result<Category> result = service.updateCategory(category);
         assertFalse(result.isSuccess());
     }
 
