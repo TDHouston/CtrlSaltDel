@@ -1,4 +1,4 @@
-package capstone.round_table.instruction;
+package capstone.round_table.data.instruction;
 
 import capstone.round_table.data.mappers.InstructionMapper;
 import capstone.round_table.models.Instruction;
