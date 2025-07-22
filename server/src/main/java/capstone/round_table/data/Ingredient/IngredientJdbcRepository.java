@@ -65,7 +65,6 @@ public class IngredientJdbcRepository implements IngredientRepository {
     }
 
     @Override
-
     public boolean updateIngredient(Ingredient ingredient) {
         final String sql = "UPDATE ingredient SET " +
             "`name` = ? " +

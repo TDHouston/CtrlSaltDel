@@ -73,7 +73,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Recipe findByRecipeId(int recipeId) {
         final String sql = "SELECT " +
             "recipe_id, " +

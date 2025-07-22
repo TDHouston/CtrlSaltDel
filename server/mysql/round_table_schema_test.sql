@@ -112,7 +112,9 @@ CREATE TABLE recipe_ingredient (
 	CONSTRAINT fk_ingredient
 		FOREIGN KEY (ingredient_id)
         REFERENCES ingredient(ingredient_id)
-);delimiter //
+);
+
+delimiter //
 create procedure set_known_good_state()
 begin
 
@@ -246,7 +248,7 @@ begin
         (1, 7, NULL, 3),
         (2, 8, "lb", 1);
 	
-    INSERT INTO instruction (instruction_id, recipe_id, step_number, description) VALUES
+    INSERT INTO instruction (instruction_id, recipe_id, step_number, `description`) VALUES
 		-- USE FOR FIND
 		(1, 1, 1, "Add Water"),
         (2, 2, 1, "Add Soup"),

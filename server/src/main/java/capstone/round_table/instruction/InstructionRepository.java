@@ -9,6 +9,8 @@ public interface InstructionRepository {
 
     List<Instruction> batchAdd(List<Instruction> instructions);
 
+
+
     List<Instruction> findAllByRecipeId(int recipeId);
 
     boolean updateInstruction(Instruction instruction);
