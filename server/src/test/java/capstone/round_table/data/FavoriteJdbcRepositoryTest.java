@@ -1,6 +1,7 @@
 package capstone.round_table.data;
 
-import capstone.round_table.data.comment.CommentJdbcRepository;
+
+import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.data.favorite.FavoriteJdbcRepository;
 import capstone.round_table.models.Recipe;
 import org.junit.jupiter.api.BeforeEach;
