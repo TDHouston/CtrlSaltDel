@@ -8,6 +8,8 @@ import java.util.List;
 public interface RecipeIngredientRepository {
     RecipeIngredient addRecipeIngredient(RecipeIngredient recipeIngredient);
 
+    List<RecipeIngredient> batchAdd(List<RecipeIngredient> recipeIngredients);
+
     List<RecipeIngredient> findAllIngredientsByRecipeId(int recipeId);
 
     boolean updateRecipeIngredient(RecipeIngredient recipeIngredient);

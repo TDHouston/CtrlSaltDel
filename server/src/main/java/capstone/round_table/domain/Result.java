@@ -20,12 +20,12 @@ public class Result<T> {
         this.payload = payload;
     }
 
-    public List<String> getMessages() {
+    public List<String> getErrors() {
         return new ArrayList<>(errors);
     }
 
-    public void addMessage(String message, ResultType type) {
-        errors.add(message);
+    public void addError(String error, ResultType type) {
+        errors.add(error);
         this.type = type;
     }
 
