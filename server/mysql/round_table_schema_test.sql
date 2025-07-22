@@ -36,7 +36,7 @@ CREATE TABLE recipe (
 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
-    difficulty VARCHAR(10),
+    difficulty VARCHAR(15),
     upvote INT,
     cook_time INT,
     servings INT,
@@ -127,35 +127,44 @@ begin
 	DELETE FROM recipe;
     alter table recipe auto_increment = 1;
 	DELETE FROM user;
-    alter table user auto_increment = 1;
-
-	INSERT INTO user (user_id, role, first_name, last_name, username, email, password) VALUES
+    alter table user auto_increment = 1;	INSERT INTO user (user_id, `role`, first_name, last_name, username, email, `password`) VALUES
 		(1, 'ADMIN', 'Alice', 'Smith', 'alice', 'alice@example.com', 'hashed_password_1'),
 		(2, 'USER', 'Bob', 'Johnson', 'bobbyj', 'bob@example.com', 'hashed_password_2'),
 		(3, 'USER', 'Charlie', 'Brown', 'charlieb', 'charlie@example.com', 'hashed_password_3');
 	
-    INSERT INTO category (category_id, name) VALUES
+    INSERT INTO category (category_id, `name`) VALUES
 		(1, "fish"),
         (2, "tomatoes"),
         (3, "eggs"),
-        (4, "cheese");
-        
-	INSERT INTO recipe (recipe_id, user_id, name, difficulty, cook_time, servings, description) VALUES
-		(1, 1, "fish soup", "medium", 30, 5, "fish in soup"),
-        (2, 1, "scramble eggs", "hard", 10, 2, "Very difficult egg"),
+        (4, "cheese");	INSERT INTO recipe (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`) VALUES
+		(1, 1, "fish soup", "intermediate", 30, 5, "fish in soup"),
+        (2, 1, "scramble eggs", "expert", 10, 2, "Very difficult egg"),
         (3, 3, "grill cheese", "easy", 5, 1, "easy grill cheese");
 	
-    INSERT INTO comment (comment_id, user_id, recipe_id, content) VALUES
+    INSERT INTO `comment` (comment_id, user_id, recipe_id, content) VALUES
 		(1, 1, 1, "This was easy!"),
         (2, 2, 1, "This was hard!"),
-        (3, 1, 2, "This was very difficult!");
-        
-	INSERT INTO favorite (user_id, recipe_id) VALUES
+        (3, 1, 2, "This was very difficult!");	INSERT INTO favorite (user_id, recipe_id) VALUES
 		(1, 1),
         (1, 2),
         (2, 1),
-        (2, 2);
-        
-
-end //
+        (2, 2);	
+	
+    INSERT INTO ingredient (ingredient_id, `name`) VALUES
+		(1, "egg"),
+        (2, "flour"),
+        (3, "sugar"),
+        (4, "salt"),
+        (5, "white bread"),
+        (6, "cheese"),
+        (7, "salmon"),
+        (8, "butter");
+	
+	INSERT INTO recipe_ingredient (recipe_id, ingredient_id, unit, quantity) VALUES
+		(2, 1, NULL, 3),
+        (2, 8, "tbsp", 1),
+        (1, 7, NULL, 1),
+        (3, 6, "slice", 2),
+        (3, 4, "slice", 2),
+        (3, 8, "tbsp", 1);end //
 delimiter ;

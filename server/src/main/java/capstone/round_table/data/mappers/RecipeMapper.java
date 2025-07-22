@@ -15,13 +15,11 @@ public class RecipeMapper implements RowMapper<Recipe> {
 
         recipe.setRecipeId(resultSet.getInt("recipe_id"));
         recipe.setUserId(resultSet.getInt("user_id"));
-        recipe.setCategoryId(resultSet.getInt("category_id"));
         recipe.setName(resultSet.getString("recipe_name"));
-        recipe.setDifficulty(Difficulty.valueOf(resultSet.getString("difficulty")));
+        recipe.setDifficulty(Difficulty.valueOf(resultSet.getString("difficulty").toUpperCase()));
         recipe.setCookTime(resultSet.getInt("cook_time"));
         recipe.setServings(resultSet.getInt("servings"));
-        recipe.setDescription(resultSet.getString("`description`"));
-        recipe.setUpvotes(resultSet.getInt("upvotes"));
+        recipe.setDescription(resultSet.getString("description"));
 
         return recipe;
     }

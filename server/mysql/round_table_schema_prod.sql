@@ -38,7 +38,7 @@ CREATE TABLE recipe (
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
-    difficulty VARCHAR(10),
+    difficulty VARCHAR(15),
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),

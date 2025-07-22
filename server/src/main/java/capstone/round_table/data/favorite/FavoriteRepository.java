@@ -5,7 +5,7 @@ import capstone.round_table.models.Recipe;
 import java.util.List;
 
 public interface FavoriteRepository {
-    List<Recipe> getTopFavorites(int num);
+    List<Recipe> findTopFavorites(int num);
 
     int findRecipeFavoriteCount(int recipeId);
 
