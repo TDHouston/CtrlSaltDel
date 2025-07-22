@@ -1,8 +1,8 @@
 package capstone.round_table.models;
 
 public enum Role {
-    ADMIN("admin"),
-    USER("user")
+    ADMIN("ADMIN"),
+    USER("USER")
     ;
 
     private String role;

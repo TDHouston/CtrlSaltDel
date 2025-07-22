@@ -2,7 +2,6 @@ DROP DATABASE IF EXISTS round_table;
 CREATE DATABASE round_table;
 USE round_table;
 
-
 -- USER TABLE
 CREATE TABLE `user` (
 	user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -36,20 +35,15 @@ CREATE TABLE ingredient (
 CREATE TABLE recipe (
 	recipe_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
-    category_id INT NOT NULL,
     `name` VARCHAR(150) NOT NULL,
     difficulty VARCHAR(15),
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
-    upvotes INT,
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
-        REFERENCES `user`(user_id),
-	CONSTRAINT fk_category
-		FOREIGN KEY (category_id)
-        REFERENCES category(category_id)
+        REFERENCES `user`(user_id)
 );
 
 -- FAVORITE TABLE
@@ -70,6 +64,7 @@ CREATE TABLE `comment` (
 	comment_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     recipe_id INT NOT NULL,
+    content VARCHAR(255) NOT NULL,
     -- Foreign Keys
 	CONSTRAINT fk_comment_user
 		FOREIGN KEY (user_id)
@@ -108,7 +103,7 @@ CREATE TABLE recipe_category (
 CREATE TABLE recipe_ingredient (
 	recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
-    unit VARCHAR(15) NOT NULL,
+    unit VARCHAR(15),
     quantity DECIMAL(3, 2),
     -- Foreign Keys
 	CONSTRAINT fk_ri_recipe
@@ -116,6 +111,6 @@ CREATE TABLE recipe_ingredient (
         REFERENCES recipe(recipe_id),
 	CONSTRAINT fk_ingredient
 		FOREIGN KEY (ingredient_id)
-        REFERENCES ingredient(ingredient_id)
+        REFERENCES ingredient(ingredient_id),
+	UNIQUE(recipe_id, ingredient_id)
 );
-
