@@ -41,7 +41,7 @@ public class CommentService {
         return result;
     }
 
-    public Result<Comment> updatecomment(Comment comment) {
+    public Result<Comment> updateComment(Comment comment) {
         Result<Comment> result = validate(comment);
 
         if (!result.isSuccess()) {
@@ -76,7 +76,6 @@ public class CommentService {
             result.addMessage("Recipe Id must be set", ResultType.INVALID);
             return result;
         }
-
 
         if (comment.getContent().isEmpty()) {
             result.addMessage("Content must not be empty", ResultType.MISSING_INFO);
