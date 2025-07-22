@@ -12,11 +12,7 @@ public class Recipe {
     private int servings;
     private String description;
     private List<Category> categories;
-    private List<Ingredient> ingredients;
 
-    /**
-     * difficulty, cook_time, servings, description, upvotes values aren't required
-     */
     public Recipe(){}
 
     public Recipe(
@@ -103,7 +99,7 @@ public class Recipe {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
-        return recipeId == recipe.recipeId && userId == recipe.userId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description) && Objects.equals(categories, recipe.categories);
+        return recipeId == recipe.recipeId && userId == recipe.userId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description);
     }
 
     @Override
