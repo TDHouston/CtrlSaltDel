@@ -1,6 +1,7 @@
 package capstone.round_table.data.recipe_ingredient;
 
 import capstone.round_table.data.mappers.RecipeIngredientMapper;
+import capstone.round_table.models.Instruction;
 import capstone.round_table.models.RecipeIngredient;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -53,6 +54,17 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
 
         return recipeIngredient;
     }
+
+    @Override
+    public List<RecipeIngredient> batchAddRecipeIngredient(List<RecipeIngredient> recipeIngredients) {
+        List<RecipeIngredient> result = new ArrayList<>();
+        for (RecipeIngredient ri : recipeIngredients) {
+            result.add(addRecipeIngredient(ri));
+        }
+
+        return result;
+    }
+
 
     /**
      * Returns a list of ingredients for a recipe w/ the name of the ingredient included.
