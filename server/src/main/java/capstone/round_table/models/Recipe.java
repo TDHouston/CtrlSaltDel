@@ -1,5 +1,7 @@
 package capstone.round_table.models;
 
+import java.util.List;
+
 public class Recipe {
     private int recipeId;
     private int userId;
@@ -9,7 +11,7 @@ public class Recipe {
     private int cookTime;
     private int servings;
     private String description;
-    private int upvotes;
+    private List<Category> categories;
 
     /**
      * difficulty, cook_time, servings, description, upvotes values aren't required
@@ -78,13 +80,5 @@ public class Recipe {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getUpvotes() {
-        return upvotes;
-    }
-
-    public void setUpvotes(int upvotes) {
-        this.upvotes = upvotes;
     }
 }

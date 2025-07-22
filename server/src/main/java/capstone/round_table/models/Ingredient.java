@@ -9,6 +9,10 @@ public class Ingredient {
 
     public Ingredient(){}
 
+    public Ingredient(String name){
+        this.name = name;
+    }
+
     public int getIngredientId() {
         return ingredientId;
     }

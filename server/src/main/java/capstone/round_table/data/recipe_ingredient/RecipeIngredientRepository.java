@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface RecipeIngredientRepository {
     List<Ingredient> findAllIngredientsByRecipeId(int recipeId);
+
     RecipeIngredient addRecipeIngredient(RecipeIngredient recipeIngredient);
+
     boolean updateRecipeIngredient(RecipeIngredient recipeIngredient);
+
     boolean deleteRecipeIngredient(RecipeIngredient recipeIngredient);
 }

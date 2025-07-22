@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 
 @Repository
-public class RecipeFileRepository implements RecipeRepository {
+public class RecipeJdbcRepository implements RecipeRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public RecipeFileRepository(JdbcTemplate jdbcTemplate) {
+    public RecipeJdbcRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -30,10 +30,9 @@ public class RecipeFileRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description`, " +
-            "upvotes" +
+            "`description` " +
             ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
@@ -45,7 +44,6 @@ public class RecipeFileRepository implements RecipeRepository {
             ps.setInt(5, recipe.getCookTime());
             ps.setInt(6, recipe.getServings());
             ps.setString(7, recipe.getDescription());
-            ps.setInt(8, recipe.getUpvotes());
             return ps;
         }, keyHolder);
 
@@ -67,8 +65,7 @@ public class RecipeFileRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description`, " +
-            "upvotes " +
+            "`description` " +
             "FROM recipe" +
             ";";
 
@@ -85,8 +82,7 @@ public class RecipeFileRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description`, " +
-            "upvotes " +
+            "`description` " +
             "FROM recipe " +
             "WHERE recipe_id = ?" +
             ";";
@@ -109,8 +105,7 @@ public class RecipeFileRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description`, " +
-            "upvotes " +
+            "`description` " +
             "FROM recipe " +
             "WHERE user_id = ?" +
             ";";
@@ -131,7 +126,6 @@ public class RecipeFileRepository implements RecipeRepository {
             "cook_time = ?, " +
             "servings = ?, " +
             "`description` = ?, " +
-            "upvotes = ? " +
             "WHERE recipe_id = ?" +
             ";";
 
@@ -143,7 +137,6 @@ public class RecipeFileRepository implements RecipeRepository {
             recipe.getCookTime(),
             recipe.getServings(),
             recipe.getDescription(),
-            recipe.getUpvotes(),
             recipe.getRecipeId()
         ) > 0;
     }
