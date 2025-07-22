@@ -106,7 +106,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             .findFirst()
             .orElse(null);
 
-        // Recipe + Category has a one-many relationship
+        // Recipe + Category has a many-many relationship
         // Recipe will store the list of Categories
         if (recipe != null) {
             addCategories(recipe);
