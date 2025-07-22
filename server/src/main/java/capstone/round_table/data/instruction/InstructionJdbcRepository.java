@@ -20,6 +20,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Add an instruction step for a given recipe.
+     * @param instruction
+     * @return
+     */
     @Override
     public Instruction addInstruction(Instruction instruction) {
         final String sql = "INSERT INTO instruction " +
@@ -43,6 +48,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         return instruction;
     }
 
+    /**
+     * Add multiple instruction steps for a given recipe.
+     * @param instructions
+     * @return
+     */
     @Override
     public List<Instruction> batchAdd(List<Instruction> instructions) {
         List<Instruction> result = new ArrayList<>();
@@ -53,6 +63,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         return result;
     }
 
+    /**
+     * Returns a list of all the instruction steps for a given recipe.
+     * @param recipeId
+     * @return
+     */
     @Override
     public List<Instruction> findAllByRecipeId(int recipeId) {
         final String sql = "SELECT " +
@@ -68,6 +83,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         return result;
     }
 
+    /**
+     * Update an instruction.
+     * @param instruction
+     * @return
+     */
     @Override
     public boolean updateInstruction(Instruction instruction) {
         final String sql = "UPDATE instruction SET " +
@@ -86,6 +106,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         ) > 0;
     }
 
+    /**
+     * Update multiple instructions.
+     * @param instructions
+     * @return
+     */
     @Override
     public boolean batchUpdate(List<Instruction> instructions) {
         for (Instruction instr : instructions) {
@@ -97,6 +122,11 @@ public class InstructionJdbcRepository implements InstructionRepository {
         return true;
     }
 
+    /**
+     * Delete an instruction.
+     * @param instructionId
+     * @return
+     */
     @Override
     public boolean deleteInstructionById(int instructionId) {
         return jdbcTemplate.update("DELETE FROM instruction WHERE instruction_id = ?;", instructionId) > 0;

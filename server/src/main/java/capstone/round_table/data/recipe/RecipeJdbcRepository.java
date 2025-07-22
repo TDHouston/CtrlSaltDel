@@ -23,6 +23,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Add a new Recipe.
+     * @param recipe
+     * @return
+     */
     @Override
     public Recipe addRecipe(Recipe recipe) {
         final String sql = "INSERT INTO recipe " +
@@ -56,6 +61,10 @@ public class RecipeJdbcRepository implements RecipeRepository {
         return recipe;
     }
 
+    /**
+     * Returns a list of all the recipes.
+     * @return
+     */
     @Override
     public List<Recipe> findAll() {
         final String sql = "SELECT " +
@@ -72,6 +81,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
         return jdbcTemplate.query(sql, new RecipeMapper());
     }
 
+    /**
+     * Find a specific Recipe.
+     * @param recipeId
+     * @return
+     */
     @Override
     @Transactional(readOnly = true)
     public Recipe findByRecipeId(int recipeId) {
@@ -92,6 +106,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             .findFirst()
             .orElse(null);
 
+        // Recipe + Category has a one-many relationship
+        // Recipe will store the list of Categories
         if (recipe != null) {
             addCategories(recipe);
         }
@@ -99,6 +115,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
         return recipe;
     }
 
+    /**
+     * Find all recipes a user has added.
+     * @param userId
+     * @return
+     */
     @Override
     public List<Recipe> findRecipesByUserId(int userId) {
         final String sql = "SELECT " +
@@ -117,6 +138,12 @@ public class RecipeJdbcRepository implements RecipeRepository {
         return result;
     }
 
+
+    /**
+     * Update a Recipe.
+     * @param recipe
+     * @return
+     */
     @Override
     public boolean updateRecipe(Recipe recipe) {
         final String sql = "UPDATE recipe SET " +
@@ -139,6 +166,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
         ) > 0;
     }
 
+    /**
+     * Delete a specific Recipe.
+     * @param recipeId
+     * @return
+     */
     @Override
     @Transactional
     public boolean deleteRecipeById(int recipeId) {
@@ -153,6 +185,10 @@ public class RecipeJdbcRepository implements RecipeRepository {
         return jdbcTemplate.update(String.format(sql, "recipe"), recipeId) > 0;
     }
 
+    /**
+     * Updates Recipe w/ list of Categories it falls under.
+     * @param recipe
+     */
     private void addCategories(Recipe recipe) {
         final String sql = "SELECT c.category_id, c.`name` " +
             "FROM category c " +

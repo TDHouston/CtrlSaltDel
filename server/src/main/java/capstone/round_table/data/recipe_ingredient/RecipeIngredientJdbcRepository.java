@@ -19,6 +19,12 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Adds RecipeIngredient
+     * ie an ingredient w/ measurement information for a recipe.
+     * @param recipeIngredient
+     * @return
+     */
     @Override
     public RecipeIngredient addRecipeIngredient(RecipeIngredient recipeIngredient) {
         final String sql = "INSERT INTO recipe_ingredient " +
@@ -48,6 +54,11 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
         return recipeIngredient;
     }
 
+    /**
+     * Returns a list of ingredients for a recipe w/ the name of the ingredient included.
+     * @param recipeId
+     * @return
+     */
     @Override
     public List<RecipeIngredient> findAllIngredientsByRecipeId(int recipeId) {
         final String sql = "SELECT " +
@@ -64,6 +75,12 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
         return result;
     }
 
+    /**
+     * Updates ingredient information for a given recipe.
+     * Recipe id is not updated.
+     * @param recipeIngredient
+     * @return
+     */
     @Override
     public boolean updateRecipeIngredient(RecipeIngredient recipeIngredient) {
         final String sql = "UPDATE recipe_ingredient SET " +
@@ -82,6 +99,12 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
         ) > 0;
     }
 
+    /**
+     * Delete a RecipeIngredient entry in database.
+     * Recipe id and Ingredient id together are a unique entry.
+     * @param recipeIngredient
+     * @return
+     */
     @Override
     public boolean deleteRecipeIngredient(RecipeIngredient recipeIngredient) {
         return jdbcTemplate.update(

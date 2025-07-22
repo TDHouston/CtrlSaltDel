@@ -6,13 +6,13 @@ import java.util.Objects;
 public class Recipe {
     private int recipeId;
     private int userId;
-    private int categoryId;
     private String name;
     private Difficulty difficulty;
     private int cookTime;
     private int servings;
     private String description;
     private List<Category> categories;
+    private List<Ingredient> ingredients;
 
     /**
      * difficulty, cook_time, servings, description, upvotes values aren't required
@@ -103,11 +103,11 @@ public class Recipe {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
-        return recipeId == recipe.recipeId && userId == recipe.userId && categoryId == recipe.categoryId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description) && Objects.equals(categories, recipe.categories);
+        return recipeId == recipe.recipeId && userId == recipe.userId && cookTime == recipe.cookTime && servings == recipe.servings && Objects.equals(name, recipe.name) && difficulty == recipe.difficulty && Objects.equals(description, recipe.description) && Objects.equals(categories, recipe.categories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(recipeId, userId, categoryId, name, difficulty, cookTime, servings, description, categories);
+        return Objects.hash(recipeId, userId, name, difficulty, cookTime, servings, description, categories);
     }
 }

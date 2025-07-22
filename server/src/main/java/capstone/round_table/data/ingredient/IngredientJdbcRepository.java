@@ -21,6 +21,11 @@ public class IngredientJdbcRepository implements IngredientRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Add an Ingredient.
+     * @param ingredient
+     * @return
+     */
     @Override
     public Ingredient addIngredient(Ingredient ingredient) {
         final String sql = "INSERT INTO ingredient (`name`) VALUES (?);";
@@ -40,6 +45,10 @@ public class IngredientJdbcRepository implements IngredientRepository {
         return ingredient;
     }
 
+    /**
+     * Returns list of all the ingredients.
+     * @return
+     */
     @Override
     public List<Ingredient> findAll() {
         final String sql = "SELECT ingredient_id, `name` AS ingredient_name FROM ingredient;";
@@ -48,6 +57,11 @@ public class IngredientJdbcRepository implements IngredientRepository {
         return result;
     }
 
+    /**
+     * Find a specific ingredient.
+     * @param ingredientId
+     * @return
+     */
     @Override
     @Transactional(readOnly = true)
     public Ingredient findById(int ingredientId) {
@@ -57,6 +71,8 @@ public class IngredientJdbcRepository implements IngredientRepository {
             .findFirst()
             .orElse(null);
 
+        // Ingredient + Recipe has a many-many relationship
+        // Ingredient will store list of recipes
         if (ingredient != null) {
             addRecipeIngredient(ingredient);
         }
@@ -64,6 +80,11 @@ public class IngredientJdbcRepository implements IngredientRepository {
         return ingredient;
     }
 
+    /**
+     * Update and ingredient name.
+     * @param ingredient
+     * @return
+     */
     @Override
     public boolean updateIngredient(Ingredient ingredient) {
         final String sql = "UPDATE ingredient SET " +
@@ -76,6 +97,11 @@ public class IngredientJdbcRepository implements IngredientRepository {
         ) > 0;
     }
 
+    /**
+     * Delete an ingredient.
+     * @param ingredientId
+     * @return
+     */
     @Override
     @Transactional
     public boolean deleteIngredientById(int ingredientId) {
@@ -87,6 +113,10 @@ public class IngredientJdbcRepository implements IngredientRepository {
     }
 
 
+    /**
+     * Updates Ingredient w/ list of recipes that uses that ingredient.
+     * @param ingredient
+     */
     private void addRecipeIngredient(Ingredient ingredient) {
         final String sql = "SELECT " +
             "r.recipe_id, " +

@@ -10,7 +10,6 @@ public interface IngredientRepository {
 
     List<Ingredient> findAll();
 
-    @Transactional
     Ingredient findById(int ingredientId);
 
     boolean updateIngredient(Ingredient ingredient);
