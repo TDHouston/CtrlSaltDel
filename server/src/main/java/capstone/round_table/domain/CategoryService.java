@@ -15,27 +15,55 @@ public class CategoryService {
     }
 
     public List<Category> findAll() {
-        return List.of();
+        return categoryRepository.findAll();
     }
 
     public Category findById(int categoryId) {
-        return null;
+        return categoryRepository.findById(categoryId);
     }
 
     public Result<Category> addCategory(Category category) {
-        return null;
+        Result<Category> result = validate(category);
+
+        if (!result.isSuccess()) {
+            return result;
+        }
+        if (category.getCategoryId() != 0) {
+            result.addMessage("Category Id cannot be set", ResultType.INVALID);
+            return result;
+        }
+        result.setPayload(category);
+        return result;
     }
 
     public Result<Category> updateCategory(Category category) {
-        return null;
+        Result<Category> result = validate(category);
+
+        if (!result.isSuccess()) {
+            return result;
+        }
+        if (category.getCategoryId() == 0) {
+            result.addMessage("Category Id must be set", ResultType.INVALID);
+        }
+        return result;
     }
 
-    public Result<Category> deleteCategory(int categoryID) {
-        return null;
+    public boolean deleteCategory(int categoryId) {
+        return categoryRepository.deleteCategory(categoryId);
     }
 
     private Result<Category> validate(Category category) {
-        return null;
+        Result<Category> result = new Result<>();
+
+        if (category == null) {
+            result.addMessage("Category cannot be null", ResultType.INVALID);
+            return result;
+        }
+
+        if (category.getName().isBlank() || category.getName().isEmpty()) {
+            result.addMessage("Category name is required", ResultType.MISSING_INFO);
+        }
+        return result;
     }
 
 }
