@@ -56,7 +56,7 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
     }
 
     @Override
-    public List<RecipeIngredient> batchAddRecipeIngredient(List<RecipeIngredient> recipeIngredients) {
+    public List<RecipeIngredient> batchAdd(List<RecipeIngredient> recipeIngredients) {
         List<RecipeIngredient> result = new ArrayList<>();
         for (RecipeIngredient ri : recipeIngredients) {
             result.add(addRecipeIngredient(ri));
