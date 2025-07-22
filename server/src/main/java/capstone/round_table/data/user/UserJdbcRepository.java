@@ -115,7 +115,7 @@ public class UserJdbcRepository implements UserRepository {
 
         // Get all user's recipe id
         List<Integer> recipeIdList = jdbcTemplate.query(recipesQuery,  (resultSet, rowNum) -> resultSet.getInt("recipe_id"), userId);
-        
+
         String deleteRecipeFk = "DELETE FROM %s WHERE recipe_id = ?;";
         for (int recipeId : recipeIdList) {
             for (String table : tables) {
