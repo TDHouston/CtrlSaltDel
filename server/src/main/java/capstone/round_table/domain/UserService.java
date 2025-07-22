@@ -38,7 +38,7 @@ public class UserService {
         }
 
         if (user.getUserId() != 0) {
-            result.addMessage("User Id cannot be set", ResultType.INVALID);
+            result.addError("User Id cannot be set", ResultType.INVALID);
             return result;
         }
 
@@ -55,12 +55,12 @@ public class UserService {
         }
 
         if (user.getUserId() == 0) {
-            result.addMessage("User Id must be set", ResultType.INVALID);
+            result.addError("User Id must be set", ResultType.INVALID);
             return result;
         }
         if (!userRepository.updateUser(user)) {
             String msg = String.format("user %s, not found", user.getUsername());
-            result.addMessage(msg, ResultType.NOT_FOUND);
+            result.addError(msg, ResultType.NOT_FOUND);
             return result;
         }
         
@@ -75,37 +75,37 @@ public class UserService {
         Result<User> userResult = new Result<>();
 
         if (user == null) {
-            userResult.addMessage("User cannot be null", ResultType.INVALID);
+            userResult.addError("User cannot be null", ResultType.INVALID);
             return userResult;
         }
 
         if (user.getUsername().isEmpty() || user.getUsername().isBlank()) {
-            userResult.addMessage("Username is required", ResultType.MISSING_INFO);
+            userResult.addError("Username is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
         if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
-            userResult.addMessage("Email is required", ResultType.MISSING_INFO);
+            userResult.addError("Email is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
         if (user.getPassword().isEmpty() || user.getPassword().isBlank()) {
-            userResult.addMessage("Password is required", ResultType.MISSING_INFO);
+            userResult.addError("Password is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
         if (user.getFirstName().isEmpty() || user.getFirstName().isBlank()) {
-            userResult.addMessage("First name is required", ResultType.MISSING_INFO);
+            userResult.addError("First name is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
         if (user.getLastName().isEmpty() || user.getLastName().isBlank()) {
-            userResult.addMessage("Last name is required", ResultType.MISSING_INFO);
+            userResult.addError("Last name is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
         if (user.getRole() == null) {
-            userResult.addMessage("Role cannot be null", ResultType.INVALID);
+            userResult.addError("Role cannot be null", ResultType.INVALID);
             return userResult;
         }
 

@@ -34,7 +34,7 @@ public class CommentService {
         }
 
         if (comment.getCommentId() != 0) {
-            result.addMessage("Comment Id cannot be set", ResultType.INVALID);
+            result.addError("Comment Id cannot be set", ResultType.INVALID);
             return result;
         }
         result.setPayload(comment);
@@ -49,7 +49,7 @@ public class CommentService {
         }
 
         if (comment.getCommentId() == 0) {
-            result.addMessage("Comment Id must be set", ResultType.INVALID);
+            result.addError("Comment Id must be set", ResultType.INVALID);
             return result;
         }
         return result;
@@ -63,22 +63,22 @@ public class CommentService {
         Result<Comment> result = new Result<>();
 
         if (comment == null) {
-            result.addMessage("Comment cannot be null", ResultType.INVALID);
+            result.addError("Comment cannot be null", ResultType.INVALID);
             return result;
         }
 
         if (comment.getUserId() == 0) {
-            result.addMessage("User Id must be set", ResultType.INVALID);
+            result.addError("User Id must be set", ResultType.INVALID);
             return result;
         }
 
         if (comment.getRecipeId() == 0) {
-            result.addMessage("Recipe Id must be set", ResultType.INVALID);
+            result.addError("Recipe Id must be set", ResultType.INVALID);
             return result;
         }
 
         if (comment.getContent().isEmpty()) {
-            result.addMessage("Content must not be empty", ResultType.MISSING_INFO);
+            result.addError("Content must not be empty", ResultType.MISSING_INFO);
             return result;
         }
 

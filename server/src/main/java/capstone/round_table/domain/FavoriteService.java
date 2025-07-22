@@ -29,7 +29,7 @@ public class FavoriteService {
     public Result<Boolean> addFavorites(int userId, int recipeId) {
         Result<Boolean> result = new Result<>();
         if (userId == 0 || recipeId == 0) {
-            result.addMessage("User Id and Recipe Id must be set", ResultType.INVALID);
+            result.addError("User Id and Recipe Id must be set", ResultType.INVALID);
             return result;
         }
         result.setPayload(favoriteRepository.addFavorites(userId, recipeId));
@@ -39,7 +39,7 @@ public class FavoriteService {
     public Result<Boolean> deleteFavorites(int userId, int recipeId) {
         Result<Boolean> result = new Result<>();
         if (userId == 0 || recipeId == 0) {
-            result.addMessage("User Id and Recipe Id must be set", ResultType.INVALID);
+            result.addError("User Id and Recipe Id must be set", ResultType.INVALID);
             return result;
         }
         result.setPayload(favoriteRepository.deleteFavorites(userId, recipeId));

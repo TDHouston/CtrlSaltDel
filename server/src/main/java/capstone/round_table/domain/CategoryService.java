@@ -29,7 +29,7 @@ public class CategoryService {
             return result;
         }
         if (category.getCategoryId() != 0) {
-            result.addMessage("Category Id cannot be set", ResultType.INVALID);
+            result.addError("Category Id cannot be set", ResultType.INVALID);
             return result;
         }
         result.setPayload(category);
@@ -43,7 +43,7 @@ public class CategoryService {
             return result;
         }
         if (category.getCategoryId() == 0) {
-            result.addMessage("Category Id must be set", ResultType.INVALID);
+            result.addError("Category Id must be set", ResultType.INVALID);
         }
         return result;
     }
@@ -56,12 +56,12 @@ public class CategoryService {
         Result<Category> result = new Result<>();
 
         if (category == null) {
-            result.addMessage("Category cannot be null", ResultType.INVALID);
+            result.addError("Category cannot be null", ResultType.INVALID);
             return result;
         }
 
         if (category.getName().isBlank() || category.getName().isEmpty()) {
-            result.addMessage("Category name is required", ResultType.MISSING_INFO);
+            result.addError("Category name is required", ResultType.MISSING_INFO);
         }
         return result;
     }
