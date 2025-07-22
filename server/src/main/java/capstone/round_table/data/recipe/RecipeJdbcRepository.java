@@ -1,15 +1,18 @@
 package capstone.round_table.data.recipe;
 
+import capstone.round_table.data.mappers.CategoryMapper;
 import capstone.round_table.data.mappers.RecipeMapper;
 import capstone.round_table.models.Recipe;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Repository
@@ -25,25 +28,23 @@ public class RecipeJdbcRepository implements RecipeRepository {
         final String sql = "INSERT INTO recipe " +
             "(" +
             "user_id, " +
-            "category_id, " +
             "`name`, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
             "`description` " +
             ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, recipe.getUserId());
-            ps.setInt(2, recipe.getCategoryId());
-            ps.setString(3, recipe.getName());
-            ps.setString(4, recipe.getDifficulty().getLevel());
-            ps.setInt(5, recipe.getCookTime());
-            ps.setInt(6, recipe.getServings());
-            ps.setString(7, recipe.getDescription());
+            ps.setString(2, recipe.getName());
+            ps.setString(3, recipe.getDifficulty().getLevel());
+            ps.setInt(4, recipe.getCookTime());
+            ps.setInt(5, recipe.getServings());
+            ps.setString(6, recipe.getDescription());
             return ps;
         }, keyHolder);
 
@@ -60,7 +61,6 @@ public class RecipeJdbcRepository implements RecipeRepository {
         final String sql = "SELECT " +
             "recipe_id, " +
             "user_id, " +
-            "category_id, " +
             "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
@@ -73,11 +73,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
     }
 
     @Override
+    @Transactional
     public Recipe findByRecipeId(int recipeId) {
         final String sql = "SELECT " +
             "recipe_id, " +
             "user_id, " +
-            "category_id, " +
             "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
@@ -92,16 +92,19 @@ public class RecipeJdbcRepository implements RecipeRepository {
             .findFirst()
             .orElse(null);
 
+        if (recipe != null) {
+            addCategories(recipe);
+        }
+
         return recipe;
     }
 
     @Override
-    public List<Recipe> findByUserId(int userId) {
+    public List<Recipe> findRecipesByUserId(int userId) {
         final String sql = "SELECT " +
             "recipe_id, " +
             "user_id, " +
-            "category_id, " +
-            "`name`, " +
+            "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
@@ -110,30 +113,25 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "WHERE user_id = ?" +
             ";";
 
-        List<Recipe> result = jdbcTemplate.query(sql, new RecipeMapper(), userId)
-            .stream()
-            .collect(Collectors.toList());
-
+        List<Recipe> result = new ArrayList<>(jdbcTemplate.query(sql, new RecipeMapper(), userId));
         return result;
     }
 
     @Override
     public boolean updateRecipe(Recipe recipe) {
         final String sql = "UPDATE recipe SET " +
-            "category_id = ?, " +
             "`name` = ?, " +
             "difficulty = ?, " +
             "cook_time = ?, " +
             "servings = ?, " +
-            "`description` = ?, " +
+            "`description` = ? " +
             "WHERE recipe_id = ?" +
             ";";
 
         return jdbcTemplate.update(
             sql,
-            recipe.getCategoryId(),
             recipe.getName(),
-            recipe.getDifficulty(),
+            recipe.getDifficulty().getLevel(),
             recipe.getCookTime(),
             recipe.getServings(),
             recipe.getDescription(),
@@ -142,11 +140,26 @@ public class RecipeJdbcRepository implements RecipeRepository {
     }
 
     @Override
+    @Transactional
     public boolean deleteRecipeById(int recipeId) {
-        Recipe recipe = findByRecipeId(recipeId);
+        // Tables that reference recipe table: favorite, comment, recipe_category, recipe_ingredient, instruction
+        List<String> tables = Arrays.asList("favorite", "comment", "recipe_category", "recipe_ingredient", "instruction");
 
-        // Tables that reference recipe: favorite, comment, recipe_category, recipe_ingredient, instruction
-        // TODO: more complex, will come back
-        return true;
+        String sql = "DELETE FROM %s WHERE recipe_id = ?";
+        for (String table : tables) {
+            jdbcTemplate.update(String.format(sql, table), recipeId);
+        }
+
+        return jdbcTemplate.update(String.format(sql, "recipe"), recipeId) > 0;
+    }
+
+    private void addCategories(Recipe recipe) {
+        final String sql = "SELECT c.category_id, c.`name` " +
+            "FROM category c " +
+            "JOIN recipe_category rc ON c.category_id = rc.category_id " +
+            "WHERE rc.recipe_id = ?";
+
+        var categories = jdbcTemplate.query(sql, new CategoryMapper(), recipe.getRecipeId());
+        recipe.setCategories(categories);
     }
 }

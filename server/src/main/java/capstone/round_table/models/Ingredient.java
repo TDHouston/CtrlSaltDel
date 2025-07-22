@@ -1,6 +1,7 @@
 package capstone.round_table.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Ingredient {
     private int ingredientId;
@@ -35,5 +36,17 @@ public class Ingredient {
 
     public void setRecipeIngredientList(List<RecipeIngredient> recipeIngredientList) {
         this.recipeIngredientList = recipeIngredientList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient that = (Ingredient) o;
+        return ingredientId == that.ingredientId && Objects.equals(name, that.name) && Objects.equals(recipeIngredientList, that.recipeIngredientList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ingredientId, name, recipeIngredientList);
     }
 }

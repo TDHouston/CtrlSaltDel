@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -48,6 +49,7 @@ public class IngredientJdbcRepository implements IngredientRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Ingredient findById(int ingredientId) {
         final String sql = "SELECT ingredient_id, `name` AS ingredient_name FROM ingredient WHERE ingredient_id = ?;";
         Ingredient ingredient = jdbcTemplate.query(sql, new IngredientMapper(), ingredientId)
@@ -63,6 +65,7 @@ public class IngredientJdbcRepository implements IngredientRepository {
     }
 
     @Override
+
     public boolean updateIngredient(Ingredient ingredient) {
         final String sql = "UPDATE ingredient SET " +
             "`name` = ? " +
@@ -75,10 +78,8 @@ public class IngredientJdbcRepository implements IngredientRepository {
     }
 
     @Override
+    @Transactional
     public boolean deleteIngredientById(int ingredientId) {
-        Ingredient ingredient = findById(ingredientId);
-
-
         // Recipe_Ingredient has Ingredient as FK
         // Delete ingredient from Recipe_Ingredient table first
         // Then delete ingredient from Ingredient table

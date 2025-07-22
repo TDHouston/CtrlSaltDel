@@ -47,7 +47,10 @@ class IngredientJdbcRepositoryTest {
     void shouldUpdateIngredient() {
         Ingredient ingredient = repo.findById(7);
         ingredient.setName("tuna");
+
         assertTrue(repo.updateIngredient(ingredient));
+        Ingredient actual = repo.findById(7);
+        assertEquals(ingredient, actual);
     }
 
     @Test
