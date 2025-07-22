@@ -38,9 +38,9 @@ class IngredientJdbcRepositoryTest {
 
     @Test
     void shouldFindById() {
-        Ingredient ingredient = repo.findById(8);
-        assertEquals("butter", ingredient.getName());
-        assertEquals(2, ingredient.getRecipeIngredientList().size());
+        Ingredient ingredient = repo.findById(2);
+        assertEquals("flour", ingredient.getName());
+        assertEquals(1, ingredient.getRecipeIngredientList().size());
     }
 
     @Test
@@ -55,6 +55,6 @@ class IngredientJdbcRepositoryTest {
 
     @Test
     void shouldDeleteIngredientById() {
-        assertTrue(repo.deleteIngredientById(2));
+        assertTrue(repo.deleteIngredientById(6));
     }
 }

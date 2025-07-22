@@ -42,7 +42,7 @@ public class Ingredient {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Ingredient that = (Ingredient) o;
-        return ingredientId == that.ingredientId && Objects.equals(name, that.name) && Objects.equals(recipeIngredientList, that.recipeIngredientList);
+        return ingredientId == that.ingredientId && Objects.equals(name, that.name);
     }
 
     @Override
