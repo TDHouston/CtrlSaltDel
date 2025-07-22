@@ -62,4 +62,15 @@ class CommentJdbcRepositoryTest {
         assertEquals(4, actual.getCommentId());
     }
 
+    @Test
+    void shouldUpdateComment() {
+        Comment comment = new Comment();
+        comment.setUserId(2);
+        comment.setRecipeId(1);
+        comment.setCommentId(2);
+        comment.setContent("Update comment!");
+        assertTrue(repository.updateComment(comment));
+    }
+    
+
 }
