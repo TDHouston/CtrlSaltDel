@@ -9,6 +9,7 @@ import AboutUs from "./pages/AboutUs";
 import RecipeForm from "./pages/RecipeForm";
 import Error from "./pages/Error";
 import Home from "./pages/Home";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/recipe/edit/:id" element={<RecipeForm />} />
         <Route path="*" element={<Error />} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
