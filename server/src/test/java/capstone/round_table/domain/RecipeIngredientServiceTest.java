@@ -1,6 +1,5 @@
 package capstone.round_table.domain;
 
-import capstone.round_table.data.ingredient.IngredientRepository;
 import capstone.round_table.data.recipe_ingredient.RecipeIngredientRepository;
 import capstone.round_table.models.RecipeIngredient;
 import capstone.round_table.models.Unit;
