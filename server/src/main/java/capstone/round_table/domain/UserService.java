@@ -2,12 +2,21 @@ package capstone.round_table.domain;
 
 import capstone.round_table.data.user.UserRepository;
 import capstone.round_table.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -42,6 +51,7 @@ public class UserService {
             return result;
         }
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User addedUser = userRepository.addUser(user);
         result.setPayload(addedUser);
 
@@ -112,5 +122,13 @@ public class UserService {
         return userResult;
     }
 
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println(username);
+        User user = userRepository.findByEmail(username);
+        if (user == null || !user.isEnabled()) {
+            throw new UsernameNotFoundException(username + " not found");
+        }
+        return user;
+    }
 }

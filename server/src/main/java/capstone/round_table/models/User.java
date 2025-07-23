@@ -1,6 +1,8 @@
 package capstone.round_table.models;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -17,6 +19,9 @@ public class User implements UserDetails {
     private String password;
 
     public User() {
+        this.role = Role.USER;
+        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
     }
 
     @Override
@@ -95,10 +100,12 @@ public class User implements UserDetails {
     }
 
     public void setAuthorities(List<GrantedAuthority> authorities) {
+        this.role = Role.valueOf(authorities.get(0).getAuthority().replace("ROLE_", ""));
         this.authorities = authorities;
     }
 
     public void setRole(Role role) {
+        setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_" + role.getRole())));
         this.role = role;
     }
 

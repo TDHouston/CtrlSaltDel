@@ -1,3 +1,29 @@
 @base_url = http://localhost:8080/api/user
+@auth = http://localhost:8080/api/auth
 
 GET {{base_url}}/hi HTTP/1.1
+
+###
+
+
+###
+
+POST {{auth}}/register
+Content-Type: application/json
+
+{
+    "username": "John",
+    "password": "Mcat",
+    "email": "JMCAT@gmail.com",
+    "firstName": "door",
+    "lastName": "man"
+}
+
+###
+POST {{auth}}/login
+Content-Type: application/json
+
+{
+    "email": "JMCAT@gmail.com",
+    "password": "Mcat"
+}
