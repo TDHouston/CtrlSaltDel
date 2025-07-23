@@ -1,0 +1,4 @@
+@url = http://localhost:8080/api/ingredient
+
+
+GET {{url}}/egg HTTP/1.1
