@@ -24,6 +24,14 @@ public class ErrorResponse {
         return message;
     }
 
+    public static ResponseEntity<ErrorResponse> build(String message) {
+        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public static ResponseEntity<ErrorResponse> build(String message, HttpStatus status) {
+        return new ResponseEntity<>(new ErrorResponse(message), status);
+    }
+
     public static <T> ResponseEntity<Object> build(Result<T> result) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 

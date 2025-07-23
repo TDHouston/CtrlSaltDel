@@ -41,11 +41,10 @@ public class AuthController {
 
             if (authentication.isAuthenticated()) {
                 String jwtToken = converter.getTokenFromUser((User) authentication.getPrincipal());
-
-                HashMap<String, String> map = new HashMap<>();
-                map.put("token", jwtToken);
-
-                return new ResponseEntity<>(map, HttpStatus.OK);
+                User user = service.findByEmail(credentials.get("email"));
+                UserWithToken userWithToken = new UserWithToken(user, jwtToken);
+                userWithToken.setUserInfoToDTO();
+                return new ResponseEntity<>(userWithToken, HttpStatus.OK);
             }
 
         } catch (AuthenticationException ex) {
