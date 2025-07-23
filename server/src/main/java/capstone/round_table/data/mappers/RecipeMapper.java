@@ -17,7 +17,6 @@ public class RecipeMapper implements RowMapper<Recipe> {
         recipe.setUserId(resultSet.getInt("user_id"));
         recipe.setName(resultSet.getString("recipe_name"));
 
-        // https://stackoverflow.com/questions/5991360/handling-the-null-value-from-a-resultset
         // Some values can be null in the database, will account for that to prevent errors
         // Also, to differentiate between invalid values and nulls
 

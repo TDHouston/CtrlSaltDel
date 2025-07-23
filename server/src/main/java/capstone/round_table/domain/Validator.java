@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 
 @Component
 public class Validator {
-    // https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html
-    // https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
 
     /**
      * Checks if integer value is greater than zero, which indicates valid value.
