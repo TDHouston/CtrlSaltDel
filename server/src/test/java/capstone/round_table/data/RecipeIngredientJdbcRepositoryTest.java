@@ -61,9 +61,6 @@ class RecipeIngredientJdbcRepositoryTest {
 
     @Test
     void shouldDeleteRecipeIngredient() {
-        RecipeIngredient ri = new RecipeIngredient();
-        ri.setRecipeId(3);
-        ri.setIngredientId(3);
-        assertTrue(repo.deleteRecipeIngredient(ri));
+        assertTrue(repo.deleteRecipeIngredient(3, 3));
     }
 }

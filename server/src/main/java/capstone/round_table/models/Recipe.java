@@ -12,6 +12,8 @@ public class Recipe {
     private int servings;
     private String description;
     private List<Category> categories;
+    private String author;
+    private int favorited;
 
     public Recipe(){}
 
@@ -111,6 +113,22 @@ public class Recipe {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public int getFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(int favorited) {
+        this.favorited = favorited;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     @Override

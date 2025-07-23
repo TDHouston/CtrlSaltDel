@@ -19,6 +19,7 @@ public class RecipeController {
         this.service = service;
     }
 
+
     @GetMapping
     public List<Recipe> findAll() {
         return service.findAll();
@@ -29,21 +30,29 @@ public class RecipeController {
         return service.findByRecipeId(recipeId);
     }
 
+    //user?id=1
+    @GetMapping("/user")
+    public List<Recipe> findByUserId(@RequestParam int id) {
+        return service.findRecipeByUserId(id);
+    }
+
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Recipe recipe) {
         Result<Recipe> result = service.addRecipe(recipe);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
-        return ErrorResponse.build(result);    }
+        return ErrorResponse.build(result);
+    }
 
     @PutMapping("/{recipeId}")
     public ResponseEntity<Object> update(@PathVariable int recipeId, @RequestBody Recipe recipe) {
-        if(recipeId != recipe.getRecipeId()) {
+        if (recipeId != recipe.getRecipeId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
         Result<Recipe> result = service.updateRecipe(recipe);
-        if(result.isSuccess()) {
+        if (result.isSuccess()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ErrorResponse.build(result);
@@ -51,11 +60,9 @@ public class RecipeController {
 
     @DeleteMapping("/{recipeId}")
     public ResponseEntity<Void> deleteById(@PathVariable int recipeId) {
-        if(service.deleteRecipeById(recipeId).isSuccess()) {
+        if (service.deleteRecipeById(recipeId).isSuccess()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-
 }

@@ -24,7 +24,7 @@ class IngredientServiceTest {
 
     @Test
     void shouldAddIngredient() {
-        List<Ingredient> ingredients = Arrays.asList(new Ingredient(3, "Pear"));
+        List<Ingredient> ingredients = List.of(new Ingredient(3, "Pear"));
         when(repo.findAll()).thenReturn(ingredients);
 
         Ingredient ingredient = new Ingredient("Test");
@@ -40,7 +40,7 @@ class IngredientServiceTest {
     void shouldNotAddDuplicateIngredient() {
         Ingredient ingredient = new Ingredient("Test");
         Ingredient mockOut = new Ingredient(1, "Test");
-        List<Ingredient> ingredients = Arrays.asList(mockOut);
+        List<Ingredient> ingredients = List.of(mockOut);
 
         when(repo.findAll()).thenReturn(ingredients);
         Result<Ingredient> result = service.addIngredient(ingredient);

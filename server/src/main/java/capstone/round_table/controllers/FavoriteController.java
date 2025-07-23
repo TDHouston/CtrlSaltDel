@@ -21,8 +21,9 @@ public class FavoriteController {
         this.service = service;
     }
 
-    @GetMapping("/top={num}")
-    public List<Recipe> getTopFavorites(@PathVariable int num) {
+    // do top?num=5
+    @GetMapping("/top")
+    public List<Recipe> getTopFavorites(@RequestParam int num) {
         return service.findTopFavorites(num);
     }
 

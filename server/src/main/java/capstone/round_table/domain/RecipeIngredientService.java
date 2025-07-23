@@ -4,6 +4,7 @@ import capstone.round_table.data.recipe_ingredient.RecipeIngredientRepository;
 import capstone.round_table.models.RecipeIngredient;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,14 +38,30 @@ public class RecipeIngredientService {
      * @param recipeIngredients
      * @return
      */
-    public Result<RecipeIngredient> batchAdd(List<RecipeIngredient> recipeIngredients) {
+    public Result<List<RecipeIngredient>> batchAdd(List<RecipeIngredient> recipeIngredients) {
+        Result<List<RecipeIngredient>> result = new Result<>();
+        List<RecipeIngredient> riList = new ArrayList<>();
+
         for (RecipeIngredient ri : recipeIngredients) {
-            Result<RecipeIngredient> result = addRecipeIngredient(ri);
-            if (!result.isSuccess()) {
-                return result;
+            // Validate each ingredient
+            Result<RecipeIngredient> check = addRecipeIngredient(ri);
+            // If any of them are invalid, immediately break after setting errors
+            if (!check.isSuccess()) {
+                result.addError(check.getErrors().get(0), check.getType());
+                break;
             }
+            // Else, add new ingredient to list
+            riList.add(check.getPayload());
         }
-        return new Result<RecipeIngredient>();
+
+        // Return errors immediately
+        // Only set payload if ALL were valid
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        result.setPayload(riList);
+        return result;
     }
 
     /**
@@ -52,7 +69,7 @@ public class RecipeIngredientService {
      * @param recipeId
      * @return
      */
-    List<RecipeIngredient> findAllIngredientsByRecipeId(int recipeId) {
+    public List<RecipeIngredient> findAllIngredientsByRecipeId(int recipeId) {
         return riRepo.findAllIngredientsByRecipeId(recipeId);
     }
 
@@ -80,16 +97,17 @@ public class RecipeIngredientService {
 
     /**
      * Delete an ingredient for a recipe if it exists.
-     * @param ri
+     * @param recipeId
+     * @param ingredientId
      * @return
      */
-    public Result<RecipeIngredient> deleteRecipeIngredient(RecipeIngredient ri) {
+    public Result<RecipeIngredient> deleteRecipeIngredient(int recipeId, int ingredientId) {
         Result<RecipeIngredient> result = new Result<>();
 
         // Check if delete was successful
-        if (!riRepo.deleteRecipeIngredient(ri)) {
+        if (!riRepo.deleteRecipeIngredient(recipeId, ingredientId)) {
             result.addError(
-                String.format(NOT_FOUND, ri.getRecipeId(), ri.getIngredientId()),
+                String.format(NOT_FOUND, recipeId, ingredientId),
                 ResultType.NOT_FOUND
             );
         }
@@ -111,11 +129,15 @@ public class RecipeIngredientService {
 
         // Validate IDs
         validator.validate(ri.getRecipeId(), "Recipe ID", result);
-        validator.validate(ri.getRecipeId(), "Ingredient ID", result);
+        validator.validate(ri.getIngredientId(), "Ingredient ID", result);
 
         // Validate quantity
         if (ri.getUnit() != null) {
-            validator.validate(ri.getQuantity(), "Unit", result);
+            validator.validate(ri.getQuantity(), "Quantity", result);
+        }
+
+        if (!result.isSuccess()) {
+            return result;
         }
 
         // Check for duplicate

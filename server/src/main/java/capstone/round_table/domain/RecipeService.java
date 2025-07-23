@@ -95,7 +95,7 @@ public class RecipeService {
     // HELPER METHODS
 
     /**
-     * Validate recipe info.
+     * Validate Recipe info.
      *  - user_id and name cannot be null
      *  - if cook_time or servings are null, value will = Integer.MIN_VALUE
      *  - if cook_time and servings were inputted, value must be greater than 0
