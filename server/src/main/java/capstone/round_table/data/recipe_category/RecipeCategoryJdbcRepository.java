@@ -6,10 +6,12 @@ import capstone.round_table.models.Category;
 import capstone.round_table.models.Recipe;
 import capstone.round_table.models.RecipeCategory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Repository
 public class RecipeCategoryJdbcRepository implements RecipeCategoryRepository{
 
     private final JdbcTemplate jdbcTemplate;
