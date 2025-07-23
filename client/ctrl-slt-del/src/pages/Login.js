@@ -13,7 +13,7 @@ const DEFAULT_USER = {
 };
 
 function Login() {
-  const [page, setPage] = useState("signup");
+  const [page, setPage] = useState("login");
   const [formUser, setFormUser] = useState(DEFAULT_USER);
   const { user } = useContext(AuthContext);
 
@@ -22,9 +22,9 @@ function Login() {
       {page === "signup" && (
         <SignUpForm user={formUser} setUser={setFormUser} setPage={setPage} />
       )}
-      {/* {page === "login" && (
+      {page === "login" && (
         <LoginForm user={formUser} setUser={setFormUser} setPage={setPage} />
-      )} */}
+      )}
     </main>
   );
 }
