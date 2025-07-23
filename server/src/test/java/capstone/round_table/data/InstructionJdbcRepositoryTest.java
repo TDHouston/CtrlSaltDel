@@ -98,6 +98,6 @@ class InstructionJdbcRepositoryTest {
 
     @Test
     void deleteInstructionById() {
-        assertTrue(repo.deleteInstructionById(6));
+        assertTrue(repo.deleteInstructionById(4));
     }
 }
