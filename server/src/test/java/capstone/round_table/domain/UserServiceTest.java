@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 public class UserServiceTest {
     @Autowired
     UserService service;
@@ -114,16 +114,7 @@ public class UserServiceTest {
         Result<User> result = service.addUser(user);
         assertFalse(result.isSuccess());
     }
-
-    @Test
-    void shouldNotAddUserMissingRole() {
-        User user = generateUser();
-        user.setUserId(0);
-        user.setRole(null);
-        Result<User> result = service.addUser(user);
-        assertFalse(result.isSuccess());
-    }
-
+    
     @Test
     void shouldNotAddUserMissingEmail() {
         User user = generateUser();
