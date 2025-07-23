@@ -1,7 +1,6 @@
 package capstone.round_table.security.jwt;
 
 
-import capstone.round_table.domain.UserService;
 import capstone.round_table.models.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

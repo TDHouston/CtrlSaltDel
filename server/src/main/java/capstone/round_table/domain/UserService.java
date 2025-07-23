@@ -14,9 +14,7 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
