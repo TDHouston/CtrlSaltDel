@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import AccountForm from "../components/AccountForm";
 import { useParams } from "react-router-dom";
+import UserCard from "../components/UserCard";
 
 const RECIPES_DEFAULT = [
   {
@@ -96,6 +97,7 @@ function Profile() {
   const [activeTab, setActiveTab] = useState("account");
   const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
   const [favorites, setFavorites] = useState(FAVORITES_DEFAULT);
+  const [users, setUsers] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -108,7 +110,40 @@ function Profile() {
       .catch((err) => console.error("User fetch error:", err));
   }, [id]);
 
-  console.log("USER", user);
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/user`)
+      .then((res) => {
+        if (!res.ok)
+          throw new Error("Something went wrong retrieving the user list");
+        return res.json();
+      })
+      .then((data) => setUsers(data))
+      .catch((err) => console.error(err));
+  });
+
+  const handleDeleteUser = (userId) => {
+    const user = users.find((u) => u.userId === userId);
+    console.log(users);
+    if (
+      window.confirm(
+        `Remove user ${user.username}? This action cannot be undone!`
+      )
+    ) {
+      const init = {
+        method: "DELETE",
+      };
+      fetch(`http://localhost:8080/api/user/${userId}`, init)
+        .then((response) => {
+          if (response.status === 204) {
+            const newUsers = users.filter((u) => u.id !== userId);
+            setUsers(newUsers);
+          } else {
+            return Promise.reject(`Unexpected status code ${response.status}`);
+          }
+        })
+        .catch(console.log);
+    }
+  };
 
   return (
     <section className="flex min-h-screen bg-gray-100">
@@ -164,6 +199,18 @@ function Profile() {
             <p className="text-sm text-gray-500 mt-1">
               You have admin privileges.
             </p>
+            <ul className="mt-6 space-y-1">
+              <li>
+                <button
+                  className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                    activeTab === "users" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => setActiveTab("users")}
+                >
+                  View Users
+                </button>
+              </li>
+            </ul>
           </div>
         )}
       </aside>
@@ -238,6 +285,28 @@ function Profile() {
               {favorites.map((recipe) => (
                 <div>
                   <RecipeCard recipe={recipe} key={recipe.id} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {activeTab === "users" && (
+          <section>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
+            </div>
+
+            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+              {users.map((user) => (
+                <div>
+                  <UserCard user={user} key={user.userId} />
+                  <button
+                    className="bg-red-800 text-white rounded-xl p-1 hover:bg-red-600"
+                    onClick={() => handleDeleteUser(user.userId)}
+                  >
+                    Remove User
+                  </button>
                 </div>
               ))}
             </div>
