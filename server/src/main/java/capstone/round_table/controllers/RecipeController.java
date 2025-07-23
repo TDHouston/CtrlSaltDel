@@ -19,6 +19,7 @@ public class RecipeController {
         this.service = service;
     }
 
+
     @GetMapping
     public List<Recipe> findAll() {
         return service.findAll();
@@ -35,7 +36,8 @@ public class RecipeController {
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
-        return ErrorResponse.build(result);    }
+        return ErrorResponse.build(result);
+    }
 
     @PutMapping("/{recipeId}")
     public ResponseEntity<Object> update(@PathVariable int recipeId, @RequestBody Recipe recipe) {

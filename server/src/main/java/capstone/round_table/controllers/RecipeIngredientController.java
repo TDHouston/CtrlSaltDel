@@ -19,11 +19,24 @@ public class RecipeIngredientController {
         this.service = service;
     }
 
+
+    /**
+     * Find all ingredients for a recipe.
+     *
+     * @param recipeId
+     * @return
+     */
     @GetMapping("/{recipeId}")
-    public List<RecipeIngredient> findAllIngredientsByRecipeId (@PathVariable int recipeId) {
+    public List<RecipeIngredient> findAllIngredientsByRecipeId(@PathVariable int recipeId) {
         return service.findAllIngredientsByRecipeId(recipeId);
     }
 
+    /**
+     * Add new ingredient for a recipe.
+     *
+     * @param ri
+     * @return
+     */
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody RecipeIngredient ri) {
         Result<RecipeIngredient> result = service.addRecipeIngredient(ri);
@@ -33,6 +46,12 @@ public class RecipeIngredientController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Add multiple new ingredients for a recipe.
+     *
+     * @param riList
+     * @return
+     */
     @PostMapping("/batch_add")
     public ResponseEntity<Object> batchAdd(@RequestBody List<RecipeIngredient> riList) {
         Result<List<RecipeIngredient>> result = service.batchAdd(riList);
@@ -42,6 +61,14 @@ public class RecipeIngredientController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Update an ingredient for a recipe.
+     *
+     * @param recipeId
+     * @param ingredientId
+     * @param ri
+     * @return
+     */
     @PutMapping("/{recipeId}/{ingredientId}")
     public ResponseEntity<Object> update(
         @PathVariable int recipeId,
@@ -59,6 +86,13 @@ public class RecipeIngredientController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Delete an ingredient for a recipe.
+     *
+     * @param recipeId
+     * @param ingredientId
+     * @return
+     */
     @DeleteMapping("/{recipeId}/{ingredientId}")
     public ResponseEntity<Object> deleteByIds(
         @PathVariable int recipeId,

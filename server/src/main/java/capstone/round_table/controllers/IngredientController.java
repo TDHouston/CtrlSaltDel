@@ -19,8 +19,9 @@ public class IngredientController {
         this.service = service;
     }
 
+
     @GetMapping
-    public List<Ingredient> findAll(){
+    public List<Ingredient> findAll() {
         return service.findAll();
     }
 
