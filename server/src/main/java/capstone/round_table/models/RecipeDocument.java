@@ -11,53 +11,52 @@ import java.util.List;
 public class RecipeDocument {
 
     @Id
-    private int recipeId;
+    private String id;
 
-    @Field(type = FieldType.Integer)
-    private int userId;
+    @Field(type = FieldType.Long)
+    private Long recipeId;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "standard")
     private String name;
 
-    @Field(type = FieldType.Keyword)
-    private Difficulty difficulty;
-
-    @Field(type = FieldType.Integer)
-    private int cookTime;
-
-    @Field(type = FieldType.Integer)
-    private int servings;
-
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "standard")
     private String description;
 
-    // Uncomment if needed
-    // @Field(type = FieldType.Keyword)
-    // private List<Category> categories;
-
-    @Field(type = FieldType.Text)
-    private String author;
+    @Field(type = FieldType.Keyword)
+    private String difficulty;
 
     @Field(type = FieldType.Integer)
-    private int favorited;
+    private Integer cookTime;
+
+    @Field(type = FieldType.Integer)
+    private Integer servings;
+
+    @Field(type = FieldType.Keyword)
+    private List<String> categories;
+
+    @Field(type = FieldType.Text)
+    private List<String> ingredients;
+
+    @Field(type = FieldType.Keyword)
+    private String authorName;
 
     public RecipeDocument() {
     }
 
-    public int getRecipeId() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Long getRecipeId() {
         return recipeId;
     }
 
-    public void setRecipeId(int recipeId) {
+    public void setRecipeId(Long recipeId) {
         this.recipeId = recipeId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -68,30 +67,6 @@ public class RecipeDocument {
         this.name = name;
     }
 
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getCookTime() {
-        return cookTime;
-    }
-
-    public void setCookTime(int cookTime) {
-        this.cookTime = cookTime;
-    }
-
-    public int getServings() {
-        return servings;
-    }
-
-    public void setServings(int servings) {
-        this.servings = servings;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -100,27 +75,51 @@ public class RecipeDocument {
         this.description = description;
     }
 
-//    public List<Category> getCategories() {
-//        return categories;
-//    }
-//
-//    public void setCategories(List<Category> categories) {
-//        this.categories = categories;
-//    }
-
-    public String getAuthor() {
-        return author;
+    public String getDifficulty() {
+        return difficulty;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
     }
 
-    public int getFavorited() {
-        return favorited;
+    public Integer getCookTime() {
+        return cookTime;
     }
 
-    public void setFavorited(int favorited) {
-        this.favorited = favorited;
+    public void setCookTime(Integer cookTime) {
+        this.cookTime = cookTime;
+    }
+
+    public Integer getServings() {
+        return servings;
+    }
+
+    public void setServings(Integer servings) {
+        this.servings = servings;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public List<String> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 }
