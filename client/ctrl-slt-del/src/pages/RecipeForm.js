@@ -1,48 +1,19 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { AuthContext } from "../helpers/AuthContext";
+
 const RECIPE_DEFAULT = {
-  name: "Chocolate Cake",
+  name: "",
   difficulty: 3,
-  cookTime: 45,
-  servings: 8,
-  description: "A delicious and decadent chocolate cake",
-  instructions: [
-    {
-      stepNumber: 1,
-      instruction: "Take your dry ingredients and mix them",
-    },
-    {
-      stepNumber: 2,
-      instruction: "Add wet ingredients and mix some more",
-    },
-    {
-      stepNumber: 3,
-      instruction: "Bake for 45 min",
-    },
-    {
-      stepNumber: 4,
-      instruction: "Cool, then frost if desired",
-    },
-  ],
-  ingredients: [
-    { name: "Flour", quantity: 2, unit: "cup" },
-    { name: "Sugar", quantity: 1, unit: "cup" },
-    { name: "Milk", quantity: 1, unit: "cup" },
-    { name: "Butter", quantity: 1, unit: "cup" },
-    { name: "Cocoa powder", quantity: 0.3, unit: "cup" },
-  ],
-  comments: [
-    {
-      user: "cookingpapa",
-      comment: "Tried this cake and it was soooo good",
-    },
-    {
-      user: "gianttroll",
-      comment: "this sucks",
-    },
-  ],
+  cookTime: 30,
+  servings: 1,
+  description: "",
+  instructions: [],
+  ingredients: [],
+  comments: [],
 };
-function RecipeForm() {
+
+function RecipeForm({ onSave, onCancel }) {
   const [recipe, setRecipe] = useState(RECIPE_DEFAULT);
   const [errors, setErrors] = useState([]);
 
@@ -52,182 +23,254 @@ function RecipeForm() {
   const [instruction, setInstruction] = useState("");
   const [instructions, setInstructions] = useState([]);
 
+  const { user } = useContext(AuthContext);
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const addIngredient = (ingredient) => {
-    setIngredients([...ingredients, ingredient]);
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:8080/api/recipes/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setRecipe(data);
+          setIngredients(data.ingredients || []);
+          setInstructions(data.instructions?.map((i) => i.instruction) || []);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch recipe for editing:", err);
+        });
+    }
+  }, [id]);
+
+  const handleInputChange = (e) => {
+    setRecipe({ ...recipe, [e.target.name]: e.target.value });
   };
 
-  const handleIngredientChange = (event) => {
+  const handleIngredientChange = (e) => {
     const newIngredient = { ...ingredient };
-    newIngredient[event.target.name] = event.target.value;
+    newIngredient[e.target.name] = e.target.value;
     setIngredient(newIngredient);
   };
 
-  const handleInstructionChange = (event) => {
-    setInstruction(event.target.value);
+  const addIngredient = () => {
+    if (
+      ingredient.ingredientName &&
+      ingredient.ingredientQuantity &&
+      ingredient.ingredientUnit
+    ) {
+      setIngredients([...ingredients, ingredient]);
+      setIngredient({});
+    }
   };
 
-  const addInstruction = (instruction) => {
-    setInstructions([...instructions, instruction]);
+  const handleInstructionChange = (e) => {
+    setInstruction(e.target.value);
+  };
+
+  const addInstruction = () => {
+    if (instruction.trim()) {
+      setInstructions([...instructions, instruction]);
+      setInstruction("");
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newRecipe = {
+      ...recipe,
+      ingredients,
+      instructions: instructions.map((inst, index) => ({
+        stepNumber: index + 1,
+        instruction: inst,
+      })),
+      userId: user?.userId || 1,
+    };
+
+    const method = id ? "PUT" : "POST";
+    const url = id
+      ? `http://localhost:8080/api/recipes/${id}`
+      : "http://localhost:8080/api/recipes";
+
+    fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRecipe),
+    })
+      .then((res) => {
+        if (res.status === 201) return res.json();
+        if (res.status === 204) return null; // just a success
+        if (res.status === 400)
+          return res.json().then((data) => Promise.reject(data));
+        return Promise.reject(["Unexpected server error."]);
+      })
+      .then((data) => {
+        onSave?.(data);
+        navigate("/profile/" + user.userId);
+      })
+      .catch((errs) => {
+        console.error(errs);
+        setErrors(Array.isArray(errs) ? errs : ["An error occurred."]);
+      });
   };
 
   return (
-    <>
-      <section>
-        <form className="text-center mx-auto max-w-2xl">
-          <div className="mb-5">
-            <label
-              for="name"
-              className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white"
-            >
-              What is your dish called?
-            </label>
-            <input
-              type="text"
-              id="name"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Amazing Recipe"
-              required
-            />
-          </div>
-          <div className="mb-5">
-            <label
-              for="description"
-              className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white"
-            >
-              Add an awesome description for your recipe:
-            </label>
-            <textarea
-              id="description"
-              rows="4"
-              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Delicious stew with beef, carrots, onions..."
-            ></textarea>
-          </div>
-          <div className="mb-5">
-            <h1 className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white">
-              Ingredients
-            </h1>
-            <div>
-              {ingredients.map((ingredient) => (
-                <p>
-                  {ingredient.ingredientQuantity}{" "}
-                  {ingredient.ingredientUnit.toString().toLowerCase()}{" "}
-                  {ingredient.ingredientName}
-                </p>
-              ))}
-            </div>
-            <div className="mb-5">
-              <label
-                for="ingredientName"
-                className="block mb-2 text- font-semibold text-center font-medium text-gray-900 dark:text-white"
-              >
-                Ingredient Name
-              </label>
-              <input
-                type="text"
-                name="ingredientName"
-                id="ingredientName"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Egg"
-                value={ingredient.ingredientName}
-                onChange={handleIngredientChange}
-                required
-              />
-              <div className="mb-5">
-                <label
-                  for="ingredientQuantity"
-                  className="block mb-2 text-l font-semibold text-center font-medium text-gray-900 dark:text-white"
-                >
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  name="ingredientQuantity"
-                  id="ingredientQuantity"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="3"
-                  value={ingredient.ingredientQuantity}
-                  onChange={handleIngredientChange}
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  for="ingredientUnit"
-                  className="block mb-2 text-l font-semibold text-center font-medium text-gray-900 dark:text-white"
-                >
-                  Unit
-                </label>
-                <select
-                  id="ingredientUnit"
-                  name="ingredientUnit"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  value={ingredient.ingredientUnit}
-                  onChange={handleIngredientChange}
-                >
-                  <option value="">n/a</option>
-                  <option value="TEASPOON">tsp</option>
-                  <option value="TABLESPOON">tbsp</option>
-                  <option value="CUP">cup</option>
-                  <option value="FLUID_OUNCE">fl oz</option>
-                  <option value="PINT">pt</option>
-                  <option value="QUART">qt</option>
-                  <option value="GALLON">gal</option>
-                  <option value="OUNCE">oz</option>
-                  <option value="POUND">lb</option>
-                  <option value="MILLILITER">mL</option>
-                  <option value="LITER">L</option>
-                  <option value="GRAM">g</option>
-                  <option value="KILOGRAM">kg</option>
-                  <option value="PINCH">pinch</option>
-                  <option value="SLICE">slice</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="bg-blue-700 mb-3 hover:bg-blue-400 text-white p-2 rounded-xl"
-            onClick={() => addIngredient(ingredient)}
-          >
-            Add ingredient
-          </button>
-          <h1 className="block mb-2 text-xl font-semibold text-center font-medium text-gray-900 dark:text-white">
-            Instructions
-          </h1>
-          <div>
-            {instructions.map((instruction) => (
-              <p>{instruction}</p>
-            ))}
-          </div>
-          <label
-            for="instruction"
-            className="block mb-2 text- font-semibold text-center font-medium text-gray-900 dark:text-white"
-          >
-            Instruction Name
+    <section>
+      <form
+        onSubmit={handleSubmit}
+        className="text-center mx-auto max-w-2xl bg-white shadow-md p-8 rounded-md"
+      >
+        <h2 className="text-2xl font-bold mb-6">
+          {id ? "Edit Recipe" : "Add a New Recipe"}
+        </h2>
+
+        {/* Name */}
+        <div className="mb-4">
+          <label htmlFor="name" className="block font-medium mb-1">
+            Recipe Name
           </label>
           <input
-            type="text"
-            name="ingredientName"
-            id="ingredientName"
-            class=" mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Beat until stiff peaks form"
-            value={instruction}
-            onChange={handleInstructionChange}
+            name="name"
+            value={recipe.name}
+            onChange={handleInputChange}
             required
+            placeholder="Amazing Recipe"
+            className="w-full border rounded-md px-3 py-2"
           />
+        </div>
+
+        {/* Description */}
+        <div className="mb-4">
+          <label htmlFor="description" className="block font-medium mb-1">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={recipe.description}
+            onChange={handleInputChange}
+            required
+            placeholder="What makes this dish special?"
+            className="w-full border rounded-md px-3 py-2"
+          />
+        </div>
+
+        {/* Ingredients */}
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Ingredients</h3>
+          {ingredients.map((ing, idx) => (
+            <p key={idx}>
+              {ing.ingredientQuantity} {ing.ingredientUnit.toLowerCase()}{" "}
+              {ing.ingredientName}
+            </p>
+          ))}
+
+          <div className="grid grid-cols-3 gap-2 mt-2">
+            <input
+              type="text"
+              name="ingredientName"
+              placeholder="Name"
+              value={ingredient.ingredientName || ""}
+              onChange={handleIngredientChange}
+              className="border rounded-md px-2 py-1"
+            />
+            <input
+              type="number"
+              name="ingredientQuantity"
+              placeholder="Qty"
+              value={ingredient.ingredientQuantity || ""}
+              onChange={handleIngredientChange}
+              className="border rounded-md px-2 py-1"
+            />
+            <select
+              name="ingredientUnit"
+              value={ingredient.ingredientUnit || ""}
+              onChange={handleIngredientChange}
+              className="border rounded-md px-2 py-1"
+            >
+              <option value="">unit</option>
+              <option value="TEASPOON">tsp</option>
+              <option value="TABLESPOON">tbsp</option>
+              <option value="CUP">cup</option>
+              <option value="OUNCE">oz</option>
+              <option value="GRAM">g</option>
+              <option value="KILOGRAM">kg</option>
+              <option value="LITER">L</option>
+              <option value="MILLILITER">mL</option>
+              <option value="PINCH">pinch</option>
+              <option value="SLICE">slice</option>
+            </select>
+          </div>
+
           <button
             type="button"
-            className="bg-blue-700 mb-3 hover:bg-blue-400 text-white p-2 rounded-xl"
-            onClick={() => addInstruction(instruction)}
+            onClick={addIngredient}
+            className="mt-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-500"
           >
-            Add instruction
+            Add Ingredient
           </button>
-        </form>
-      </section>
-    </>
+        </div>
+
+        {/* Instructions */}
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Instructions</h3>
+          {instructions.map((inst, i) => (
+            <p key={i}>
+              {i + 1}. {inst}
+            </p>
+          ))}
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              value={instruction}
+              onChange={handleInstructionChange}
+              placeholder="e.g., Preheat oven to 350°F"
+              className="w-full border rounded-md px-2 py-1"
+            />
+            <button
+              type="button"
+              onClick={addInstruction}
+              className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-500"
+            >
+              Add Step
+            </button>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-center gap-4 mt-6">
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-md"
+          >
+            Save Recipe
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (onCancel) {
+                onCancel();
+              } else {
+                navigate(`/profile/${user?.userId}`);
+              }
+            }}
+            className="bg-gray-400 hover:bg-gray-300 text-white px-6 py-2 rounded-md"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {/* Errors */}
+        {errors.length > 0 && (
+          <div className="mt-4 text-red-600">
+            {errors.map((err, idx) => (
+              <p key={idx}>{err}</p>
+            ))}
+          </div>
+        )}
+      </form>
+    </section>
   );
 }
 
