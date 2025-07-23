@@ -32,7 +32,9 @@ public class CategoryService {
             result.addError("Category Id cannot be set", ResultType.INVALID);
             return result;
         }
-        result.setPayload(category);
+
+        Category res = categoryRepository.addCategory(category);
+        result.setPayload(res);
         return result;
     }
 
@@ -44,6 +46,10 @@ public class CategoryService {
         }
         if (category.getCategoryId() == 0) {
             result.addError("Category Id must be set", ResultType.INVALID);
+        }
+        if (!categoryRepository.updateCategory(category)) {
+            String msg = String.format("category: %s, not found", category.getCategoryId());
+            result.addError(msg, ResultType.NOT_FOUND);
         }
         return result;
     }

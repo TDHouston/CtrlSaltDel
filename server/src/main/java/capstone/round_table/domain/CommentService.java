@@ -37,7 +37,9 @@ public class CommentService {
             result.addError("Comment Id cannot be set", ResultType.INVALID);
             return result;
         }
-        result.setPayload(comment);
+
+        Comment res = commentRepository.addComment(comment);
+        result.setPayload(res);
         return result;
     }
 
@@ -51,6 +53,11 @@ public class CommentService {
         if (comment.getCommentId() == 0) {
             result.addError("Comment Id must be set", ResultType.INVALID);
             return result;
+        }
+
+        if (!commentRepository.updateComment(comment)) {
+            String msg = String.format("comment: %s, not found", comment.getCommentId());
+            result.addError(msg, ResultType.NOT_FOUND);
         }
         return result;
     }
