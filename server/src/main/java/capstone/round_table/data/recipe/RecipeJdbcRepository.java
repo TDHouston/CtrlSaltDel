@@ -1,6 +1,7 @@
 package capstone.round_table.data.recipe;
 
 import capstone.round_table.data.mappers.CategoryMapper;
+import capstone.round_table.data.mappers.PseudoRecipeMapper;
 import capstone.round_table.data.mappers.RecipeMapper;
 import capstone.round_table.models.Recipe;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,12 +76,12 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-             "username, " +
-                "featured " +
-            "FROM recipe INNER JOIN user ON recipe.user_id = user.user_id" +
+            "u.username, " +
+            "featured " +
+            "FROM recipe INNER JOIN user u ON recipe.user_id = u.user_id" +
             ";";
 
-        return jdbcTemplate.query(sql, new RecipeMapper());
+        return jdbcTemplate.query(sql, new PseudoRecipeMapper());
     }
 
     /**
@@ -99,13 +100,13 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-            "username, "+
-                "featured " +
-            "FROM recipe INNER JOIN user ON user.user_id = recipe.user_id " +
+            "u.username, "+
+            "featured " +
+            "FROM recipe INNER JOIN user u ON u.user_id = recipe.user_id " +
             "WHERE recipe_id = ?" +
             ";";
 
-        Recipe recipe = jdbcTemplate.query(sql, new RecipeMapper(), recipeId)
+        Recipe recipe = jdbcTemplate.query(sql, new PseudoRecipeMapper(), recipeId)
             .stream()
             .findFirst()
             .orElse(null);
@@ -114,6 +115,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
         // Recipe will store the list of Categories
         if (recipe != null) {
             addCategories(recipe);
+
         }
 
         return recipe;
@@ -133,7 +135,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description` " +
+            "`description`, " +
+            "featured " +
             "FROM recipe " +
             "WHERE user_id = ?" +
             ";";

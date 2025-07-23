@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RecipeMapper implements RowMapper<Recipe> {
+public class PseudoRecipeMapper implements RowMapper<Recipe> {
 
     @Override
     public Recipe mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -31,7 +31,8 @@ public class RecipeMapper implements RowMapper<Recipe> {
 
         recipe.setDescription(resultSet.getString("description"));
 
-        recipe.setFeatured(resultSet.getBoolean("featured"));
+        // This column is from joining tables w/ User
+        recipe.setAuthor(resultSet.getString("username"));
 
         return recipe;
     }
