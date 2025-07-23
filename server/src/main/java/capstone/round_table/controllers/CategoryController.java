@@ -1,5 +1,7 @@
 package capstone.round_table.controllers;
 
+import capstone.round_table.domain.CategoryService;
+import capstone.round_table.domain.Result;
 import capstone.round_table.models.Category;
 import capstone.round_table.models.Recipe;
 import org.springframework.http.ResponseEntity;
@@ -12,20 +14,21 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
+    public CategoryController(CategoryService service) {
+        this.service = service;
+    }
+
     // TODO: declare reference to service and create constructor
+    private final CategoryService service;
 
     @GetMapping
     public List<Category> findAll() {
-        return null;
-    }
-
-    @GetMapping("/{category}")
-    public List<Recipe> findRecipesByCategory(@PathVariable String category) {
-        return null;
+        return service.findAll();
     }
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Category category) {
+        Result<Category> result =  service.addCategory(category);
         return null;
     }
 
