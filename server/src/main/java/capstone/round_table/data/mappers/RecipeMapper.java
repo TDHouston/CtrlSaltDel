@@ -34,6 +34,8 @@ public class RecipeMapper implements RowMapper<Recipe> {
 
         recipe.setAuthor(resultSet.getString("username"));
 
+        recipe.setFeatured(resultSet.getBoolean("featured"));
+
         return recipe;
     }
 }

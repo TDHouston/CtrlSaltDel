@@ -75,7 +75,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-             "username " +
+             "username, " +
+                "featured " +
             "FROM recipe INNER JOIN user ON recipe.user_id = user.user_id" +
             ";";
 
@@ -98,7 +99,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-            "username "+
+            "username, "+
+                "featured " +
             "FROM recipe INNER JOIN user ON user.user_id = recipe.user_id " +
             "WHERE recipe_id = ?" +
             ";";

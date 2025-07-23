@@ -14,6 +14,7 @@ public class Recipe {
     private List<Category> categories;
     private String author;
     private int favorited;
+    private boolean featured;
 
     public Recipe(){}
 
@@ -147,5 +148,13 @@ public class Recipe {
     @Override
     public int hashCode() {
         return Objects.hash(recipeId, userId, name, difficulty, cookTime, servings, description, categories);
+    }
+
+    public boolean isFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
     }
 }

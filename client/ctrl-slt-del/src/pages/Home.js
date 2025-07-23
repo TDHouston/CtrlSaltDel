@@ -109,10 +109,25 @@ function Home() {
         }
       })
       .then((data) => {
-        return data.sort((a, b) => b.favorited - a.favorited).slice(0, 6);
+        return data.sort((a, b) => b.favorited - a.favorited).slice(0, 5);
       })
       .then((data) => setCommunityRecipes(data));
-  });
+  }, []);
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected status code ${response.status}`);
+        }
+      })
+      .then((data) => {
+        return data.filter((r) => r.featured === true).slice(0, 3);
+      })
+      .then((data) => setAdminRecipes(data));
+  }, []);
 
   return (
     <>
@@ -205,7 +220,7 @@ function Home() {
           <div class="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
             {" "}
             {adminRecipes.map((recipe) => (
-              <RecipeCard className="" recipe={recipe} key={recipe.id} />
+              <RecipeCard className="" recipe={recipe} key={recipe.recipeId} />
             ))}
           </div>
         </div>
