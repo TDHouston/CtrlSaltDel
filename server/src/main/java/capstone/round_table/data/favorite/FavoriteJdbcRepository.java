@@ -19,7 +19,7 @@ public class FavoriteJdbcRepository implements FavoriteRepository {
 
     @Override
     public List<Recipe> findTopFavorites(int num) {
-        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, COUNT(f.recipe_id) as favorite_count " +
+        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, COUNT(f.recipe_id) as favorite_count " +
                 "from favorite f join recipe r on f.recipe_id = r.recipe_id " +
                 "group by f.recipe_id " +
                 "order by favorite_count desc " +

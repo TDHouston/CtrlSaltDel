@@ -63,7 +63,7 @@ class RecipeJdbcRepositoryTest {
         // (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`)
         // (1, 1, "fish soup", "intermediate", 30, 5, "fish in soup")
         // (2, 1, "scramble eggs", "expert", 10, 2, "Very difficult egg")
-        List<Recipe> recipes = repo.findRecipesByUserId(1);
+         List<Recipe> recipes = repo.findRecipesByUserId(1);
         assertTrue(recipes.size() >= 3);
     }
 

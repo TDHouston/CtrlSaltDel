@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Recipe {
     private int recipeId;
     private int userId;
+    private String username;
     private String name;
     private Difficulty difficulty;
     private int cookTime;
@@ -156,5 +157,13 @@ public class Recipe {
 
     public void setFeatured(boolean featured) {
         this.featured = featured;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

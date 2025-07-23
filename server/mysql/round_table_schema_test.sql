@@ -40,6 +40,7 @@ CREATE TABLE recipe (
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
+    featured bit default false,
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
@@ -137,7 +138,7 @@ begin
     ALTER TABLE recipe auto_increment = 1;
 	DELETE FROM `user`;
     ALTER TABLE `user` auto_increment = 1;
-    
+
 	INSERT INTO user (user_id, `role`, first_name, last_name, username, email, `password`) VALUES
 		-- USE FOR FIND
         (1, 'ADMIN', 'John', 'Smith', 'jsmith', 'jsmith@example.com', 'smith'),

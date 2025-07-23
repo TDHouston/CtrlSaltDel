@@ -1,7 +1,8 @@
 package capstone.round_table.data.comment;
 
-import capstone.round_table.models.Comment;
 import capstone.round_table.data.mappers.CommentMapper;
+import capstone.round_table.models.Comment;
+import capstone.round_table.data.mappers.PseudoCommentMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -38,10 +39,10 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public List<Comment> findByRecipeId(int recipeId) {
-        final String sql = "select comment_id, comment.user_id, recipe_id, content, username " +
-                "from comment inner join user on comment.user_id = user.user_id " +
+        final String sql = "select comment_id, comment.user_id, recipe_id, content, u.username " +
+                "from comment inner join user u on comment.user_id = u.user_id " +
                 "where recipe_id = ?;";
-        return jdbcTemplate.query(sql, new CommentMapper(), recipeId);
+        return jdbcTemplate.query(sql, new PseudoCommentMapper(), recipeId);
     }
 
     @Override
