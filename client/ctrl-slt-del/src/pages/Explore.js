@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import RecipeCard from "../components/RecipeCard";
-import { Link } from "react-router-dom";
 
 const sorters = [
   "Favorites (high to low)",
