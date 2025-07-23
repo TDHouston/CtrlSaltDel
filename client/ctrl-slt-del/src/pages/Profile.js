@@ -5,44 +5,10 @@ import { useParams } from "react-router-dom";
 import MyRecipes from "../components/MyRecipes";
 import UserCard from "../components/UserCard";
 
-const FAVORITES_DEFAULT = [
-  {
-    id: 1,
-    name: "Crispy Chicken",
-    description: "Delicious crispy chicken with a sweet chili dipping sauce!",
-    difficulty: 3,
-    cookTime: 30,
-    upvotes: 300,
-    user: "cookingmama",
-    img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
-  },
-  {
-    id: 2,
-    name: "Tofu Stir-Fry",
-    description: "Garlic tofu stir-fry with green beans and onions",
-    difficulty: 5,
-    cookTime: 45,
-    upvotes: 200,
-    user: "cookingmama",
-    img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
-  },
-  {
-    id: 3,
-    name: "Chocolate cupcakes",
-    description:
-      "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
-    difficulty: 2,
-    cookTime: 60,
-    upvotes: 100,
-    user: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
-  },
-];
-
 function Profile() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("account");
-  const [favorites, setFavorites] = useState(FAVORITES_DEFAULT);
+  const [favorites, setFavorites] = useState([]);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const { id } = useParams();
@@ -67,7 +33,7 @@ function Profile() {
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));
   });
-
+  
   useEffect(() => {
     fetch(`http://localhost:8080/api/category`)
       .then((response) => {
@@ -79,6 +45,18 @@ function Profile() {
       .then((data) => setCategories(data))
       .catch((err) => console.error(err));
   });
+
+  useEffect(() => {
+    if (activeTab === "favorites" && user) {
+      fetch(`http://localhost:8080/api/favorite/${user.userId}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch favorites");
+          return res.json();
+        })
+        .then((data) => setFavorites(data))
+        .catch((err) => console.error("Favorites fetch error:", err));
+    }
+  }, [activeTab, user]);
 
   const handleDeleteUser = (userId) => {
     const user = users.find((u) => u.userId === userId);
@@ -236,7 +214,7 @@ function Profile() {
 
         {activeTab === "favorites" && (
           <section>
-            <div>
+            <div className="mb-8">
               <h1 className="text-2xl font-semibold text-gray-800">
                 Favorites
               </h1>
@@ -245,13 +223,17 @@ function Profile() {
               </p>
             </div>
 
-            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-              {favorites.map((recipe) => (
-                <div>
-                  <RecipeCard recipe={recipe} key={recipe.id} />
-                </div>
-              ))}
-            </div>
+            {favorites.length === 0 ? (
+              <p className="text-gray-500 italic">
+                You haven't favorited any recipes yet.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {favorites.map((recipe) => (
+                  <RecipeCard recipe={recipe} key={recipe.recipeId} />
+                ))}
+              </div>
+            )}
           </section>
         )}
 
