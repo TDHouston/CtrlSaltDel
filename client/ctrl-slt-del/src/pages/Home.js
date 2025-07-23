@@ -90,8 +90,6 @@ const MOD_RECIPES_DEFAULT = [
   },
 ];
 
-const FILLER_IMG = "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
-
 function Home() {
   const [communityRecipes, setCommunityRecipes] = useState(
     COMMUNITY_RECIPES_DEFAULT
