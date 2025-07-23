@@ -19,11 +19,24 @@ public class InstructionController {
         this.service = service;
     }
 
+
+    /**
+     * Find all instruction steps for a recipe.
+     *
+     * @param recipeId
+     * @return
+     */
     @GetMapping("/{recipeId}")
-    public List<Instruction> findAllByRecipe(@PathVariable int recipeId) {
+    public List<Instruction> findAllByRecipeId(@PathVariable int recipeId) {
         return service.findAllByRecipeId(recipeId);
     }
 
+    /**
+     * Add a single instruction step for a recipe.
+     *
+     * @param instruction
+     * @return
+     */
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Instruction instruction) {
         Result<Instruction> result = service.addInstruction(instruction);
@@ -33,6 +46,12 @@ public class InstructionController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Add multiple instruction steps for a recipe.
+     *
+     * @param instructions
+     * @return
+     */
     @PostMapping("/batch_add")
     public ResponseEntity<Object> batchAdd(@RequestBody List<Instruction> instructions) {
         Result<List<Instruction>> result = service.batchAdd(instructions);
@@ -42,6 +61,13 @@ public class InstructionController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Update an instruction step.
+     *
+     * @param instructionId
+     * @param instruction
+     * @return
+     */
     @PutMapping("/{instructionId}")
     public ResponseEntity<Object> update(
         @PathVariable int instructionId,
@@ -58,6 +84,12 @@ public class InstructionController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Update multiple instruction steps.
+     *
+     * @param instructions
+     * @return
+     */
     @PutMapping("/batch_update")
     public ResponseEntity<Object> batchUpdate(@RequestBody List<Instruction> instructions) {
         Result<List<Instruction>> result = service.batchUpdate(instructions);
@@ -67,6 +99,12 @@ public class InstructionController {
         return ErrorResponse.build(result);
     }
 
+    /**
+     * Delete an instruction step.
+     *
+     * @param instructionId
+     * @return
+     */
     @DeleteMapping("/{instructionId}")
     public ResponseEntity<Object> delete(@PathVariable int instructionId) {
         Result<Instruction> result = service.deleteInstructionById(instructionId);
