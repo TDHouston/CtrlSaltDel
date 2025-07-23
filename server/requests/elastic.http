@@ -1,6 +1,11 @@
 @url = http://localhost:8080/api/ingredient
 @recipe = "http://localhost:8080/api/recipes"
 
+
+GET http://localhost:8080/api/elastic HTTP/1.1
+
+###
+
 GET {{url}}/egg HTTP/1.1
 
 ###

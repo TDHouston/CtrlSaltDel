@@ -1,45 +1,33 @@
 package capstone.round_table.controllers;
 
 import capstone.round_table.domain.RecipeSearchService;
+import capstone.round_table.domain.RecipeService;
 import capstone.round_table.models.Recipe;
-import capstone.round_table.models.RecipeDocument;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/search")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/elastic")
 public class ElasticController {
+    private final RecipeSearchService service;
+    private final RecipeService rservice;
 
-    @Autowired
-    private RecipeSearchService searchService;
-
-    @GetMapping("/recipes")
-    public ResponseEntity<List<RecipeDocument>> searchRecipes(
-            @RequestParam(required = false) String q) {
-        List<RecipeDocument> results = searchService.searchRecipes(q);
-        return ResponseEntity.ok(results);
+    public ElasticController(RecipeSearchService service, RecipeService rservice) {
+        this.service = service;
+        this.rservice = rservice;
     }
 
-    @GetMapping("/recipes/advanced")
-    public ResponseEntity<List<RecipeDocument>> advancedSearch(
-            @RequestParam(required = false) String q,
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer maxCookTime) {
-
-        List<RecipeDocument> results = searchService.searchWithFilters(
-                q, difficulty, category, maxCookTime);
-        return ResponseEntity.ok(results);
+    @GetMapping
+    public String tester() {
+        return "HE";
     }
 
-    @GetMapping("/suggestions")
-    public ResponseEntity<List<String>> getSuggestions(
-            @RequestParam String prefix) {
-        List<String> suggestions = searchService.getRecipeSuggestions(prefix);
-        return ResponseEntity.ok(suggestions);
+    @GetMapping("/add")
+    public String adding(@RequestBody Recipe recipe) {
+        service.add(recipe);
+        return "Added";
     }
+
 }

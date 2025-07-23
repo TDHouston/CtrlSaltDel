@@ -1,6 +1,5 @@
 package capstone.round_table.controllers;
 
-import capstone.round_table.domain.RecipeSearchService;
 import capstone.round_table.domain.RecipeService;
 import capstone.round_table.domain.Result;
 import capstone.round_table.models.Recipe;
@@ -16,7 +15,7 @@ import java.util.List;
 public class RecipeController {
     private final RecipeService service;
 
-    public RecipeController(RecipeService service, RecipeSearchService rservice) {
+    public RecipeController(RecipeService service) {
         this.service = service;
     }
 
