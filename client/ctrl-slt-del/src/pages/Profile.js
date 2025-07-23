@@ -2,61 +2,8 @@ import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import AccountForm from "../components/AccountForm";
 import { useParams } from "react-router-dom";
+import MyRecipes from "../components/MyRecipes";
 import UserCard from "../components/UserCard";
-
-const RECIPES_DEFAULT = [
-  {
-    id: 1,
-    name: "Crispy Chicken",
-    description: "Delicious crispy chicken with a sweet chili dipping sauce!",
-    difficulty: 3,
-    cookTime: 30,
-    upvotes: 300,
-    user: "cookingmama",
-    img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
-  },
-  {
-    id: 2,
-    name: "Tofu Stir-Fry",
-    description: "Garlic tofu stir-fry with green beans and onions",
-    difficulty: 5,
-    cookTime: 45,
-    upvotes: 200,
-    user: "cookingmama",
-    img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
-  },
-  {
-    id: 3,
-    name: "Chocolate cupcakes",
-    description:
-      "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
-    difficulty: 2,
-    cookTime: 60,
-    upvotes: 100,
-    user: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
-  },
-  {
-    id: 4,
-    name: "Macaroni and cheese",
-    description: "3 cheeses, all goodness.",
-    difficulty: 2,
-    cookTime: 20,
-    upvotes: 200,
-    user: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Zjy4R1VAkfSBhcHGe-whY1sL04epOzCYgA&s",
-  },
-  {
-    id: 5,
-    name: "Pizza",
-    description: "It's not delivery - it's homemade.",
-    difficulty: 7,
-    cookTime: 30,
-    upvotes: 50,
-    user: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhqV7gsGTQ6K62gRiPUl_hHWJv71zgFEXzQ&s",
-  },
-];
 
 const FAVORITES_DEFAULT = [
   {
@@ -95,7 +42,6 @@ const FAVORITES_DEFAULT = [
 function Profile() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("account");
-  const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
   const [favorites, setFavorites] = useState(FAVORITES_DEFAULT);
   const [users, setUsers] = useState([]);
   const { id } = useParams();
@@ -232,43 +178,7 @@ function Profile() {
           </div>
         )}
 
-        {activeTab === "recipes" && (
-          <section>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-800">
-                My Recipes
-              </h1>
-              <p className="mt-2 text-gray-600">
-                See and edit recipes you’ve submitted.
-              </p>
-            </div>
-
-            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-              {recipes.map((recipe) => (
-                <div>
-                  <RecipeCard recipe={recipe} key={recipe.id} />
-                  <div
-                    className="inline-flex rounded-md shadow-xs"
-                    role="group"
-                  >
-                    <button
-                      type="button"
-                      className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                    >
-                      Update
-                    </button>
-                    <button
-                      type="button"
-                      className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {activeTab === "recipes" && <MyRecipes />}
 
         {activeTab === "favorites" && (
           <section>

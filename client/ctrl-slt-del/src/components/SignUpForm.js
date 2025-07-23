@@ -40,7 +40,6 @@ function SignUpForm({ user, setUser, setPage }) {
             lastName: data.lastName,
             email: data.email,
           });
-          console.log("Returned userWithToken from server:", data);
           navigate(`/profile/${data.userId}`);
         } else {
           setErrors(data);

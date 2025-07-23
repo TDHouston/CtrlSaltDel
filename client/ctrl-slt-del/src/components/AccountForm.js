@@ -34,7 +34,6 @@ function AccountForm({ account }) {
       body: JSON.stringify(payload),
     };
 
-    console.log("Submitting update for user:", user);
     fetch(`http://localhost:8080/api/user/${user.userId}`, init)
       .then((response) => {
         if (response.status === 204) return null;
@@ -43,7 +42,6 @@ function AccountForm({ account }) {
       })
       .then((data) => {
         if (!data) {
-          console.log("Profile updated successfully");
           setAuthUser(user);
           localStorage.setItem("user", JSON.stringify(user));
         } else {
