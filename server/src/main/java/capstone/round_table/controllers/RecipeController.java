@@ -30,6 +30,12 @@ public class RecipeController {
         return service.findByRecipeId(recipeId);
     }
 
+    //user?id=1
+    @GetMapping("/user")
+    public List<Recipe> findByUserId(@RequestParam int id) {
+        return service.findRecipeByUserId(id);
+    }
+
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Recipe recipe) {
         Result<Recipe> result = service.addRecipe(recipe);

@@ -145,8 +145,15 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "WHERE user_id = ?" +
             ";";
 
-        List<Recipe> result = new ArrayList<>(jdbcTemplate.query(sql, new RecipeMapper(), userId));
-        return result;
+        List<Recipe> recipes = new ArrayList<>(jdbcTemplate.query(sql, new RecipeMapper(), userId));
+        for (Recipe recipe : recipes) {
+            if (recipe != null) {
+                addCategories(recipe);
+                addAuthor(recipe);
+                addFavoriteCount(recipe);
+            }
+        }
+        return recipes;
     }
 
 
