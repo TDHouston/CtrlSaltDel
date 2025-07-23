@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 
 function Nav() {
@@ -9,7 +9,7 @@ function Nav() {
 
   useEffect(() => {
     console.log("Nav sees user:", user);
-    if (user?.roles === "ROLE_ADMIN" || user?.roles === "ROLE_USER") {
+    if (user?.role === "ADMIN" || user?.role === "USER") {
       setIsAuth(true);
     } else {
       setIsAuth(false);
@@ -17,7 +17,7 @@ function Nav() {
   }, [user]);
 
   function handleLogout() {
-    logout(); 
+    logout();
   }
 
   return (
@@ -113,16 +113,16 @@ function Nav() {
                   >
                     <div className="px-4 py-3">
                       <span className="block text-sm text-gray-900 dark:text-white">
-                        {/* Profile name here extracted from data */}
+                        {user?.firstName}
                       </span>
                       <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                        {/* email here extracted from data */}
+                        {user?.email}
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
                       <li>
                         <Link
-                          to="/profile/:id"
+                          to={`/profile/${user?.userId}`}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
                           Dashboard
@@ -130,7 +130,7 @@ function Nav() {
                       </li>
                       <li>
                         <Link
-                          to="#"
+                          to="/"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                           onClick={handleLogout}
                         >

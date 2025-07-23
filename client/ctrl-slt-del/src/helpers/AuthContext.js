@@ -5,33 +5,30 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token, setToken] = useState(localStorage.getItem("jwt_token") || "");
 
   useEffect(() => {
-    console.log("AuthContext token changed:", token);
-    if (token) {
-      const decoded = jwtDecode(token);
-      console.log("Decoded user from token:", decoded);
-      setUser(decoded);
-    } else {
-      console.log("No token, setting user to null");
-      setUser(null);
-    }
-  }, [token]);
+    const storedToken = localStorage.getItem("jwt_token");
+    const storedUser = localStorage.getItem("user_data");
 
-  const login = (token, user) => {
-    localStorage.setItem("jwt_token", token);
-    setAuth({
-      token,
-      user,
-      roles: user?.roles || [], // or decode from token if needed
-    });
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const login = (jwtToken, userData) => {
+    localStorage.setItem("jwt_token", jwtToken);
+    localStorage.setItem("user_data", JSON.stringify(userData));
+    setToken(jwtToken);
+    setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
+    localStorage.removeItem("jwt_token");
+    localStorage.removeItem("user_data");
     setToken("");
+    setUser(null);
   };
 
   return (

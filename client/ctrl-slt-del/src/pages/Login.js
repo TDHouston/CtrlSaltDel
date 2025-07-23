@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SignUpForm from "../components/SignUpForm";
 import LoginForm from "../components/LoginForm";
+import { AuthContext } from "../helpers/AuthContext";
 
 const DEFAULT_USER = {
   role: "USER",
@@ -12,17 +13,18 @@ const DEFAULT_USER = {
 };
 
 function Login() {
-  const [page, setPage] = useState("login");
-  const [user, setUser] = useState(DEFAULT_USER);
+  const [page, setPage] = useState("signup");
+  const [formUser, setFormUser] = useState(DEFAULT_USER);
+  const { user } = useContext(AuthContext);
 
   return (
     <main>
       {page === "signup" && (
-        <SignUpForm user={user} setUser={setUser} setPage={setPage} />
+        <SignUpForm user={formUser} setUser={setFormUser} setPage={setPage} />
       )}
-      {page === "login" && (
-        <LoginForm user={user} setUser={setUser} setPage={setPage} />
-      )}
+      {/* {page === "login" && (
+        <LoginForm user={formUser} setUser={setFormUser} setPage={setPage} />
+      )} */}
     </main>
   );
 }

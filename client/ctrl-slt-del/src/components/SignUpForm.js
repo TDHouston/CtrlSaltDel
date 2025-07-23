@@ -31,9 +31,17 @@ function SignUpForm({ user, setUser, setPage }) {
         return Promise.reject(`Unexpected Status Code: ${response.status}`);
       })
       .then((data) => {
-        if (data?.token) {
-          login(data.token);
-          navigate("/");
+        if (data?.token && data?.email) {
+          login(data.token, {
+            userId: data.userId,
+            role: data.role,
+            username: data.username,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+          });
+          console.log("Returned userWithToken from server:", data);
+          navigate(`/profile/${data.userId}`);
         } else {
           setErrors(data);
         }
