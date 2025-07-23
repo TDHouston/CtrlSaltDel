@@ -222,4 +222,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
         var author = jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getString("username"), recipe.getUserId()).stream().findFirst().orElse(null);
         recipe.setAuthor(author);
     }
+
+    private void addFavoriteCount(Recipe recipe) {
+        final String sql = "select recipe_id, COUNT(recipe_id) as favorite_count " +
+                "from favorite " +
+                "where recipe_id = ? " +
+                "group by recipe_id;";
+    }
 }
