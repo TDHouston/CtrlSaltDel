@@ -228,5 +228,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
                 "from favorite " +
                 "where recipe_id = ? " +
                 "group by recipe_id;";
+        int count = jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("favorite_count"), recipe.getRecipeId())
+                .stream()
+                .findFirst()
+                .orElse(0);
+
+        recipe.setFavorited(count);
     }
 }
