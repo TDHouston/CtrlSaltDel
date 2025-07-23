@@ -18,10 +18,11 @@ public class RecipeMapper implements RowMapper<Recipe> {
         recipe.setName(resultSet.getString("recipe_name"));
 
         // https://stackoverflow.com/questions/5991360/handling-the-null-value-from-a-resultset
-        // Some values can be null, will set them to known values if entry was null
+        // Some values can be null in the database, will account for that to prevent errors
+        // Also, to differentiate between invalid values and nulls
 
-        String difficulty = resultSet.getString("difficulty").toUpperCase();
-        recipe.setDifficulty(resultSet.wasNull() ? null : Difficulty.valueOf(difficulty));
+        String difficulty = resultSet.getString("difficulty");
+        recipe.setDifficulty(resultSet.wasNull() ? null : Difficulty.valueOf(difficulty.toUpperCase()));
 
         int cookTime = resultSet.getInt("cook_time");
         recipe.setCookTime(resultSet.wasNull() ? Integer.MIN_VALUE : cookTime);
@@ -29,8 +30,7 @@ public class RecipeMapper implements RowMapper<Recipe> {
         int servings = resultSet.getInt("servings");
         recipe.setServings(resultSet.wasNull() ? Integer.MIN_VALUE : servings);
 
-        String description = resultSet.getString("description");
-        recipe.setDescription(resultSet.wasNull() ? "" : description);
+        recipe.setDescription(resultSet.getString("description"));
 
         return recipe;
     }

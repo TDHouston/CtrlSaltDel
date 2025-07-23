@@ -16,6 +16,13 @@ public class Instruction {
         this.description = description;
     }
 
+    public Instruction(int instructionId, int recipeId, int stepNumber, String description) {
+        this.instructionId = instructionId;
+        this.recipeId = recipeId;
+        this.stepNumber = stepNumber;
+        this.description = description;
+    }
+
     public int getInstructionId() {
         return instructionId;
     }
