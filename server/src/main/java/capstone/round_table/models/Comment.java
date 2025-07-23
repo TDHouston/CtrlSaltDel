@@ -7,6 +7,7 @@ public class Comment {
     private int userId;
     private int recipeId;
     private String content;
+    private String author;
 
     public Comment() {
     }
@@ -53,5 +54,13 @@ public class Comment {
     @Override
     public int hashCode() {
         return Objects.hash(commentId, userId, recipeId, content);
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

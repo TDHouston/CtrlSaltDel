@@ -19,14 +19,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/recipe" element={<Recipe />} />
+        <Route path="/recipe/:id" element={<Recipe />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/recipe/add" element={<RecipeForm />} />
         <Route path="/recipe/edit/:id" element={<RecipeForm />} />
         <Route path="*" element={<Error />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </Router>
   );
 }
