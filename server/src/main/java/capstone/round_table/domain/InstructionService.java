@@ -122,17 +122,21 @@ public class InstructionService {
                 result.addError(check.getErrors().get(0), check.getType());
                 break;
             }
-            // Else, add new instruction to list
-            instructionList.add(check.getPayload());
+            // Else, add new instruction to list for ADD ONLY
+            if (!isUpdate) {
+                instructionList.add(check.getPayload());
+            }
         }
 
         // Return errors immediately
-        // Only set payload if ALL were valid
+        // Only set payload if ALL were valid for ADD ONLY
         if (!result.isSuccess()) {
             return result;
         }
 
-        result.setPayload(instructionList);
+        if (!isUpdate) {
+            result.setPayload(instructionList);
+        }
         return result;
     }
 
