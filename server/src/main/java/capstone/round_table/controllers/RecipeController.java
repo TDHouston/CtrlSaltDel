@@ -1,5 +1,6 @@
 package capstone.round_table.controllers;
 
+import capstone.round_table.domain.RecipeSearchService;
 import capstone.round_table.domain.RecipeService;
 import capstone.round_table.domain.Result;
 import capstone.round_table.models.Recipe;
@@ -14,9 +15,11 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 public class RecipeController {
     private final RecipeService service;
+    private final RecipeSearchService recipeSearchService;
 
-    public RecipeController(RecipeService service) {
+    public RecipeController(RecipeService service, RecipeSearchService recipeSearchService) {
         this.service = service;
+        this.recipeSearchService = recipeSearchService;
     }
 
 
@@ -40,6 +43,7 @@ public class RecipeController {
     public ResponseEntity<Object> add(@RequestBody Recipe recipe) {
         Result<Recipe> result = service.addRecipe(recipe);
         if (result.isSuccess()) {
+            recipeSearchService.add(result.getPayload());
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
         return ErrorResponse.build(result);

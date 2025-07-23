@@ -28,7 +28,7 @@ public class RecipeCategoryJdbcRepository implements RecipeCategoryRepository{
 
     @Override
     public List<Recipe> findAllRecipeByCategoryId(int recipeId) {
-        final String sql = "select r.recipe_id, r.user_id, r.name, r.difficulty, r.cook_time, r.servings, r.description from recipe_category rc join recipe r on rc.recipe_id = r.recipe_id where r.recipe_id = ?;";
+        final String sql = "select r.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured from recipe_category rc join recipe r on rc.recipe_id = r.recipe_id where r.recipe_id = ?;";
         return jdbcTemplate.query(sql, new RecipeMapper(), recipeId);
     }
 
@@ -44,7 +44,7 @@ public class RecipeCategoryJdbcRepository implements RecipeCategoryRepository{
 
     @Override
     public boolean addRecipeCategory(int recipeId, int categoryId) {
-        final String sql = "insert into favorite (recipe_id, category_id)" +
+        final String sql = "insert into recipe_category (recipe_id, category_id)" +
                 " values (?,?);";
         return jdbcTemplate.update(sql, recipeId, categoryId) > 0;
     }

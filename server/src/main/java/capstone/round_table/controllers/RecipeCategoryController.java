@@ -26,13 +26,14 @@ public class RecipeCategoryController {
         return service.findAllCategoryByRecipeId(recipeId);
     }
 
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/recipe/{categoryId}")
     public List<Recipe> findAllRecipeByCategoryId(@PathVariable int categoryId) {
         return service.findAllRecipeByCategoryId(categoryId);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<Void> batchAddRecipeCategory(List<RecipeCategory> recipeCategories) {
+    public ResponseEntity<Void> batchAddRecipeCategory(@RequestBody List<RecipeCategory> recipeCategories) {
+        // i need to get recipeId and the all the categories
         if (service.batchAddRecipeCategory(recipeCategories)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -41,7 +42,10 @@ public class RecipeCategoryController {
 
     @PostMapping
     public ResponseEntity<Void> addRecipeCategory(@RequestBody RecipeCategory recipeCategory) {
-        if (service.addRecipeCategory(recipeCategory.getRecipeId(), recipeCategory.getCategoryId())) {
+        System.out.println(recipeCategory.getCategoryId());
+        System.out.println(recipeCategory.getRecipeId());
+        boolean success = service.addRecipeCategory(recipeCategory.getRecipeId(), recipeCategory.getCategoryId());
+        if (success) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
