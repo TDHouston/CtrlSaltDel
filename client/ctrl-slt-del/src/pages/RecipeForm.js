@@ -32,6 +32,11 @@ function RecipeForm({ onSave, onCancel }) {
       fetch(`http://localhost:8080/api/recipes/${id}`)
         .then((res) => res.json())
         .then((data) => {
+          if (data.userId !== user?.userId) {
+            // Not this user's recipe — don't load it
+            console.warn("This recipe does not belong to the current user.");
+            return;
+          }
           setRecipe(data);
           setIngredients(data.ingredients || []);
           setInstructions(data.instructions?.map((i) => i.instruction) || []);
@@ -40,7 +45,7 @@ function RecipeForm({ onSave, onCancel }) {
           console.error("Failed to fetch recipe for editing:", err);
         });
     }
-  }, [id]);
+  }, [id, user]);
 
   const handleInputChange = (e) => {
     setRecipe({ ...recipe, [e.target.name]: e.target.value });
@@ -87,8 +92,8 @@ function RecipeForm({ onSave, onCancel }) {
       userId: user?.userId || 1,
     };
 
-    const method = id ? "PUT" : "POST";
-    const url = id
+    const method = recipe?.userId ? "PUT" : "POST";
+    const url = recipe?.userId
       ? `http://localhost:8080/api/recipes/${id}`
       : "http://localhost:8080/api/recipes";
 
@@ -123,7 +128,7 @@ function RecipeForm({ onSave, onCancel }) {
         className="text-center mx-auto max-w-2xl bg-white shadow-md p-8 rounded-md"
       >
         <h2 className="text-2xl font-bold mb-6">
-          {id ? "Edit Recipe" : "Add a New Recipe"}
+          {recipe?.userId ? "Edit Recipe" : "Add a New Recipe"}
         </h2>
 
         {/* Name */}
