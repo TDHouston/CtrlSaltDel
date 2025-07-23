@@ -80,3 +80,7 @@ GET http://localhost:8080/api/comment/recipe/1
 
 DELETE http://localhost:8080/api/comment/15 HTTP/1.1
 
+###
+
+GET http://localhost:8080/api/favorite/count/1
+

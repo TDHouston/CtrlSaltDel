@@ -15,7 +15,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.errorInfo) {
       return (
         <div>
-          <h2>An Error Has Occurred</h2>
+          <h2>An error occurred:</h2>
           <details>
             {this.state.error && this.state.error.toString()}
             <br />
@@ -27,3 +27,5 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+export default ErrorBoundary;
