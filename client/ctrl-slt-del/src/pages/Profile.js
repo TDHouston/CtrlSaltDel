@@ -16,159 +16,106 @@ function Profile() {
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/user/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("User fetch failed");
-        return res.json();
-      })
-      .then((data) => setUser(data))
+      .then((res) => res.json())
+      .then(setUser)
       .catch((err) => console.error("User fetch error:", err));
   }, [id]);
 
   useEffect(() => {
     fetch(`http://localhost:8080/api/user`)
-      .then((res) => {
-        if (!res.ok)
-          throw new Error("Something went wrong retrieving the user list");
-        return res.json();
-      })
-      .then((data) => setUsers(data))
-      .catch((err) => console.error(err));
-  });
-
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/category`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Something went wrong retrieving the categories");
-        }
-        return response.json();
-      })
-      .then((data) => setCategories(data))
-      .catch((err) => console.error(err));
-  });
+      .then((res) => res.json())
+      .then(setUsers)
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (activeTab === "favorites" && user) {
       fetch(`http://localhost:8080/api/favorite/${user.userId}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch favorites");
-          return res.json();
-        })
-        .then((data) => setFavorites(data))
-        .catch((err) => console.error("Favorites fetch error:", err));
+        .then((res) => res.json())
+        .then(setFavorites)
+        .catch(console.error);
     }
-  });
+  }, [activeTab, user]);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/category`)
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch(console.error);
+  }, []);
+
+  const handleCategoryChange = (e) => setNewCategory(e.target.value);
+
+  const handleAddCategory = (e) => {
+    e.preventDefault();
+    if (!newCategory.trim()) return;
+
+    fetch("http://localhost:8080/api/category", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newCategory }),
+    })
+      .then((res) => res.json())
+      .then((cat) => {
+        setCategories([...categories, cat]);
+        setNewCategory("");
+      })
+      .catch(console.error);
+  };
+
+  const handleDeleteCategory = (id) => {
+    fetch(`http://localhost:8080/api/category/${id}`, { method: "DELETE" })
+      .then((res) => {
+        if (res.ok) {
+          setCategories(categories.filter((c) => c.categoryId !== id));
+        }
+      })
+      .catch(console.error);
+  };
 
   const handleDeleteUser = (userId) => {
-    const user = users.find((u) => u.userId === userId);
+    const userToDelete = users.find((u) => u.userId === userId);
     if (
       window.confirm(
-        `Remove user ${user.username}? This action cannot be undone!`
+        `Remove user ${userToDelete.username}? This action cannot be undone!`
       )
     ) {
-      const init = {
-        method: "DELETE",
-      };
-      fetch(`http://localhost:8080/api/user/${userId}`, init)
-        .then((response) => {
-          if (response.status === 204) {
-            const newUsers = users.filter((u) => u.id !== userId);
-            setUsers(newUsers);
-          } else {
-            return Promise.reject(`Unexpected status code ${response.status}`);
+      fetch(`http://localhost:8080/api/user/${userId}`, { method: "DELETE" })
+        .then((res) => {
+          if (res.status === 204) {
+            setUsers((prev) => prev.filter((u) => u.userId !== userId));
           }
         })
-        .catch(console.log);
+        .catch(console.error);
     }
   };
 
   const handlePromoteToAdmin = (userId) => {
-    const user = users.find((u) => u.userId === userId);
-    if (window.confirm(`Promote user ${user.username} to admin?`)) {
-      const updatedUser = {
-        userId: user.userId,
-        username: user.username,
-        email: user.email,
-        password: user.password,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: "ADMIN",
-      };
-      console.log(updatedUser);
-      const init = {
+    const selected = users.find((u) => u.userId === userId);
+    if (window.confirm(`Promote ${selected.username} to admin?`)) {
+      fetch(`http://localhost:8080/api/user/${userId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedUser),
-      };
-      fetch(`http://localhost:8080/api/user/${userId}`, init)
-        .then((response) => {
-          if (response.status === 204) {
-            setUsers(users);
-          } else {
-            return Promise.reject(`Unexpected status code ${response.status}`);
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...selected, role: "ADMIN" }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            setUsers((prev) =>
+              prev.map((u) =>
+                u.userId === userId ? { ...u, role: "ADMIN" } : u
+              )
+            );
           }
         })
-        .catch(console.log);
+        .catch(console.error);
     }
   };
 
-  const handleCategoryChange = (event) => {
-    setNewCategory(event.target.value);
-  };
-
-  const handleDeleteCategory = (categoryId) => {
-    const toDelete = categories.find((c) => c.categoryId === categoryId);
-    if (
-      window.confirm(
-        `Delete category ${toDelete.name}? This action cannot be undone!`
-      )
-    ) {
-      const init = {
-        method: "DELETE",
-      };
-      fetch(`http://localhost:8080/api/category/${categoryId}`)
-        .catch.then((response) => {
-          if (response.status === 204) {
-            const newCats = categories.filter((c) => c.id !== categoryId);
-            setCategories(newCats);
-          } else {
-            return Promise.reject(`Unexpected Status Code: ${response.status}`);
-          }
-        })
-        .catch(console.log);
-    }
-  };
-
-  const handleAddCategory = () => {
-    const cat = {
-      name: newCategory,
-    };
-    const init = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(cat),
-    };
-    fetch("http://localhost:8080/api/category", init)
-      .then((response) => {
-        if (response.status === 201 || response.status === 400) {
-          return response.json();
-        } else {
-          return Promise.reject(`Unexpected Status Code: ${response.status}`);
-        }
-      })
-      .then((data) => {
-        setCategories([...categories, data]);
-      })
-      .catch(console.log);
-  };
+  const showUserTabs = ["account", "recipes", "favorites"];
+  const showAdminTabs = ["users", "categories"];
 
   return (
     <section className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 shadow-sm">
         <div className="p-6 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
@@ -177,86 +124,55 @@ function Profile() {
           </p>
         </div>
 
-        {/* User menu */}
-        {user?.role === "USER" && (
-          <ul className="mt-6 space-y-1">
-            <li>
+        <ul className="mt-6 space-y-1">
+          {showUserTabs.map((key) => (
+            <li key={key}>
               <button
                 className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                  activeTab === "account" ? "bg-gray-100 font-semibold" : ""
+                  activeTab === key ? "bg-gray-100 font-semibold" : ""
                 }`}
-                onClick={() => setActiveTab("account")}
+                onClick={() => setActiveTab(key)}
               >
-                Account
+                {key === "account"
+                  ? "Account"
+                  : key === "recipes"
+                  ? "My Recipes"
+                  : "View Favorites"}
               </button>
             </li>
-            <li>
-              <button
-                className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                  activeTab === "recipes" ? "bg-gray-100 font-semibold" : ""
-                }`}
-                onClick={() => setActiveTab("recipes")}
-              >
-                My Recipes
-              </button>
-            </li>
-            <li>
-              <button
-                className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                  activeTab === "favorites" ? "bg-gray-100 font-semibold" : ""
-                }`}
-                onClick={() => setActiveTab("favorites")}
-              >
-                View Favorites
-              </button>
-            </li>
-          </ul>
-        )}
+          ))}
+        </ul>
 
-        {/* Admin panel */}
         {user?.role === "ADMIN" && (
           <div className="mt-6 px-6">
             <h2 className="text-md font-medium text-gray-800">Admin Panel</h2>
-            <p className="text-sm text-gray-500 mt-1">
-              You have admin privileges.
-            </p>
-            <ul className="mt-6 space-y-1">
-              <li>
-                <button
-                  className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                    activeTab === "users" ? "bg-gray-100 font-semibold" : ""
-                  }`}
-                  onClick={() => setActiveTab("users")}
-                >
-                  View Users
-                </button>
-              </li>
-              <li>
-                <button
-                  className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                    activeTab === "users" ? "bg-gray-100 font-semibold" : ""
-                  }`}
-                  onClick={() => setActiveTab("categories")}
-                >
-                  View Categories
-                </button>
-              </li>
+            <ul className="mt-4 space-y-1">
+              {showAdminTabs.map((key) => (
+                <li key={key}>
+                  <button
+                    className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                      activeTab === key ? "bg-gray-100 font-semibold" : ""
+                    }`}
+                    onClick={() => setActiveTab(key)}
+                  >
+                    {key === "users" ? "View Users" : "View Categories"}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
         )}
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 p-10">
         {activeTab === "account" && user && (
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-2xl font-semibold text-gray-800 text-center">
+            <h1 className="text-2xl font-semibold text-center text-gray-800">
               Account Settings
             </h1>
-            <p className="mt-2 text-gray-600 text-center">
+            <p className="mt-2 text-center text-gray-600">
               Manage your profile information.
             </p>
-
             <div className="mt-8 bg-white p-6 rounded-lg shadow-sm">
               <AccountForm account={user} />
             </div>
@@ -264,26 +180,19 @@ function Profile() {
         )}
 
         {activeTab === "recipes" && <MyRecipes />}
-
         {activeTab === "favorites" && (
           <section>
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-gray-800">
-                Favorites
-              </h1>
-              <p className="mt-2 text-gray-600">
-                Your saved and liked recipes appear here.
-              </p>
-            </div>
-
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+              Favorites
+            </h1>
             {favorites.length === 0 ? (
               <p className="text-gray-500 italic">
-                You haven't favorited any recipes yet.
+                You haven’t favorited any recipes yet.
               </p>
             ) : (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {favorites.map((recipe) => (
-                  <RecipeCard recipe={recipe} key={recipe.recipeId} />
+                  <RecipeCard key={recipe.recipeId} recipe={recipe} />
                 ))}
               </div>
             )}
@@ -292,28 +201,27 @@ function Profile() {
 
         {activeTab === "users" && (
           <section>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
-            </div>
-
-            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-              {users.map((user) => (
-                <div>
-                  <UserCard user={user} key={user.userId} />
-                  <button
-                    className="bg-red-800 text-white rounded-xl p-1 hover:bg-red-600"
-                    onClick={() => handleDeleteUser(user.userId)}
-                  >
-                    Remove User
-                  </button>
-                  {user.role !== "ADMIN" && (
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">Users</h1>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {users.map((u) => (
+                <div key={u.userId}>
+                  <UserCard user={u} />
+                  <div className="mt-2 flex gap-2">
                     <button
-                      className="ml-3 bg-yellow-800 text-black rounded-xl p-1 hover:bg-yellow-600"
-                      onClick={() => handlePromoteToAdmin(user.userId)}
+                      className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-600"
+                      onClick={() => handleDeleteUser(u.userId)}
                     >
-                      Promote to admin
+                      Remove
                     </button>
-                  )}
+                    {u.role !== "ADMIN" && (
+                      <button
+                        className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-300"
+                        onClick={() => handlePromoteToAdmin(u.userId)}
+                      >
+                        Promote to Admin
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -322,49 +230,43 @@ function Profile() {
 
         {activeTab === "categories" && (
           <section>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-800">
-                Categories
-              </h1>
-            </div>
-
-            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-              {categories.map((category) => (
-                <div className="bg-white text-center p-4 shadow-md rounded-xl">
-                  {category.name}
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+              Categories
+            </h1>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map((cat) => (
+                <div
+                  key={cat.categoryId}
+                  className="bg-white text-center p-4 shadow-md rounded"
+                >
+                  {cat.name}
                   <div>
                     <button
-                      className="bg-red-800 text-white p-1 rounded-md hover:bg-red-600"
-                      onClick={() => handleDeleteCategory(category.categoryId)}
+                      className="mt-2 bg-red-700 text-white px-2 py-1 rounded hover:bg-red-500"
+                      onClick={() => handleDeleteCategory(cat.categoryId)}
                     >
-                      Remove Category
+                      Remove
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-4">
-              <h2 className="text-2xl">Add a category</h2>
-              <form>
-                <fieldset>
-                  <label className="mr-2" htmlFor="Name">
-                    Category
-                  </label>
-                  <input
-                    id="category"
-                    name="category"
-                    type="text"
-                    className="form-control"
-                    value={newCategory}
-                    onChange={handleCategoryChange}
-                    onClick={handleAddCategory}
-                  />
-                </fieldset>
-                <button className="bg-blue-800 text-white p-1 rounded-xl hover:bg-blue-600">
-                  Add
-                </button>
-              </form>
-            </div>
+
+            <form className="mt-6 flex gap-4" onSubmit={handleAddCategory}>
+              <input
+                type="text"
+                placeholder="New category"
+                value={newCategory}
+                onChange={handleCategoryChange}
+                className="border px-3 py-2 rounded w-64"
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
+              >
+                Add Category
+              </button>
+            </form>
           </section>
         )}
       </main>

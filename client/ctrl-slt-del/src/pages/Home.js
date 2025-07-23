@@ -109,7 +109,8 @@ function Home() {
       .then((data) => {
         return data.sort((a, b) => b.favorited - a.favorited).slice(0, 5);
       })
-      .then((data) => setCommunityRecipes(data));
+      .then(setCommunityRecipes)
+      .catch((err) => console.error("Community fetch error:", err));
   }, []);
 
   useEffect(() => {
@@ -121,10 +122,9 @@ function Home() {
           return Promise.reject(`Unexpected status code ${response.status}`);
         }
       })
-      .then((data) => {
-        return data.filter((r) => r.featured === true).slice(0, 3);
-      })
-      .then((data) => setAdminRecipes(data));
+      .then((data) => data.filter((r) => r.featured === true).slice(0, 3))
+      .then(setAdminRecipes)
+      .catch((err) => console.error("Admin fetch error:", err));
   }, []);
 
   return (
@@ -202,23 +202,28 @@ function Home() {
               )}
             >
               {communityRecipes.map((recipe) => (
-                <div className="flex justify-center">
-                  <RecipeCard recipe={recipe} key={recipe.recipeId} />
+                <div
+                  key={recipe.recipeId || recipe.id}
+                  className="flex justify-center"
+                >
+                  <RecipeCard recipe={recipe} />
                 </div>
               ))}
             </Carousel>
           </div>
         </div>
       </section>
+
       <section>
         <div className="mx-auto mx-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight mb-3 text-gray-900 sm:text-6xl ">
             Picks from our moderators
           </h1>
           <div className="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-            {" "}
             {adminRecipes.map((recipe) => (
-              <RecipeCard className="" recipe={recipe} key={recipe.recipeId} />
+              <div key={recipe.recipeId || recipe.id}>
+                <RecipeCard recipe={recipe} />
+              </div>
             ))}
           </div>
         </div>
