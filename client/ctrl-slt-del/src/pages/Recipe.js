@@ -8,45 +8,97 @@ const RECIPE_DEFAULT = {
   cookTime: 45,
   servings: 8,
   description: "A delicious and decadent chocolate cake",
-  instructions: [
-    {
-      stepNumber: 1,
-      instruction: "Take your dry ingredients and mix them",
-    },
-    {
-      stepNumber: 2,
-      instruction: "Add wet ingredients and mix some more",
-    },
-    {
-      stepNumber: 3,
-      instruction: "Bake for 45 min",
-    },
-    {
-      stepNumber: 4,
-      instruction: "Cool, then frost if desired",
-    },
-  ],
-  ingredients: [
-    { name: "Flour", quantity: 2, unit: "cup" },
-    { name: "Sugar", quantity: 1, unit: "cup" },
-    { name: "Milk", quantity: 1, unit: "cup" },
-    { name: "Butter", quantity: 1, unit: "cup" },
-    { name: "Cocoa powder", quantity: 0.3, unit: "cup" },
-  ],
-  comments: [
-    {
-      user: "cookingpapa",
-      comment: "Tried this cake and it was soooo good",
-    },
-    {
-      user: "gianttroll",
-      comment: "this sucks",
-    },
-  ],
 };
+
+const IMG_DEFAULT = "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
 
 function Recipe() {
   const [recipe, setRecipe] = useState(RECIPE_DEFAULT);
+  const [ingredients, setIngredients] = useState([]);
+  const [instructions, setInstructions] = useState([]);
+  const [comments, setComments] = useState([]);
+  const { id } = useParams();
+
+  const recipeUrl = "http://localhost:8080/api/recipes";
+  const recipeIngredientUrl = "http://localhost:8080/api/recipe_ingredient";
+  const instructionURL = "http://localhost:8080/api/instruction";
+  const commentUrl = "http://localhost:8080/api/comment/recipe";
+
+  useEffect(() => {
+    if (id) {
+      fetch(`${recipeUrl}/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .then((data) => {
+          setRecipe(data);
+        })
+        .catch(console.log);
+    } else {
+      setRecipe(RECIPE_DEFAULT);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetch(`${recipeIngredientUrl}/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .then((data) => {
+          setIngredients(data);
+        })
+        .catch(console.log);
+    } else {
+      setIngredients([]);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetch(`${instructionURL}/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .then((data) => {
+          setInstructions(data);
+        })
+        .catch(console.log);
+    } else {
+      setInstructions([]);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetch(`${commentUrl}/${id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .then((data) => {
+          setComments(data);
+        })
+        .catch(console.log);
+    } else {
+      setComments([]);
+    }
+  }, [id]);
 
   return (
     <>
@@ -57,23 +109,24 @@ function Recipe() {
             <h2 className="text-xl text-gray-800 mb-3">{recipe.description}</h2>
             <img
               className="mx-auto my-4 rounded-lg shadow"
-              src="https://images.unsplash.com/photo-1616031037011-087000171abe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxM3x8Q2hvY29sYXRlJTIwQ2FrZXxlbnwwfDB8fHwxNjk0MTc2ODk0fDA&ixlib=rb-4.0.3&q=80&w=1080"
-              alt="Chocolate Cake"
+              src={recipe.img ? recipe.img : IMG_DEFAULT}
+              alt={recipe.description}
             ></img>
 
             <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
             <ul className="list-disc list-inside mb-4">
-              {recipe.ingredients.map((ingredient) => (
+              {ingredients.map((ingredient) => (
                 <li className="mb-2">
-                  {ingredient.quantity} {ingredient.unit} {ingredient.name}
+                  {ingredient.quantity} {ingredient.unit}{" "}
+                  {ingredient.ingredientName}
                 </li>
               ))}
             </ul>
 
             <h2 className="text-xl font-semibold mb-2">Instructions</h2>
             <ol className="list-decimal list-inside mb-6">
-              {recipe.instructions.map((instruction) => (
-                <li className="mb-2">{instruction.instruction}</li>
+              {instructions.map((instruction) => (
+                <li className="mb-2">{instruction.description}</li>
               ))}
             </ol>
           </div>
@@ -106,7 +159,7 @@ function Recipe() {
               Post comment
             </button>
           </form>
-          {recipe.comments.map((comment) => (
+          {comments.map((comment) => (
             <Comment comment={comment} />
           ))}
         </div>
