@@ -1,6 +1,5 @@
 package capstone.round_table.domain;
 
-import capstone.round_table.data.recipe.RecipeJdbcRepository;
 import capstone.round_table.data.recipe.RecipeRepository;
 import capstone.round_table.models.Difficulty;
 import capstone.round_table.models.Recipe;
@@ -410,7 +409,7 @@ class RecipeServiceTest {
     @Test
     void shouldNotUpdateNegativeUserId() {
         Recipe recipe = new Recipe(
-            1
+            1,
             -1,
             "Test",
             Difficulty.EASY,

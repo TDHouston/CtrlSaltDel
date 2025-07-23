@@ -5,6 +5,7 @@ import capstone.round_table.data.recipe.RecipeRepository;
 import capstone.round_table.models.Instruction;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,7 +39,7 @@ public class InstructionService {
      * @param instructions
      * @return
      */
-    public Result<Instruction> batchAdd(List<Instruction> instructions) {
+    public Result<List<Instruction>> batchAdd(List<Instruction> instructions) {
         return batchOperation(instructions, false);
     }
 
@@ -81,7 +82,7 @@ public class InstructionService {
      * @param instructions
      * @return
      */
-    public Result<Instruction> batchUpdate(List<Instruction> instructions) {
+    public Result<List<Instruction>> batchUpdate(List<Instruction> instructions) {
         return batchOperation(instructions, true);
     }
 
@@ -109,16 +110,30 @@ public class InstructionService {
      * @param isUpdate
      * @return
      */
-    private Result<Instruction> batchOperation(List<Instruction> instructions, boolean isUpdate) {
-        // Validate each instruction
+    private Result<List<Instruction>> batchOperation(List<Instruction> instructions, boolean isUpdate) {
+        Result<List<Instruction>> result = new Result<>();
+        List<Instruction> instructionList = new ArrayList<>();
+
         for (Instruction i : instructions) {
-            Result<Instruction> result = isUpdate ? updateInstruction(i) : addInstruction(i);
-            if (!result.isSuccess()) {
-                return result;
+            // Validate each instruction
+            Result<Instruction> check = isUpdate ? updateInstruction(i) : addInstruction(i);
+            // If any of them are invalid, immediately break after setting errors
+            if (!check.isSuccess()) {
+                result.addError(check.getErrors().get(0), check.getType());
+                break;
             }
+            // Else, add new instruction to list
+            instructionList.add(check.getPayload());
         }
 
-        return new Result<Instruction>();
+        // Return errors immediately
+        // Only set payload if ALL were valid
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        result.setPayload(instructionList);
+        return result;
     }
 
     /**

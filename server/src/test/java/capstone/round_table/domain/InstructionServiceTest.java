@@ -97,7 +97,7 @@ class InstructionServiceTest {
         when(repo.addInstruction(i1)).thenReturn(i1);
         when(repo.addInstruction(i2)).thenReturn(i2);
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.SUCCESS, result.getType());
     }
 
@@ -111,7 +111,7 @@ class InstructionServiceTest {
             new Instruction(3,1, 1, "Test")
         ));
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.DUPLICATE, result.getType());
         assertEquals("Step Number: 1 for Recipe ID: 1 is already defined.", result.getErrors().get(0));
     }
@@ -122,7 +122,7 @@ class InstructionServiceTest {
         Instruction i2 = new Instruction(1, 2, "Step Two");
         List<Instruction> instructions = Arrays.asList(i1, i2);
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -133,7 +133,7 @@ class InstructionServiceTest {
         Instruction i2 = new Instruction(1, 2, "Step Two");
         List<Instruction> instructions = Arrays.asList(i1, i2);
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -144,7 +144,7 @@ class InstructionServiceTest {
         Instruction i2 = new Instruction(1, 2, "Step Two");
         List<Instruction> instructions = Arrays.asList(i1, i2);
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Step Number must be greater than zero.", result.getErrors().get(0));
     }
@@ -155,7 +155,7 @@ class InstructionServiceTest {
         Instruction i2 = new Instruction(1, 2, "Step Two");
         List<Instruction> instructions = Arrays.asList(i1, i2);
 
-        Result<Instruction> result = service.batchAdd(instructions);
+        Result<List<Instruction>> result = service.batchAdd(instructions);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Step Number must be greater than zero.", result.getErrors().get(0));
     }
@@ -260,7 +260,7 @@ class InstructionServiceTest {
         when(repo.updateInstruction(i1)).thenReturn(true);
         when(repo.updateInstruction(i2)).thenReturn(true);
 
-        Result<Instruction> result = service.batchUpdate(instructions);
+        Result<List<Instruction>> result = service.batchUpdate(instructions);
         assertEquals(ResultType.SUCCESS, result.getType());
     }
 
@@ -273,7 +273,7 @@ class InstructionServiceTest {
         Instruction instruction = new Instruction(3,1, 2, "Test");
 
         when(repo.findAllByRecipeId(1)).thenReturn(instructions);
-        Result<Instruction> result = service.batchUpdate(Arrays.asList(instruction));
+        Result<List<Instruction>> result = service.batchUpdate(List.of(instruction));
         assertEquals(ResultType.DUPLICATE, result.getType());
         assertEquals("Step Number: 2 for Recipe ID: 1 is already defined.", result.getErrors().get(0));
     }
@@ -281,7 +281,7 @@ class InstructionServiceTest {
     @Test
     void shouldNotBatchUpdateRecipeIdEqualZero() {
         Instruction instruction = new Instruction(3,0, 2, "Test");
-        Result<Instruction> result = service.batchUpdate(Arrays.asList(instruction));
+        Result<List<Instruction>> result = service.batchUpdate(List.of(instruction));
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -289,7 +289,7 @@ class InstructionServiceTest {
     @Test
     void shouldNotBatchUpdateNegativeRecipeId() {
         Instruction instruction = new Instruction(3,-1, 2, "Test");
-        Result<Instruction> result = service.batchUpdate(Arrays.asList(instruction));
+        Result<List<Instruction>> result = service.batchUpdate(List.of(instruction));
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -297,7 +297,7 @@ class InstructionServiceTest {
     @Test
     void shouldBatchAddStepNumberEqualZero() {
         Instruction instruction = new Instruction(3,1, 0, "Test");
-        Result<Instruction> result = service.batchUpdate(Arrays.asList(instruction));
+        Result<List<Instruction>> result = service.batchUpdate(List.of(instruction));
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Step Number must be greater than zero.", result.getErrors().get(0));
     }
@@ -305,7 +305,7 @@ class InstructionServiceTest {
     @Test
     void shouldBatchAddNegativeStepNumber() {
         Instruction instruction = new Instruction(3,1, -2, "Test");
-        Result<Instruction> result = service.batchUpdate(Arrays.asList(instruction));
+        Result<List<Instruction>> result = service.batchUpdate(List.of(instruction));
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Step Number must be greater than zero.", result.getErrors().get(0));
     }

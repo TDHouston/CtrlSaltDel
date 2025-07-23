@@ -27,7 +27,7 @@ class RecipeIngredientServiceTest {
 
     @Test
     void shouldAddRecipeIngredient() {
-        List<RecipeIngredient> recipeIngredientList = Arrays.asList(
+        List<RecipeIngredient> recipeIngredientList = List.of(
             new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25))
         );
         when(repo.findAllIngredientsByRecipeId(10)).thenReturn(recipeIngredientList);
@@ -96,7 +96,7 @@ class RecipeIngredientServiceTest {
 
     @Test
     void shouldNotAddDuplicateRecipeIngredient() {
-        List<RecipeIngredient> recipeIngredientList = Arrays.asList(
+        List<RecipeIngredient> recipeIngredientList = List.of(
             new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25))
         );
         when(repo.findAllIngredientsByRecipeId(10)).thenReturn(recipeIngredientList);
@@ -215,7 +215,7 @@ class RecipeIngredientServiceTest {
 
     @Test
     void shouldUpdateRecipeIngredient() {
-        List<RecipeIngredient> recipeIngredientList = Arrays.asList(
+        List<RecipeIngredient> recipeIngredientList = List.of(
             new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25))
         );
         when(repo.findAllIngredientsByRecipeId(10)).thenReturn(recipeIngredientList);
@@ -277,7 +277,7 @@ class RecipeIngredientServiceTest {
 
     @Test
     void shouldNotUpdateDuplicateRecipeIngredient() {
-        List<RecipeIngredient> recipeIngredientList = Arrays.asList(
+        List<RecipeIngredient> recipeIngredientList = List.of(
             new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25))
         );
         when(repo.findAllIngredientsByRecipeId(10)).thenReturn(recipeIngredientList);
