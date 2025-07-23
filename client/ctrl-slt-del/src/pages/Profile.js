@@ -11,6 +11,7 @@ function Profile() {
   const [favorites, setFavorites] = useState([]);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ function Profile() {
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));
   });
-  
+
   useEffect(() => {
     fetch(`http://localhost:8080/api/category`)
       .then((response) => {
@@ -56,7 +57,7 @@ function Profile() {
         .then((data) => setFavorites(data))
         .catch((err) => console.error("Favorites fetch error:", err));
     }
-  }, [activeTab, user]);
+  });
 
   const handleDeleteUser = (userId) => {
     const user = users.find((u) => u.userId === userId);
@@ -111,6 +112,58 @@ function Profile() {
         })
         .catch(console.log);
     }
+  };
+
+  const handleCategoryChange = (event) => {
+    setNewCategory(event.target.value);
+  };
+
+  const handleDeleteCategory = (categoryId) => {
+    const toDelete = categories.find((c) => c.categoryId === categoryId);
+    if (
+      window.confirm(
+        `Delete category ${toDelete.name}? This action cannot be undone!`
+      )
+    ) {
+      const init = {
+        method: "DELETE",
+      };
+      fetch(`http://localhost:8080/api/category/${categoryId}`)
+        .catch.then((response) => {
+          if (response.status === 204) {
+            const newCats = categories.filter((c) => c.id !== categoryId);
+            setCategories(newCats);
+          } else {
+            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          }
+        })
+        .catch(console.log);
+    }
+  };
+
+  const handleAddCategory = () => {
+    const cat = {
+      name: newCategory,
+    };
+    const init = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cat),
+    };
+    fetch("http://localhost:8080/api/category", init)
+      .then((response) => {
+        if (response.status === 201 || response.status === 400) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected Status Code: ${response.status}`);
+        }
+      })
+      .then((data) => {
+        setCategories([...categories, data]);
+      })
+      .catch(console.log);
   };
 
   return (
@@ -277,8 +330,40 @@ function Profile() {
 
             <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
               {categories.map((category) => (
-                <div className="bg-white text-center p-4">{category.name}</div>
+                <div className="bg-white text-center p-4 shadow-md rounded-xl">
+                  {category.name}
+                  <div>
+                    <button
+                      className="bg-red-800 text-white p-1 rounded-md hover:bg-red-600"
+                      onClick={() => handleDeleteCategory(category.categoryId)}
+                    >
+                      Remove Category
+                    </button>
+                  </div>
+                </div>
               ))}
+            </div>
+            <div className="mt-4">
+              <h2 className="text-2xl">Add a category</h2>
+              <form>
+                <fieldset>
+                  <label className="mr-2" htmlFor="Name">
+                    Category
+                  </label>
+                  <input
+                    id="category"
+                    name="category"
+                    type="text"
+                    className="form-control"
+                    value={newCategory}
+                    onChange={handleCategoryChange}
+                    onClick={handleAddCategory}
+                  />
+                </fieldset>
+                <button className="bg-blue-800 text-white p-1 rounded-xl hover:bg-blue-600">
+                  Add
+                </button>
+              </form>
             </div>
           </section>
         )}
