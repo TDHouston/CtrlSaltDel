@@ -111,11 +111,15 @@ public class RecipeIngredientService {
 
         // Validate IDs
         validator.validate(ri.getRecipeId(), "Recipe ID", result);
-        validator.validate(ri.getRecipeId(), "Ingredient ID", result);
+        validator.validate(ri.getIngredientId(), "Ingredient ID", result);
 
         // Validate quantity
         if (ri.getUnit() != null) {
-            validator.validate(ri.getQuantity(), "Unit", result);
+            validator.validate(ri.getQuantity(), "Quantity", result);
+        }
+
+        if (!result.isSuccess()) {
+            return result;
         }
 
         // Check for duplicate

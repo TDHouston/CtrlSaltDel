@@ -33,7 +33,7 @@ public class Validator {
      * @param <T>
      */
     protected <T> void validate(BigDecimal num, String type, Result<T> result) {
-        if (num.compareTo(BigDecimal.ZERO) == 1) {
+        if (num.compareTo(BigDecimal.ZERO) == 0 || num.compareTo(BigDecimal.ZERO) == -1) {
             result.addError(
                 String.format("%s must be greater than zero.", type),
                 ResultType.INVALID
