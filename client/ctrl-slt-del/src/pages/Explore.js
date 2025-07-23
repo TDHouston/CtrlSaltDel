@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import RecipeCard from "../components/RecipeCard";
+import { Link } from "react-router-dom";
 
 const sorters = [
   "Favorites (high to low)",
@@ -48,12 +49,7 @@ function Explore() {
           <h1>What's cooking?</h1>
         </header>
         <div className="container mx-auto p-5">
-          <h1
-            className="text-xl font-bold
-                           mb-6 text-center"
-          >
-            Sort by
-          </h1>
+          <h1 className="text-xl font-bold mb-6 text-center">Sort by</h1>
 
           <div className="flex justify-center space-x-4 mb-6">
             {sorters.map((sort) => (
