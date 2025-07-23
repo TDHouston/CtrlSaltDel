@@ -22,4 +22,17 @@ public class RecipeSearchService {
     public List<RecipeDocument> findRecipesByIngredient(String ingredientName) {
         return ingredientElasticRepository.findByNameContaining(ingredientName);
     }
+
+    public boolean add(Recipe recipe) {
+        RecipeDocument document = new RecipeDocument();
+        document.setRecipeId(recipe.getRecipeId());
+        document.setCookTime(recipe.getCookTime());
+        document.setName(recipe.getName());
+        document.setDifficulty(recipe.getDifficulty());
+        document.setDescription(recipe.getDescription());
+        document.setServings(recipe.getServings());
+        document.setUserId(recipe.getUserId());
+        ingredientElasticRepository.save(document);
+        return true;
+    }
 }
