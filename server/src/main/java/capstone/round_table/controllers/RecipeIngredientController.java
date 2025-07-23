@@ -54,7 +54,7 @@ public class RecipeIngredientController {
 
         Result<RecipeIngredient> result = service.updateRecipeIngredient(ri);
         if (result.isSuccess()) {
-            return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ErrorResponse.build(result);
     }
