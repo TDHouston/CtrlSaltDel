@@ -3,7 +3,7 @@
 
 @recipe_ingredient = http://localhost:8080/api/recipe_ingredient
 
-GET {{base_url}}/hi HTTP/1.1
+GET {{base_url}} HTTP/1.1
 
 ###
 
@@ -35,4 +35,48 @@ GET {{recipe_ingredient}}/1 HTTP/1.1
 
 ###
 
-GET http://localhost:8080/api/comment/recipe/1 HTTP/1.1
+POST http://localhost:8080/api/favorite HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "recipeId":3
+}
+
+###
+
+GET http://localhost:8080/api/category HTTP/1.1
+
+###
+
+PUT http://localhost:8080/api/user/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId":1,
+    "username": "jsmith",
+    "email": "jsmith@example.com",
+    "password": "smith",
+    "firstName" : "John",
+    "lastName": "Smith",
+    "role": "ADMIN"
+}
+
+###
+POST http://localhost:8080/api/comment HTTP/1.1
+Content-Type: application/json
+
+{
+    "userId":1,
+    "recipeId":1,
+    "content": "this was awesome"
+}
+
+###
+
+GET http://localhost:8080/api/comment/recipe/1
+
+###
+
+DELETE http://localhost:8080/api/comment/15 HTTP/1.1
+
