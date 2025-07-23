@@ -1,32 +1,47 @@
 import { createContext, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("jwt_token") || "");
+  const [user, setUserState] = useState(null);
+  const [token, setTokenState] = useState("");
 
+  // Load user and token from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem("jwt_token");
     const storedUser = localStorage.getItem("user_data");
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setTokenState(storedToken);
+      setUserState(JSON.parse(storedUser));
     }
   }, []);
 
+  // Persist user state to localStorage on update
+  const setUser = (userData) => {
+    setUserState(userData);
+    if (userData) {
+      localStorage.setItem("user_data", JSON.stringify(userData));
+    } else {
+      localStorage.removeItem("user_data");
+    }
+  };
+
+  const setToken = (jwtToken) => {
+    setTokenState(jwtToken);
+    if (jwtToken) {
+      localStorage.setItem("jwt_token", jwtToken);
+    } else {
+      localStorage.removeItem("jwt_token");
+    }
+  };
+
   const login = (jwtToken, userData) => {
-    localStorage.setItem("jwt_token", jwtToken);
-    localStorage.setItem("user_data", JSON.stringify(userData));
     setToken(jwtToken);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem("jwt_token");
-    localStorage.removeItem("user_data");
     setToken("");
     setUser(null);
   };

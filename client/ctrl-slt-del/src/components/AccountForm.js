@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../helpers/AuthContext";
 
 function AccountForm({ account }) {
   const [user, setUser] = useState(account);
   const [errors, setErrors] = useState([]);
+  const { setUser: setAuthUser } = useContext(AuthContext);
+
+  const payload = {
+    userId: user.userId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    email: user.email,
+    password: user.password,
+    role: user.role,
+  };
 
   function handleChange(event) {
     setUser({ ...user, [event.target.name]: event.target.value });
@@ -19,9 +31,10 @@ function AccountForm({ account }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify(payload),
     };
 
+    console.log("Submitting update for user:", user);
     fetch(`http://localhost:8080/api/user/${user.userId}`, init)
       .then((response) => {
         if (response.status === 204) return null;
@@ -30,8 +43,9 @@ function AccountForm({ account }) {
       })
       .then((data) => {
         if (!data) {
-          // Optionally display a success toast or message
           console.log("Profile updated successfully");
+          setAuthUser(user);
+          localStorage.setItem("user", JSON.stringify(user));
         } else {
           setErrors(data);
         }

@@ -13,7 +13,7 @@ const DEFAULT_USER = {
 };
 
 function Login() {
-  const [page, setPage] = useState("signup");
+  const [page, setPage] = useState("login");
   const [formUser, setFormUser] = useState(DEFAULT_USER);
   const { user } = useContext(AuthContext);
 
