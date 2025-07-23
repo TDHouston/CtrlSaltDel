@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.authorizeRequests()
                 .antMatchers("/api/auth/*").permitAll()
-                .antMatchers("/api/top").permitAll()
+                .antMatchers("/api/favorite/top").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtRequestFilter(authenticationManager(), converter)) // 3
