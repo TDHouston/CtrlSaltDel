@@ -22,9 +22,9 @@ function Login() {
       {page === "signup" && (
         <SignUpForm user={formUser} setUser={setFormUser} setPage={setPage} />
       )}
-      {/* {page === "login" && (
+      {page === "login" && (
         <LoginForm user={formUser} setUser={setFormUser} setPage={setPage} />
-      )} */}
+      )}
     </main>
   );
 }

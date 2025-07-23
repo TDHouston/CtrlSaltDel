@@ -1,7 +1,7 @@
 package capstone.round_table.data.recipe;
 
 import capstone.round_table.models.Recipe;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+//import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
