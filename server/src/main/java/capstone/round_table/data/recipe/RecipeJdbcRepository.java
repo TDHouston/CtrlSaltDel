@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +67,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
      * @return
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Recipe> findAll() {
         final String sql = "SELECT " +
             "recipe_id, " +
@@ -77,8 +79,14 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "`description` " +
             "FROM recipe" +
             ";";
-
-        return jdbcTemplate.query(sql, new RecipeMapper());
+        List<Recipe> recipes = jdbcTemplate.query(sql, new RecipeMapper());
+        for (Recipe recipe : recipes) {
+            if (recipe != null) {
+                addCategories(recipe);
+                addAuthor(recipe);
+            }
+        }
+        return recipes;
     }
 
     /**
@@ -110,6 +118,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
         // Recipe will store the list of Categories
         if (recipe != null) {
             addCategories(recipe);
+            addAuthor(recipe);
         }
 
         return recipe;
@@ -198,5 +207,19 @@ public class RecipeJdbcRepository implements RecipeRepository {
 
         var categories = jdbcTemplate.query(sql, new CategoryMapper(), recipe.getRecipeId());
         recipe.setCategories(categories);
+    }
+
+    /**
+     * Update Recipe w/ name of user that owns it
+     * @param recipe
+     */
+    private void addAuthor(Recipe recipe) {
+        final String sql = "SELECT u.username " +
+                "FROM recipe rc " +
+                "JOIN user u ON u.user_id = rc.user_id " +
+                "WHERE rc.user_id = ?" +
+                ";";
+        var author = jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getString("username"), recipe.getUserId()).stream().findFirst().orElse(null);
+        recipe.setAuthor(author);
     }
 }
