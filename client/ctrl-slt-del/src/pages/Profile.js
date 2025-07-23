@@ -69,7 +69,6 @@ function Profile() {
 
   const handleDeleteUser = (userId) => {
     const user = users.find((u) => u.userId === userId);
-    console.log(users);
     if (
       window.confirm(
         `Remove user ${user.username}? This action cannot be undone!`
@@ -83,6 +82,38 @@ function Profile() {
           if (response.status === 204) {
             const newUsers = users.filter((u) => u.id !== userId);
             setUsers(newUsers);
+          } else {
+            return Promise.reject(`Unexpected status code ${response.status}`);
+          }
+        })
+        .catch(console.log);
+    }
+  };
+
+  const handlePromoteToAdmin = (userId) => {
+    const user = users.find((u) => u.userId === userId);
+    if (window.confirm(`Promote user ${user.username} to admin?`)) {
+      const updatedUser = {
+        userId: user.userId,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: "ADMIN",
+      };
+      console.log(updatedUser);
+      const init = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      };
+      fetch(`http://localhost:8080/api/user/${userId}`, init)
+        .then((response) => {
+          if (response.status === 204) {
+            setUsers(users);
           } else {
             return Promise.reject(`Unexpected status code ${response.status}`);
           }
@@ -217,6 +248,14 @@ function Profile() {
                   >
                     Remove User
                   </button>
+                  {user.role !== "ADMIN" && (
+                    <button
+                      className="ml-3 bg-yellow-800 text-black rounded-xl p-1 hover:bg-yellow-600"
+                      onClick={() => handlePromoteToAdmin(user.userId)}
+                    >
+                      Promote to admin
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
