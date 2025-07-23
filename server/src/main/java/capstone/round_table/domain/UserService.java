@@ -71,7 +71,7 @@ public class UserService implements UserDetailsService {
             result.addError(msg, ResultType.NOT_FOUND);
             return result;
         }
-        
+
         return result;
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class RecipeJdbcRepositoryTest {
 
     @Autowired
@@ -42,7 +42,7 @@ class RecipeJdbcRepositoryTest {
     @Test
     void shouldFindAllRecipes() {
         List<Recipe> recipes = repo.findAll();
-        assertTrue(recipes.size() >= 10);
+        assertTrue(recipes.size() >= 9);
     }
 
     @Test

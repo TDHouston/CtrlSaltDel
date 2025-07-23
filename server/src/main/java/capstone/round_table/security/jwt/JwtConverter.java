@@ -24,7 +24,7 @@ public class JwtConverter {
     private final String ISSUER = "CtrlSaltDel";
     private final int EXPIRATION_MINUTES = 5;
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
-    
+
 
     public String getTokenFromUser(User user) {
 

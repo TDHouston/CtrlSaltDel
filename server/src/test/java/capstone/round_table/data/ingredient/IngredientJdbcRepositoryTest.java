@@ -1,5 +1,6 @@
-package capstone.round_table.data;
+package capstone.round_table.data.ingredient;
 
+import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.data.ingredient.IngredientJdbcRepository;
 import capstone.round_table.models.Ingredient;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class IngredientJdbcRepositoryTest {
 
     @Autowired
