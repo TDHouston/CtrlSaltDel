@@ -84,6 +84,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             if (recipe != null) {
                 addCategories(recipe);
                 addAuthor(recipe);
+                addFavoriteCount(recipe);
             }
         }
         return recipes;
@@ -119,6 +120,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
         if (recipe != null) {
             addCategories(recipe);
             addAuthor(recipe);
+            addFavoriteCount(recipe);
         }
 
         return recipe;
