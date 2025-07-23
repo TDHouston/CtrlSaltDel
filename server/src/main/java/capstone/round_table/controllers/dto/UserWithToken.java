@@ -82,10 +82,13 @@ public class UserWithToken {
     }
 
     public void setUserInfoToDTO() {
-        this.role = user.getRole();
-        this.username = user.getUsername();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
+        if (user != null) {
+            this.userId = user.getUserId();
+            this.role = user.getRole();
+            this.username = user.getUsername();
+            this.firstName = user.getFirstName();
+            this.lastName = user.getLastName();
+            this.email = user.getEmail();
+        }
     }
 }

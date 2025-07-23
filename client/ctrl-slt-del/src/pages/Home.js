@@ -215,7 +215,7 @@ function Home() {
           <h1 className="text-4xl font-bold tracking-tight mb-3 text-gray-900 sm:text-6xl ">
             Picks from our moderators
           </h1>
-          <div class="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
             {" "}
             {adminRecipes.map((recipe) => (
               <RecipeCard className="" recipe={recipe} key={recipe.recipeId} />
