@@ -114,7 +114,7 @@ public class UserServiceTest {
         Result<User> result = service.addUser(user);
         assertFalse(result.isSuccess());
     }
-    
+
     @Test
     void shouldNotAddUserMissingEmail() {
         User user = generateUser();
