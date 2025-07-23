@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
+    // TODO: add reference to service and create controller
     private final UserService service;
 
     public UserController(UserService service) {
@@ -22,22 +23,12 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll() {
-        return service.findAll();
+        return null;
     }
 
-//    @GetMapping("/{userEmail}")
-//    public User findByEmail(@PathVariable String userEmail) {
-//        return service.findByEmail(userEmail);
-//    }
-//
-//    @GetMapping("/{userEmail}")
-//    public User findByUsername(@PathVariable String username) {
-//        return service.findByUsername(username);
-//    }
-
-    @GetMapping("/hi")
-    public String hi(){
-        return "hi";
+    @GetMapping("/{userEmail}")
+    public User findByEmail(@PathVariable String userEmail) {
+        return service.findByEmail(userEmail);
     }
 
     @PostMapping
@@ -51,12 +42,23 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<Object> update(@PathVariable int userId, @RequestBody User user) {
-        return null;
+        if (userId != user.getUserId()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        Result<User> result = service.updateUser(user);
+        if (result.isSuccess()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ErrorResponse.build(result);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteById(@PathVariable int userId) {
-        return null;
+        if (service.deleteUser(userId)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
