@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,27 +66,21 @@ public class RecipeJdbcRepository implements RecipeRepository {
      * @return
      */
     @Override
-    @Transactional(readOnly = true)
     public List<Recipe> findAll() {
         final String sql = "SELECT " +
             "recipe_id, " +
-            "user_id, " +
+            "recipe.user_id, " +
             "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description` " +
-            "FROM recipe" +
+            "`description`, " +
+             "username, " +
+                "featured " +
+            "FROM recipe INNER JOIN user ON recipe.user_id = user.user_id" +
             ";";
-        List<Recipe> recipes = jdbcTemplate.query(sql, new RecipeMapper());
-        for (Recipe recipe : recipes) {
-            if (recipe != null) {
-                addCategories(recipe);
-                addAuthor(recipe);
-                addFavoriteCount(recipe);
-            }
-        }
-        return recipes;
+
+        return jdbcTemplate.query(sql, new RecipeMapper());
     }
 
     /**
@@ -100,13 +93,15 @@ public class RecipeJdbcRepository implements RecipeRepository {
     public Recipe findByRecipeId(int recipeId) {
         final String sql = "SELECT " +
             "recipe_id, " +
-            "user_id, " +
+            "recipe.user_id, " +
             "`name` AS recipe_name, " +
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description` " +
-            "FROM recipe " +
+            "`description`, " +
+            "username, "+
+                "featured " +
+            "FROM recipe INNER JOIN user ON user.user_id = recipe.user_id " +
             "WHERE recipe_id = ?" +
             ";";
 
@@ -119,8 +114,6 @@ public class RecipeJdbcRepository implements RecipeRepository {
         // Recipe will store the list of Categories
         if (recipe != null) {
             addCategories(recipe);
-            addAuthor(recipe);
-            addFavoriteCount(recipe);
         }
 
         return recipe;
@@ -145,15 +138,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "WHERE user_id = ?" +
             ";";
 
-        List<Recipe> recipes = new ArrayList<>(jdbcTemplate.query(sql, new RecipeMapper(), userId));
-        for (Recipe recipe : recipes) {
-            if (recipe != null) {
-                addCategories(recipe);
-                addAuthor(recipe);
-                addFavoriteCount(recipe);
-            }
-        }
-        return recipes;
+        List<Recipe> result = new ArrayList<>(jdbcTemplate.query(sql, new RecipeMapper(), userId));
+        return result;
     }
 
 
@@ -216,32 +202,5 @@ public class RecipeJdbcRepository implements RecipeRepository {
 
         var categories = jdbcTemplate.query(sql, new CategoryMapper(), recipe.getRecipeId());
         recipe.setCategories(categories);
-    }
-
-    /**
-     * Update Recipe w/ name of user that owns it
-     * @param recipe
-     */
-    private void addAuthor(Recipe recipe) {
-        final String sql = "SELECT u.username " +
-                "FROM recipe rc " +
-                "JOIN user u ON u.user_id = rc.user_id " +
-                "WHERE rc.user_id = ?" +
-                ";";
-        var author = jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getString("username"), recipe.getUserId()).stream().findFirst().orElse(null);
-        recipe.setAuthor(author);
-    }
-
-    private void addFavoriteCount(Recipe recipe) {
-        final String sql = "select recipe_id, COUNT(recipe_id) as favorite_count " +
-                "from favorite " +
-                "where recipe_id = ? " +
-                "group by recipe_id;";
-        int count = jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("favorite_count"), recipe.getRecipeId())
-                .stream()
-                .findFirst()
-                .orElse(0);
-
-        recipe.setFavorited(count);
     }
 }
