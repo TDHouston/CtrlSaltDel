@@ -17,11 +17,9 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class RecipeServiceTest {
 
-    // Injects real Service
     @Autowired
     RecipeService service;
 
-    // Injects a mock repo
     @MockBean
     RecipeRepository repo;
 
@@ -536,21 +534,26 @@ class RecipeServiceTest {
     }
 
     @Test
-    void shouldDeleteRecipeByNonExistentId() {
+    void shouldNotDeleteRecipeByNonExistentId() {
         when(repo.deleteRecipeById(999)).thenReturn(false);
-        Result<Recipe> result = service.deleteRecipeById(1);
+        Result<Recipe> result = service.deleteRecipeById(999);
         assertEquals(ResultType.NOT_FOUND, result.getType());
+        assertEquals("Recipe ID: 999 was not found.", result.getErrors().get(0));
     }
 
     @Test
     void shouldNotDeleteRecipeByIdEqualZero() {
+        when(repo.deleteRecipeById(0)).thenReturn(false);
         Result<Recipe> result = service.deleteRecipeById(0);
         assertEquals(ResultType.NOT_FOUND, result.getType());
+        assertEquals("Recipe ID: 0 was not found.", result.getErrors().get(0));
     }
 
     @Test
     void shouldNotDeleteRecipeByNegativeId() {
+        when(repo.deleteRecipeById(-1)).thenReturn(false);
         Result<Recipe> result = service.deleteRecipeById(-1);
         assertEquals(ResultType.NOT_FOUND, result.getType());
+        assertEquals("Recipe ID: -1 was not found.", result.getErrors().get(0));
     }
 }
