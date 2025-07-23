@@ -1,89 +1,99 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RecipeCard from "../components/RecipeCard";
 
 const RECIPES_DEFAULT = [
   {
-    id: 1,
+    recipeId: 1,
     name: "Crispy Chicken",
     description: "Delicious crispy chicken with a sweet chili dipping sauce!",
     difficulty: 3,
     cookTime: 30,
-    upvotes: 300,
-    user: "cookingmama",
+    favorited: 300,
+    author: "cookingmama",
     img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
   },
   {
-    id: 2,
+    recipeId: 2,
     name: "Tofu Stir-Fry",
     description: "Garlic tofu stir-fry with green beans and onions",
     difficulty: 5,
     cookTime: 45,
-    upvotes: 200,
-    user: "cookingmama",
+    favorited: 200,
+    author: "cookingmama",
     img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
   },
   {
-    id: 3,
+    recipeId: 3,
     name: "Chocolate cupcakes",
     description:
       "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
     difficulty: 2,
     cookTime: 60,
-    upvotes: 100,
-    user: "cookingmama",
+    favorited: 100,
+    author: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
   },
   {
-    id: 4,
+    recipeId: 4,
     name: "Macaroni and cheese",
     description: "3 cheeses, all goodness.",
     difficulty: 2,
     cookTime: 20,
-    upvotes: 200,
-    user: "cookingmama",
+    favorited: 200,
+    author: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Zjy4R1VAkfSBhcHGe-whY1sL04epOzCYgA&s",
   },
   {
-    id: 5,
+    recipeId: 5,
     name: "Pizza",
     description: "It's not delivery - it's homemade.",
     difficulty: 7,
     cookTime: 30,
-    upvotes: 50,
-    user: "cookingmama",
+    favorited: 50,
+    author: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhqV7gsGTQ6K62gRiPUl_hHWJv71zgFEXzQ&s",
   },
 ];
 
 const sorters = [
-  "Upvotes (high to low)",
-  "Upvotes (low to high)",
-  "Difficulty (low to high)",
-  "Difficulty (high to low)",
+  "Favorites (high to low)",
+  "Favorites (low to high)",
   "Cook time (low to high)",
   "Cook time (high to low)",
 ];
 
 function Explore() {
   const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
-  const [sortBy, setSortBy] = useState("Upvotes (high to low)");
+  const [sortBy, setSortBy] = useState("Favorites (high to low)");
+
+  const url = "http://localhost:8080/api/recipes";
+
   const sortItems = () => {
     switch (sortBy) {
-      case "Upvotes (high to low)":
-        return recipes.sort((a, b) => b.upvotes - a.upvotes);
-      case "Upvotes (low to high)":
-        return recipes.sort((a, b) => a.upvotes - b.upvotes);
-      case "Difficulty (low to high)":
-        return recipes.sort((a, b) => a.difficulty - b.difficulty);
-      case "Difficulty (high to low)":
-        return recipes.sort((a, b) => b.difficulty - a.difficulty);
+      case "Favorited (high to low)":
+        return recipes.sort((a, b) => b.favorited - a.favorited);
+      case "Favorited (low to high)":
+        return recipes.sort((a, b) => a.favorited - b.favorited);
       case "Cook time (low to high)":
         return recipes.sort((a, b) => a.cookTime - b.cookTime);
       case "Cook time (high to low)":
         return recipes.sort((a, b) => b.cookTime - a.cookTime);
       default:
+        return recipes.sort((a, b) => b.favorited - a.favorited);
     }
   };
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected status code ${response.status}`);
+        }
+      })
+      .then((data) => setRecipes(data));
+  }, []);
 
   return (
     <>
@@ -122,7 +132,7 @@ function Explore() {
           <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
             {" "}
             {sortItems().map((recipe) => (
-              <RecipeCard recipe={recipe} key={recipe.id} />
+              <RecipeCard recipe={recipe} key={recipe.recipeId} />
             ))}
           </div>
         </section>

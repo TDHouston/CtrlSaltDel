@@ -38,8 +38,8 @@ public class CommentJdbcRepository implements CommentRepository {
 
     @Override
     public List<Comment> findByRecipeId(int recipeId) {
-        final String sql = "select comment_id, user_id, recipe_id, content " +
-                "from comment " +
+        final String sql = "select comment_id, comment.user_id, recipe_id, content, username " +
+                "from comment inner join user on comment.user_id = user.user_id " +
                 "where recipe_id = ?;";
         return jdbcTemplate.query(sql, new CommentMapper(), recipeId);
     }
