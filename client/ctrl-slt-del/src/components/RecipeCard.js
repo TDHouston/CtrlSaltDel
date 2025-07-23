@@ -1,6 +1,55 @@
+import { useContext, useState, useEffect } from "react";
+import { AuthContext } from "../helpers/AuthContext";
+
 const PLACEHOLDER_IMG =
   "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
 function RecipeCard({ recipe }) {
+  const { user } = useContext(AuthContext);
+  const favoriteUrl = "http://localhost:8080/api/favorite";
+  const [favorited, setFavorited] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      fetch(`${favoriteUrl}/${user.userId}`)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data.map((r) => r.recipeId).includes(recipe.recipeId)) {
+            setFavorited(true);
+          }
+        });
+    }
+  });
+
+  const handleAddFavorite = () => {
+    const body = {
+      userId: user?.userId,
+      recipeId: recipe.recipeId,
+    };
+    const init = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    };
+    fetch(favoriteUrl, init)
+      .then((response) => {
+        console.log(response);
+        if (
+          response.status === 201 ||
+          response.status === 400 ||
+          response.status === 204
+        ) {
+          return Promise.resolve("Added successfully.");
+        } else {
+          return Promise.reject(`Unexpected status code ${response.status}`);
+        }
+      })
+      .then(setFavorited(true));
+  };
   return (
     <div className="recipe-card flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800">
       <img
@@ -22,12 +71,23 @@ function RecipeCard({ recipe }) {
           {recipe.cookTime}m • difficulty rating{" "}
           <span className="font-bold">{recipe.difficulty}</span>
         </p>
-        <div className="flex flex-row">
-          <p className="p-1 mr-1">favorited {recipe.favorited} times</p>
-          <button className="mx-5 bg-yellow-200 rounded-xl p-1 hover:bg-yellow-400">
-            Add to favorites
-          </button>
-        </div>
+        <p className="p-1 mr-1">favorited {recipe.favorited} times</p>
+
+        {user && !favorited && (
+          <div className="flex flex-row">
+            <button
+              className="mx-5 bg-yellow-200 rounded-xl p-1 hover:bg-yellow-400"
+              onClick={handleAddFavorite}
+            >
+              Add to favorites
+            </button>
+          </div>
+        )}
+        {user && favorited && (
+          <div className="flex flex-row">
+            <p>Added to favorites!</p>
+          </div>
+        )}
       </div>
     </div>
   );

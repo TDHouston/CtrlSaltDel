@@ -33,7 +33,7 @@ public class FavoriteController {
         return service.findUserFavorites(userId);
     }
 
-    @GetMapping("/{recipeId}")
+    @GetMapping("/count/{recipeId}")
     public int getRecipeFavoriteCount(@PathVariable int recipeId) {
         return service.findRecipeFavoriteCount(recipeId);
     }

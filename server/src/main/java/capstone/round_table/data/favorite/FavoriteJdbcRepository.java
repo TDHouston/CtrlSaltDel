@@ -42,9 +42,10 @@ public class FavoriteJdbcRepository implements FavoriteRepository {
 
     @Override
     public List<Recipe> findUserFavorites(int userId) {
-        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description " +
+        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, u.username " +
                 "from favorite f " +
                 "join recipe r on r.recipe_id = f.recipe_id " +
+                "join user u on u.user_id = r.user_id " +
                 "where f.user_id = ?;";
         return jdbcTemplate.query(sql, new RecipeMapper(), userId);
     }
