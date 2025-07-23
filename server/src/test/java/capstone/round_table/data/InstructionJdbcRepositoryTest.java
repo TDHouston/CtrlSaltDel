@@ -1,5 +1,6 @@
-package capstone.round_table.data;
+package capstone.round_table.instruction;
 
+import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.data.instruction.InstructionJdbcRepository;
 import capstone.round_table.models.Instruction;
 import org.junit.jupiter.api.BeforeEach;

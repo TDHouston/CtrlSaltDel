@@ -9,10 +9,12 @@ import java.util.List;
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepo;
+    private final Validator validator;
     private final String NOT_FOUND = "Recipe ID: %s was not found.";
 
-    public RecipeService(RecipeRepository recipeRepository) {
+    public RecipeService(RecipeRepository recipeRepository, Validator validator) {
         this.recipeRepo = recipeRepository;
+        this.validator = validator;
     }
 
     /**
@@ -65,18 +67,23 @@ public class RecipeService {
         Result<Recipe> result = validate(recipe);
 
         // Check if recipe_id that is being updated is valid
-        validate(recipe.getRecipeId(), "Recipe ID", result);
-
+        validator.validate(recipe.getRecipeId(), "Recipe ID", result);
         if (!result.isSuccess()) {
             return result;
         }
 
+        // Check if update was successful
         if (!recipeRepo.updateRecipe(recipe)) {
             result.addError(String.format(NOT_FOUND, recipe.getRecipeId()), ResultType.NOT_FOUND);
         }
         return result;
     }
 
+    /**
+     * Deletes a recipe if it exists.
+     * @param recipeId
+     * @return
+     */
     public Result<Recipe> deleteRecipeById(int recipeId) {
         Result<Recipe> result = new Result<>();
         if (!recipeRepo.deleteRecipeById(recipeId)) {
@@ -104,33 +111,18 @@ public class RecipeService {
         }
 
         // Validate user_id
-        validate(recipe.getUserId(), "User ID", result);
+        validator.validate(recipe.getUserId(), "User ID", result);
 
         // Validate cook_time
         if (recipe.getCookTime() != Integer.MIN_VALUE) {
-            validate(recipe.getCookTime(), "Cook Time", result);
+            validator.validate(recipe.getCookTime(), "Cook Time", result);
         }
 
         // Validate servings
         if (recipe.getServings() != Integer.MIN_VALUE) {
-            validate(recipe.getServings(), "Servings", result);
+            validator.validate(recipe.getServings(), "Servings", result);
         }
 
         return result;
-    }
-
-    /**
-     * Checks if number value is greater than zero, which indicates valid value.
-     * @param num
-     * @param type
-     * @param result
-     */
-    private void validate(int num, String type, Result<Recipe> result) {
-        if (num <= 0) {
-            result.addError(
-                String.format("%s must be greater than zero.", type),
-                ResultType.INVALID
-            );
-        }
     }
 }

@@ -1,7 +1,6 @@
 package capstone.round_table.data.ingredient;
 
 import capstone.round_table.data.mappers.IngredientMapper;
-import capstone.round_table.data.mappers.RecipeIngredientMapper;
 import capstone.round_table.data.mappers.RecipeMapper;
 import capstone.round_table.models.Ingredient;
 import org.springframework.jdbc.core.JdbcTemplate;
