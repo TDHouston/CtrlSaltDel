@@ -15,11 +15,9 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 public class RecipeController {
     private final RecipeService service;
-    private final RecipeSearchService rservice;
 
     public RecipeController(RecipeService service, RecipeSearchService rservice) {
         this.service = service;
-        this.rservice = rservice;
     }
 
     @GetMapping
@@ -35,7 +33,6 @@ public class RecipeController {
     @PostMapping
     public ResponseEntity<Object> add(@RequestBody Recipe recipe) {
         Result<Recipe> result = service.addRecipe(recipe);
-        rservice.add(recipe);
         if (result.isSuccess()) {
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
