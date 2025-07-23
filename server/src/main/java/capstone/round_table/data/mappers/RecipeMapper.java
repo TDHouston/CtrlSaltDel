@@ -32,6 +32,8 @@ public class RecipeMapper implements RowMapper<Recipe> {
 
         recipe.setDescription(resultSet.getString("description"));
 
+        recipe.setAuthor(resultSet.getString("username"));
+
         return recipe;
     }
 }
