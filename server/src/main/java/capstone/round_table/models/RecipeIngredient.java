@@ -10,10 +10,6 @@ public class RecipeIngredient {
     private BigDecimal quantity;
     private String ingredientName;
 
-    public int getRecipeId() {
-        return recipeId;
-    }
-
     public RecipeIngredient(){}
 
     public RecipeIngredient(int recipeId, int ingredientId, Unit unit, BigDecimal quantity) {
@@ -21,6 +17,10 @@ public class RecipeIngredient {
         this.ingredientId = ingredientId;
         this.unit = unit;
         this.quantity = quantity;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
     }
 
     public void setRecipeId(int recipeId) {

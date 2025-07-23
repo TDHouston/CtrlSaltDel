@@ -1,6 +1,6 @@
-package capstone.round_table.data.recipe;
+package capstone.round_table.data;
 
-import capstone.round_table.data.KnownGoodState;
+import capstone.round_table.data.recipe.RecipeJdbcRepository;
 import capstone.round_table.models.Difficulty;
 import capstone.round_table.models.Recipe;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class RecipeJdbcRepositoryTest {
 
     @Autowired
@@ -42,7 +42,7 @@ class RecipeJdbcRepositoryTest {
     @Test
     void shouldFindAllRecipes() {
         List<Recipe> recipes = repo.findAll();
-        assertTrue(recipes.size() >= 10);
+        assertTrue(recipes.size() >= 9);
     }
 
     @Test

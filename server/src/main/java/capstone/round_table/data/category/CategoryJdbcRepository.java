@@ -68,8 +68,7 @@ public class CategoryJdbcRepository implements CategoryRepository {
     @Override
     @Transactional
     public boolean deleteCategory(int categoryId) {
-        boolean deletedRecipeCategory = jdbcTemplate.update("delete from recipe_category where category_id = ?;", categoryId) > 0;
-        boolean deleteCategory = jdbcTemplate.update("delete from category where category_id = ?;", categoryId) > 0;
-        return deletedRecipeCategory && deleteCategory;
+        jdbcTemplate.update("delete from recipe_category where category_id = ?;", categoryId);
+        return jdbcTemplate.update("delete from category where category_id = ?;", categoryId) > 0;
     }
 }

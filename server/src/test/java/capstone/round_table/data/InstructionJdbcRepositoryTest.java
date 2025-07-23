@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class InstructionJdbcRepositoryTest {
 
     @Autowired
@@ -98,6 +98,6 @@ class InstructionJdbcRepositoryTest {
 
     @Test
     void deleteInstructionById() {
-        assertTrue(repo.deleteInstructionById(5));
+        assertTrue(repo.deleteInstructionById(4));
     }
 }

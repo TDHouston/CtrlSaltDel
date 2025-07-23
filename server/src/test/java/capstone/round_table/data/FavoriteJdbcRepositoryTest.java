@@ -1,6 +1,7 @@
 package capstone.round_table.data;
 
-import capstone.round_table.data.comment.CommentJdbcRepository;
+
+import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.data.favorite.FavoriteJdbcRepository;
 import capstone.round_table.models.Recipe;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class FavoriteJdbcRepositoryTest {
     @Autowired
     FavoriteJdbcRepository repository;

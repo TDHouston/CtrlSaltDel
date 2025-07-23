@@ -1,4 +1,4 @@
-package capstone.round_table.jwt;
+package capstone.round_table.security.jwt;
 
 
 import capstone.round_table.models.User;
@@ -25,6 +25,7 @@ public class JwtConverter {
     private final int EXPIRATION_MINUTES = 5;
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
 
+
     public String getTokenFromUser(User user) {
 
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
@@ -34,14 +35,14 @@ public class JwtConverter {
 
         return Jwts.builder()
                 .setIssuer(ISSUER)
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .claim("roles", roles)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MILLIS))
                 .signWith(key)
                 .compact();
     }
 
-    public User getUserFromToken(String token) {
+    public org.springframework.security.core.userdetails.User getUserFromToken(String token) {
 
         if (token == null || !token.startsWith("Bearer ")) {
             return null;
@@ -54,14 +55,14 @@ public class JwtConverter {
                     .build()
                     .parseClaimsJws(token.substring(7)); // substring 7 to remove bearer
 
-            String username = jws.getBody().getSubject();
+            String email = jws.getBody().getSubject();
             String authStr = (String) jws.getBody().get("roles");
             List<GrantedAuthority> authorities = Arrays.stream(authStr.split(","))
                     .map(i -> new SimpleGrantedAuthority(i))
                     .collect(Collectors.toList());
 
             // TODO: DI user service to find user once we have token
-            return new User();
+            return new org.springframework.security.core.userdetails.User(email, email, authorities);
 
         } catch (ExpiredJwtException e) {
             System.out.println("THIS TOKEN IS EXPIRED!");

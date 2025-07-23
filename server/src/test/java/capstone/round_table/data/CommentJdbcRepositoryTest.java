@@ -1,7 +1,7 @@
 package capstone.round_table.data;
 
-import capstone.round_table.models.Comment;
 import capstone.round_table.data.comment.CommentJdbcRepository;
+import capstone.round_table.models.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class CommentJdbcRepositoryTest {
 
     @Autowired

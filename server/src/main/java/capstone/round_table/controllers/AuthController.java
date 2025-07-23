@@ -35,27 +35,22 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginAccount(@RequestBody Map<String, String> credentials) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                credentials.get("email"), credentials.get("password"));
-
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(credentials.get("email"), credentials.get("password"));
         try {
             Authentication authentication = authenticationManager.authenticate(authToken);
 
             if (authentication.isAuthenticated()) {
-                User user = (User) authentication.getPrincipal();
-                String jwtToken = converter.getTokenFromUser(user);
+                String jwtToken = converter.getTokenFromUser((User) authentication.getPrincipal());
 
-                // Include full user data
-                Map<String, Object> response = new HashMap<>();
-                response.put("token", jwtToken);
-                response.put("user", user);
+                HashMap<String, String> map = new HashMap<>();
+                map.put("token", jwtToken);
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                return new ResponseEntity<>(map, HttpStatus.OK);
             }
+
         } catch (AuthenticationException ex) {
             System.out.println(ex);
         }
-
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 

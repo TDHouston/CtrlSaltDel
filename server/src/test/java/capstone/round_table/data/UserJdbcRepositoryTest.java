@@ -1,8 +1,10 @@
 package capstone.round_table.data;
 
+
+import capstone.round_table.data.KnownGoodState;
+import capstone.round_table.data.user.UserJdbcRepository;
 import capstone.round_table.models.Role;
 import capstone.round_table.models.User;
-import capstone.round_table.data.user.UserJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest
 class UserJdbcRepositoryTest {
 
     @Autowired
@@ -85,7 +87,7 @@ class UserJdbcRepositoryTest {
 
     @Test
     void shouldDeleteUser() {
-        assertTrue(repository.deleteUser(5));
+        assertTrue(repository.deleteUser(6));
     }
 
     private User generateUser() {
