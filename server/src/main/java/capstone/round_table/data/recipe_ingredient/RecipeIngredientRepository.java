@@ -14,5 +14,5 @@ public interface RecipeIngredientRepository {
 
     boolean updateRecipeIngredient(RecipeIngredient recipeIngredient);
 
-    boolean deleteRecipeIngredient(RecipeIngredient recipeIngredient);
+    boolean deleteRecipeIngredient(int recipeId, int ingredientId);
 }

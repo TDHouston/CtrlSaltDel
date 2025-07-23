@@ -117,7 +117,7 @@ class RecipeIngredientServiceTest {
         when(repo.addRecipeIngredient(ri)).thenReturn(ri);
         when(repo.addRecipeIngredient(ri2)).thenReturn(ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.SUCCESS, result.getType());
     }
 
@@ -131,7 +131,7 @@ class RecipeIngredientServiceTest {
             List.of(new RecipeIngredient(5, 2, Unit.MILLILITER, BigDecimal.valueOf(1.25))
         ));
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.DUPLICATE, result.getType());
         assertEquals("(Recipe ID: 5, Ingredient ID: 2) is already in the system.", result.getErrors().get(0));
     }
@@ -142,7 +142,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -153,7 +153,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Recipe ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -164,7 +164,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Ingredient ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -175,7 +175,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Ingredient ID must be greater than zero.", result.getErrors().get(0));
     }
@@ -186,7 +186,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Quantity must be greater than zero.", result.getErrors().get(0));
     }
@@ -197,7 +197,7 @@ class RecipeIngredientServiceTest {
         RecipeIngredient ri2 = new RecipeIngredient(5, 6, Unit.FLUID_OUNCE, BigDecimal.valueOf(3));
         List<RecipeIngredient> recipeIngredientList = Arrays.asList(ri, ri2);
 
-        Result<RecipeIngredient> result = service.batchAdd(recipeIngredientList);
+        Result<List<RecipeIngredient>> result = service.batchAdd(recipeIngredientList);
         assertEquals(ResultType.INVALID, result.getType());
         assertEquals("Quantity must be greater than zero.", result.getErrors().get(0));
     }
@@ -290,17 +290,15 @@ class RecipeIngredientServiceTest {
 
     @Test
     void shouldDeleteRecipeIngredient() {
-        RecipeIngredient ri = new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25));
-        when(repo.deleteRecipeIngredient(ri)).thenReturn(true);
-        Result<RecipeIngredient> result = service.deleteRecipeIngredient(ri);
+        when(repo.deleteRecipeIngredient(10, 10)).thenReturn(true);
+        Result<RecipeIngredient> result = service.deleteRecipeIngredient(10, 10);
         assertEquals(ResultType.SUCCESS, result.getType());
     }
 
     @Test
     void shouldNotDeleteNonExistentRecipeIngredient() {
-        RecipeIngredient ri = new RecipeIngredient(10, 10, Unit.MILLILITER, BigDecimal.valueOf(1.25));
-        when(repo.deleteRecipeIngredient(ri)).thenReturn(false);
-        Result<RecipeIngredient> result = service.deleteRecipeIngredient(ri);
+        when(repo.deleteRecipeIngredient(10, 10)).thenReturn(false);
+        Result<RecipeIngredient> result = service.deleteRecipeIngredient(10, 10);
         assertEquals(ResultType.NOT_FOUND, result.getType());
         assertEquals("RecipeIngredient (recipe id: 10 AND/OR ingredient id: 10) was not found.", result.getErrors().get(0));
     }

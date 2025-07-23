@@ -114,15 +114,16 @@ public class RecipeIngredientJdbcRepository implements RecipeIngredientRepositor
     /**
      * Delete a RecipeIngredient entry in database.
      * Recipe id and Ingredient id together are a unique entry.
-     * @param recipeIngredient
+     * @param recipeId
+     * @param ingredientId
      * @return
      */
     @Override
-    public boolean deleteRecipeIngredient(RecipeIngredient recipeIngredient) {
+    public boolean deleteRecipeIngredient(int recipeId, int ingredientId) {
         return jdbcTemplate.update(
             "DELETE FROM recipe_ingredient WHERE recipe_id = ? AND ingredient_id = ?;",
-            recipeIngredient.getRecipeId(),
-            recipeIngredient.getIngredientId()
+            recipeId,
+            ingredientId
         ) > 0;
     }
 }

@@ -39,11 +39,12 @@ public class RecipeController {
 
     @PutMapping("/{recipeId}")
     public ResponseEntity<Object> update(@PathVariable int recipeId, @RequestBody Recipe recipe) {
-        if(recipeId != recipe.getRecipeId()) {
+        if (recipeId != recipe.getRecipeId()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
         Result<Recipe> result = service.updateRecipe(recipe);
-        if(result.isSuccess()) {
+        if (result.isSuccess()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ErrorResponse.build(result);
@@ -51,11 +52,9 @@ public class RecipeController {
 
     @DeleteMapping("/{recipeId}")
     public ResponseEntity<Void> deleteById(@PathVariable int recipeId) {
-        if(service.deleteRecipeById(recipeId).isSuccess()) {
+        if (service.deleteRecipeById(recipeId).isSuccess()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-
 }
