@@ -10,6 +10,7 @@ function Profile() {
   const [activeTab, setActiveTab] = useState("account");
   const [favorites, setFavorites] = useState([]);
   const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -30,6 +31,18 @@ function Profile() {
         return res.json();
       })
       .then((data) => setUsers(data))
+      .catch((err) => console.error(err));
+  });
+  
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/category`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Something went wrong retrieving the categories");
+        }
+        return response.json();
+      })
+      .then((data) => setCategories(data))
       .catch((err) => console.error(err));
   });
 
@@ -165,6 +178,16 @@ function Profile() {
                   View Users
                 </button>
               </li>
+              <li>
+                <button
+                  className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                    activeTab === "users" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => setActiveTab("categories")}
+                >
+                  View Categories
+                </button>
+              </li>
             </ul>
           </div>
         )}
@@ -239,6 +262,22 @@ function Profile() {
                     </button>
                   )}
                 </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {activeTab === "categories" && (
+          <section>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-800">
+                Categories
+              </h1>
+            </div>
+
+            <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map((category) => (
+                <div className="bg-white text-center p-4">{category.name}</div>
               ))}
             </div>
           </section>
