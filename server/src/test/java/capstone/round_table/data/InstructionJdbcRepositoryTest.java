@@ -1,6 +1,5 @@
-package capstone.round_table.instruction;
+package capstone.round_table.data;
 
-import capstone.round_table.data.KnownGoodState;
 import capstone.round_table.data.instruction.InstructionJdbcRepository;
 import capstone.round_table.models.Instruction;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,6 +97,6 @@ class InstructionJdbcRepositoryTest {
 
     @Test
     void deleteInstructionById() {
-        assertTrue(repo.deleteInstructionById(5));
+        assertTrue(repo.deleteInstructionById(6));
     }
 }

@@ -1,7 +1,6 @@
-package capstone.round_table.data.recipe_ingredient;
+package capstone.round_table.data;
 
-import capstone.round_table.data.KnownGoodState;
-import capstone.round_table.models.Instruction;
+import capstone.round_table.data.recipe_ingredient.RecipeIngredientJdbcRepository;
 import capstone.round_table.models.RecipeIngredient;
 import capstone.round_table.models.Unit;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,8 +62,8 @@ class RecipeIngredientJdbcRepositoryTest {
     @Test
     void shouldDeleteRecipeIngredient() {
         RecipeIngredient ri = new RecipeIngredient();
-        ri.setRecipeId(5);
-        ri.setIngredientId(5);
+        ri.setRecipeId(6);
+        ri.setIngredientId(6);
         assertTrue(repo.deleteRecipeIngredient(ri));
     }
 }

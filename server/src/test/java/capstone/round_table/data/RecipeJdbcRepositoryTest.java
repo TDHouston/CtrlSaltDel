@@ -1,6 +1,6 @@
-package capstone.round_table.data.recipe;
+package capstone.round_table.data;
 
-import capstone.round_table.data.KnownGoodState;
+import capstone.round_table.data.recipe.RecipeJdbcRepository;
 import capstone.round_table.models.Difficulty;
 import capstone.round_table.models.Recipe;
 import org.junit.jupiter.api.BeforeEach;
