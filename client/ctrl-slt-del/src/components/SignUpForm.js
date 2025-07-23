@@ -1,78 +1,160 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../helpers/AuthContext";
 
-function SignUpForm({ newUser }) {
-  const [user, setUser] = useState(newUser);
+function SignUpForm({ user, setUser, setPage }) {
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   function handleChange(event) {
+    setUser({ ...user, [event.target.name]: event.target.value });
+  }
+
+  function handleSubmit(event) {
     event.preventDefault();
-
-    const newUser = { ...user };
-    newUser[event.target.name] = event.target.value;
-
-    setUser(newUser);
+    addUser();
   }
 
-  function handleSubmit() {
-
-  }
-
-  function handleaddUser() {
-     const init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
+  function addUser() {
+    const init = {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(user),
     };
-    fetch(url, init)
-    .then(response => {
-        if(response.status === 201 || response.status === 400){
-            return response.json();
+
+    fetch("http://localhost:8080/api/auth/register", init)
+      .then((response) => {
+        if (response.status === 201) return response.json();
+        if (response.status === 400) return response.json();
+        return Promise.reject(`Unexpected Status Code: ${response.status}`);
+      })
+      .then((data) => {
+        if (data?.token && data?.email) {
+          login(data.token, {
+            userId: data.userId,
+            role: data.role,
+            username: data.username,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+          });
+          console.log("Returned userWithToken from server:", data);
+          navigate(`/profile/${data.userId}`);
         } else {
-            return Promise.reject(`Unexpected Status Code: ${response.status}`);
+          setErrors(data);
         }
-    })
-    .then(data => {
-        if(data.id){ //Happy path
-            navigate('/');
-        } else { // Unhappy Path
-            setErrors(data);
-        }
-    })
-    .catch(console.log)
+      })
+      .catch(console.log);
   }
 
   return (
-    <section class="bg-gray-50 dark:bg-gray-900">
-      <div class="flex flex-col items-center justify-center px-6 mx-auto min-h-[calc(100vh-200px)] lg:py-0 min-">
-        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+    <section className="bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center justify-center px-6 mx-auto min-h-[calc(100vh-200px)] lg:py-0">
+        <div className="w-full bg-white rounded-lg shadow dark:border sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Create an account
             </h1>
-            <form class="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <fieldset>
+
+            {errors.length > 0 && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <p className="font-semibold">Errors:</p>
+                <ul className="list-disc pl-5">
+                  {errors.map((err, idx) => (
+                    <li key={idx}>{err}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+              {/* First + Last Name */}
+              <div className="flex flex-col sm:flex-row sm:space-x-4">
+                <div className="w-full sm:w-1/2">
+                  <label
+                    htmlFor="firstName"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    value={user.firstName}
+                    onChange={handleChange}
+                    placeholder="John"
+                    required
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+                <div className="w-full sm:w-1/2 mt-4 sm:mt-0">
+                  <label
+                    htmlFor="lastName"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    value={user.lastName}
+                    onChange={handleChange}
+                    placeholder="Doe"
+                    required
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Username */}
+              <div>
                 <label
-                  for="email"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlFor="username"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  value={user.username}
+                  onChange={handleChange}
+                  placeholder="JD101"
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Email
                 </label>
                 <input
                   type="email"
                   name="email"
                   id="email"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="johndoe@gmail.com"
-                  required=""
+                  value={user.email}
                   onChange={handleChange}
+                  placeholder="johndoe@example.com"
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
-              </fieldset>
-              <fieldset>
+              </div>
+
+              {/* Password */}
+              <div>
                 <label
-                  for="password"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password
                 </label>
@@ -80,65 +162,49 @@ function SignUpForm({ newUser }) {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="••••••••"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
+                  value={user.password}
                   onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
-              </fieldset>
-              <fieldset>
+              </div>
+
+              {/* Confirm Password */}
+              <div>
                 <label
-                  for="confirm-password"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlFor="confirm-password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Confirm password
+                  Confirm Password
                 </label>
                 <input
-                  type="confirm-password"
+                  type="password"
                   name="confirm-password"
                   id="confirm-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
-                  onChange={handleChange}
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 />
-              </fieldset>
-              {/* <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input
-                    id="terms"
-                    aria-describedby="terms"
-                    type="checkbox"
-                    class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    required=""
-                  />
-                </div>
-                <div class="ml-3 text-sm">
-                  <label
-                    for="terms"
-                    class="font-light text-gray-500 dark:text-gray-300"
-                  >
-                    I accept the{" "}
-                    <Link
-                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      to="#"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </label>
-                </div>
-              </div> */}
+              </div>
+
+              {/* Submit */}
               <button
                 type="submit"
-                class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
                 Create an account
               </button>
-              <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+
+              {/* Link to login */}
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link
                   to="#"
-                  class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  onClick={() => setPage("login")}
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Login here
                 </Link>

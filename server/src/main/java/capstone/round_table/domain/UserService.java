@@ -14,15 +14,14 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-    }
+        this.passwordEncoder = passwordEncoder;
 
+    }
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -89,27 +88,27 @@ public class UserService implements UserDetailsService {
             return userResult;
         }
 
-        if (user.getUsername().isEmpty() || user.getUsername().isBlank()) {
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
             userResult.addError("Username is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
-        if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
             userResult.addError("Email is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
-        if (user.getPassword().isEmpty() || user.getPassword().isBlank()) {
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
             userResult.addError("Password is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
-        if (user.getFirstName().isEmpty() || user.getFirstName().isBlank()) {
+        if (user.getFirstName() == null || user.getFirstName().isBlank()) {
             userResult.addError("First name is required", ResultType.MISSING_INFO);
             return userResult;
         }
 
-        if (user.getLastName().isEmpty() || user.getLastName().isBlank()) {
+        if (user.getLastName() == null || user.getLastName().isBlank()) {
             userResult.addError("Last name is required", ResultType.MISSING_INFO);
             return userResult;
         }

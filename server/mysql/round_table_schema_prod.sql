@@ -40,6 +40,7 @@ CREATE TABLE recipe (
     cook_time INT,
     servings INT,
     `description` VARCHAR(200),
+    featured bit default false,
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)
@@ -134,17 +135,17 @@ INSERT INTO category (category_id, `name`) VALUES
 	(6, "raw");
 	
 -- ADD DATA TO RECIPE TABLE
-INSERT INTO recipe (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`) VALUES
-	(1, 1, "fish soup", "easy", 30, 5, "fish in soup"),
-	(2, 2, "scramble eggs", "easy", 10, 2, "Very difficult egg"),
-	(3, 3, "grill cheese", "intermediate", 5, 1, "easy grill cheese"),
-	(4, 4, "sandwhich", "intermediate", 10, 2, "mediocre sandwhich"),
-	(5, 5, "pizza", "advanced", 10, 2, "Very difficult egg"),
-	(6, 6, "ice cream", "advanced", 10, 2, "Very difficult egg"),
-	(7, 1, "burger", "expert", 10, 2, "Very difficult egg"),
-	(8, 2, "tacos", "expert", 5, 1, "easy grill cheese"),
-	(9, 1, "nuggets", "easy", 10, 2, "Very difficult egg"),
-	(10, 2, "burrito", "expert", 10, 2, "Very difficult egg");
+INSERT INTO recipe (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`, featured) VALUES
+	(1, 1, "fish soup", "easy", 30, 5, "fish in soup", true),
+	(2, 2, "scramble eggs", "easy", 10, 2, "Very difficult egg", false),
+	(3, 3, "grill cheese", "intermediate", 5, 1, "easy grill cheese",false),
+	(4, 4, "sandwhich", "intermediate", 10, 2, "mediocre sandwhich",false),
+	(5, 5, "pizza", "advanced", 10, 2, "Very difficult egg",true),
+	(6, 6, "ice cream", "advanced", 10, 2, "Very difficult egg",false),
+	(7, 1, "burger", "expert", 10, 2, "Very difficult egg",false),
+	(8, 2, "tacos", "expert", 5, 1, "easy grill cheese",false),
+	(9, 1, "nuggets", "easy", 10, 2, "Very difficult egg",true),
+	(10, 2, "burrito", "expert", 10, 2, "Very difficult egg",false);
 
 -- ADD DATA TO FAVORITE TABLE
 INSERT INTO favorite (user_id, recipe_id) VALUES

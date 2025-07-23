@@ -16,7 +16,6 @@ public class RecipeIngredientMapper implements RowMapper<RecipeIngredient> {
         ri.setRecipeId(resultSet.getInt("recipe_id"));
         ri.setIngredientId(resultSet.getInt("ingredient_id"));
 
-        // https://stackoverflow.com/questions/5991360/handling-the-null-value-from-a-resultset
         // Some values can be null in the database, will account for that to prevent errors
 
         String unit = resultSet.getString("unit");

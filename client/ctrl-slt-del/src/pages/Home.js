@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RecipeCard from "../components/RecipeCard";
 import { Carousel, IconButton } from "@material-tailwind/react";
 
@@ -9,7 +9,7 @@ const COMMUNITY_RECIPES_DEFAULT = [
     description: "Delicious crispy chicken with a sweet chili dipping sauce!",
     difficulty: 3,
     cookTime: 30,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
   },
@@ -19,7 +19,7 @@ const COMMUNITY_RECIPES_DEFAULT = [
     description: "Garlic tofu stir-fry with green beans and onions",
     difficulty: 5,
     cookTime: 45,
-    upvotes: 200,
+    favorited: 200,
     user: "cookingmama",
     img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
   },
@@ -30,7 +30,7 @@ const COMMUNITY_RECIPES_DEFAULT = [
       "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
     difficulty: 3,
     cookTime: 60,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
   },
@@ -40,7 +40,7 @@ const COMMUNITY_RECIPES_DEFAULT = [
     description: "Delicious crispy chicken with a sweet chili dipping sauce!",
     difficulty: 3,
     cookTime: 30,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
   },
@@ -50,7 +50,7 @@ const COMMUNITY_RECIPES_DEFAULT = [
     description: "It's not delivery - it's homemade.",
     difficulty: 3,
     cookTime: 30,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhqV7gsGTQ6K62gRiPUl_hHWJv71zgFEXzQ&s",
   },
@@ -63,7 +63,7 @@ const MOD_RECIPES_DEFAULT = [
     description: "Delicious crispy chicken with a sweet chili dipping sauce!",
     difficulty: 3,
     cookTime: 30,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
   },
@@ -73,7 +73,7 @@ const MOD_RECIPES_DEFAULT = [
     description: "Garlic tofu stir-fry with green beans and onions",
     difficulty: 5,
     cookTime: 45,
-    upvotes: 200,
+    favorited: 200,
     user: "cookingmama",
     img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
   },
@@ -84,17 +84,51 @@ const MOD_RECIPES_DEFAULT = [
       "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
     difficulty: 3,
     cookTime: 60,
-    upvotes: 100,
+    favorited: 100,
     user: "cookingmama",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
   },
 ];
+
+const FILLER_IMG = "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
 
 function Home() {
   const [communityRecipes, setCommunityRecipes] = useState(
     COMMUNITY_RECIPES_DEFAULT
   );
   const [adminRecipes, setAdminRecipes] = useState(MOD_RECIPES_DEFAULT);
+  const url = "http://localhost:8080/api/recipes";
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected status code ${response.status}`);
+        }
+      })
+      .then((data) => {
+        return data.sort((a, b) => b.favorited - a.favorited).slice(0, 5);
+      })
+      .then((data) => setCommunityRecipes(data));
+  }, []);
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          return Promise.reject(`Unexpected status code ${response.status}`);
+        }
+      })
+      .then((data) => {
+        return data.filter((r) => r.featured === true).slice(0, 3);
+      })
+      .then((data) => setAdminRecipes(data));
+  }, []);
+
   return (
     <>
       <section className="relative overflow-hidden bg-gradient-to-b from-purple-100 via-transparent to-transparent pt-20 pb-10">
@@ -171,7 +205,7 @@ function Home() {
             >
               {communityRecipes.map((recipe) => (
                 <div className="flex justify-center">
-                  <RecipeCard recipe={recipe} key={recipe.id} />
+                  <RecipeCard recipe={recipe} key={recipe.recipeId} />
                 </div>
               ))}
             </Carousel>
@@ -183,10 +217,10 @@ function Home() {
           <h1 className="text-4xl font-bold tracking-tight mb-3 text-gray-900 sm:text-6xl ">
             Picks from our moderators
           </h1>
-          <div class="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="relative mx-auto w-full z-10 grid grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
             {" "}
             {adminRecipes.map((recipe) => (
-              <RecipeCard className="" recipe={recipe} key={recipe.id} />
+              <RecipeCard className="" recipe={recipe} key={recipe.recipeId} />
             ))}
           </div>
         </div>

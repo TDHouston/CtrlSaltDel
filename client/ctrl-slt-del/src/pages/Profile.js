@@ -1,15 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import AccountForm from "../components/AccountForm";
-
-const DEFAULT_USER = {
-  role: "user",
-  first_name: "Julian",
-  last_name: "Houston",
-  username: "JH",
-  email: "trentdhouston@gmail.com",
-  password: "password",
-};
+import { useParams } from "react-router-dom";
 
 const RECIPES_DEFAULT = [
   {
@@ -100,10 +92,23 @@ const FAVORITES_DEFAULT = [
 ];
 
 function Profile() {
-  const [user, setUser] = useState(DEFAULT_USER);
+  const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("account");
   const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
   const [favorites, setFavorites] = useState(FAVORITES_DEFAULT);
+  const { id } = useParams();
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/user/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("User fetch failed");
+        return res.json();
+      })
+      .then((data) => setUser(data))
+      .catch((err) => console.error("User fetch error:", err));
+  }, [id]);
+
+  console.log("USER", user);
 
   return (
     <section className="flex min-h-screen bg-gray-100">
@@ -112,12 +117,12 @@ function Profile() {
         <div className="p-6 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
           <p className="text-sm text-gray-500">
-            Welcome back, {user.first_name || "User"}!
+            Welcome back, {user?.firstName || "User"}!
           </p>
         </div>
 
         {/* User menu */}
-        {user.role === "user" && (
+        {user?.role === "USER" && (
           <ul className="mt-6 space-y-1">
             <li>
               <button
@@ -153,7 +158,7 @@ function Profile() {
         )}
 
         {/* Admin panel */}
-        {user.role === "admin" && (
+        {user?.role === "ADMIN" && (
           <div className="mt-6 px-6">
             <h2 className="text-md font-medium text-gray-800">Admin Panel</h2>
             <p className="text-sm text-gray-500 mt-1">
@@ -165,7 +170,7 @@ function Profile() {
 
       {/* Main content */}
       <main className="flex-1 p-10">
-        {activeTab === "account" && (
+        {activeTab === "account" && user && (
           <div className="max-w-3xl mx-auto">
             <h1 className="text-2xl font-semibold text-gray-800 text-center">
               Account Settings

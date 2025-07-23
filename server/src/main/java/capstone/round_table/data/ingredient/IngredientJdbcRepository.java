@@ -53,6 +53,13 @@ public class IngredientJdbcRepository implements IngredientRepository {
         final String sql = "SELECT ingredient_id, `name` AS ingredient_name FROM ingredient;";
         List<Ingredient> result = jdbcTemplate.query(sql, new IngredientMapper());
 
+        // Add recipes for each ingredient
+        if (!result.isEmpty()) {
+            for (Ingredient i : result) {
+                addRecipeIngredient(i);
+            }
+        }
+
         return result;
     }
 
