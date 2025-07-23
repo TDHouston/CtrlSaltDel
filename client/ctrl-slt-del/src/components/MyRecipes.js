@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function MyRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState(null);
 
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();

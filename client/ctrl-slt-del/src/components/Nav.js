@@ -8,7 +8,6 @@ function Nav() {
   const { user, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log("Nav sees user:", user);
     if (user?.role === "ADMIN" || user?.role === "USER") {
       setIsAuth(true);
     } else {

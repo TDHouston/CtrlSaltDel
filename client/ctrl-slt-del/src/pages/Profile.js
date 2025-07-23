@@ -53,9 +53,7 @@ function Profile() {
       .then((data) => setUser(data))
       .catch((err) => console.error("User fetch error:", err));
   }, [id]);
-
-  console.log("USER", user);
-
+  
   return (
     <section className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}

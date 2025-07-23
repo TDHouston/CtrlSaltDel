@@ -1,60 +1,6 @@
 import { useState, useEffect } from "react";
 import RecipeCard from "../components/RecipeCard";
 
-const RECIPES_DEFAULT = [
-  {
-    recipeId: 1,
-    name: "Crispy Chicken",
-    description: "Delicious crispy chicken with a sweet chili dipping sauce!",
-    difficulty: 3,
-    cookTime: 30,
-    favorited: 300,
-    author: "cookingmama",
-    img: "https://www.stockvault.net/data/2016/04/19/194386/preview16.jpg",
-  },
-  {
-    recipeId: 2,
-    name: "Tofu Stir-Fry",
-    description: "Garlic tofu stir-fry with green beans and onions",
-    difficulty: 5,
-    cookTime: 45,
-    favorited: 200,
-    author: "cookingmama",
-    img: "https://spicysouthernkitchen.com/wp-content/uploads/tofu-13.jpg",
-  },
-  {
-    recipeId: 3,
-    name: "Chocolate cupcakes",
-    description:
-      "These cupcakes are perfectly light and fluffy with a chocolate frosting.",
-    difficulty: 2,
-    cookTime: 60,
-    favorited: 100,
-    author: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5fzbFvsLGIsMdgkMl3N-ln_GgDGqWHvLjVA&s",
-  },
-  {
-    recipeId: 4,
-    name: "Macaroni and cheese",
-    description: "3 cheeses, all goodness.",
-    difficulty: 2,
-    cookTime: 20,
-    favorited: 200,
-    author: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Zjy4R1VAkfSBhcHGe-whY1sL04epOzCYgA&s",
-  },
-  {
-    recipeId: 5,
-    name: "Pizza",
-    description: "It's not delivery - it's homemade.",
-    difficulty: 7,
-    cookTime: 30,
-    favorited: 50,
-    author: "cookingmama",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhqV7gsGTQ6K62gRiPUl_hHWJv71zgFEXzQ&s",
-  },
-];
-
 const sorters = [
   "Favorites (high to low)",
   "Favorites (low to high)",
@@ -63,7 +9,7 @@ const sorters = [
 ];
 
 function Explore() {
-  const [recipes, setRecipes] = useState(RECIPES_DEFAULT);
+  const [recipes, setRecipes] = useState([]);
   const [sortBy, setSortBy] = useState("Favorites (high to low)");
 
   const url = "http://localhost:8080/api/recipes";
@@ -114,15 +60,12 @@ function Explore() {
               <button
                 key={sort}
                 onClick={() => setSortBy(sort)}
-                className={`px-4 py-2 rounded-lg flex
-                                    items-center 
-                                    space-x-2 border ${
-                                      sortBy === sort
-                                        ? "bg-green-500 text-white"
-                                        : "bg-white text-black"
-                                    } hover:bg-green-300 transition`}
+                className={`px-4 py-2 rounded-lg flex items-center space-x-2 border ${
+                  sortBy === sort
+                    ? "bg-green-500 text-white"
+                    : "bg-white text-black"
+                } hover:bg-green-300 transition`}
               >
-                {" "}
                 <span>{sort}</span>
               </button>
             ))}
@@ -130,7 +73,6 @@ function Explore() {
         </div>
         <section>
           <div className="relative mx-auto w-full z-10 grid justify-center grid-cols-1 gap-20 pt-14 sm:grid-cols-2 lg:grid-cols-3">
-            {" "}
             {sortItems().map((recipe) => (
               <RecipeCard recipe={recipe} key={recipe.recipeId} />
             ))}
