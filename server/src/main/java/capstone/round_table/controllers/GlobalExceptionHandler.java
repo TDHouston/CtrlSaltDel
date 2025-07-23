@@ -8,6 +8,8 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,5 +45,13 @@ public class GlobalExceptionHandler {
             new ErrorResponse("Unsupported media type."),
             HttpStatus.UNSUPPORTED_MEDIA_TYPE
         );
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleException(DataIntegrityViolationException ex) {
+        if (ex.toString().contains("Duplicate entry")) {
+            return ErrorResponse.build("This email is already in use!", HttpStatus.CONFLICT);
+        }
+        return ErrorResponse.build("Something went wrong");
     }
 }
