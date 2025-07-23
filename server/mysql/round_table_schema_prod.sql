@@ -114,3 +114,102 @@ CREATE TABLE recipe_ingredient (
         REFERENCES ingredient(ingredient_id),
 	UNIQUE(recipe_id, ingredient_id)
 );
+
+-- ADD DATA TO USER TABLE
+INSERT INTO user (user_id, `role`, first_name, last_name, username, email, `password`) VALUES
+	(1, 'ADMIN', 'John', 'Smith', 'jsmith', 'jsmith@example.com', 'smith'),
+	(2, 'USER', 'Bob', 'Burn', 'bburn', 'bburn@example.com', 'burn'),
+	(3, 'ADMIN', 'Charlie', 'Brown', 'cbrown', 'cbrown@example.com', 'brown'),
+	(4, 'USER', 'Mary', 'Sue', 'msue', 'msue@example.com', 'sue'),
+	(5, 'ADMIN', 'Grey', 'Johnson', 'gjohnson', 'gjohnson@example.com', 'johnson'),
+	(6, 'USER', 'David', 'Dash', 'ddash', 'ddash@example.com', 'dash');
+	
+-- ADD DATA TO CATEGORY TABLE
+INSERT INTO category (category_id, `name`) VALUES
+	(1, "vegan"),
+	(2, "vegetarian"),
+	(3, "keto"),
+	(4, "paleo"),
+	(5, "low carb"),
+	(6, "raw");
+	
+-- ADD DATA TO RECIPE TABLE
+INSERT INTO recipe (recipe_id, user_id, `name`, difficulty, cook_time, servings, `description`) VALUES
+	(1, 1, "fish soup", "easy", 30, 5, "fish in soup"),
+	(2, 2, "scramble eggs", "easy", 10, 2, "Very difficult egg"),
+	(3, 3, "grill cheese", "intermediate", 5, 1, "easy grill cheese"),
+	(4, 4, "sandwhich", "intermediate", 10, 2, "mediocre sandwhich"),
+	(5, 5, "pizza", "advanced", 10, 2, "Very difficult egg"),
+	(6, 6, "ice cream", "advanced", 10, 2, "Very difficult egg"),
+	(7, 1, "burger", "expert", 10, 2, "Very difficult egg"),
+	(8, 2, "tacos", "expert", 5, 1, "easy grill cheese"),
+	(9, 1, "nuggets", "easy", 10, 2, "Very difficult egg"),
+	(10, 2, "burrito", "expert", 10, 2, "Very difficult egg");
+
+-- ADD DATA TO FAVORITE TABLE
+INSERT INTO favorite (user_id, recipe_id) VALUES
+	(1, 2),
+	(2, 1),
+	(3, 4),
+	(4, 3),
+	(4, 5),
+	(5, 4),
+	(1, 10),
+	(2, 8),
+	(1, 9);
+
+-- ADD DATA TO COMMENT TABLE
+  INSERT INTO `comment` (comment_id, user_id, recipe_id, content) VALUES
+	(1, 2, 1, "This was hard!"),
+	(2, 1, 2, "This was easy!"),
+	(3, 3, 4, "This was very difficult!"),	
+	(4, 4, 3, "This was ok!"),
+	(5, 5, 6, "This taste bad!"),
+	(6, 6, 5, "This taste good!"),	
+	(7, 1, 8, "Im lost!"),
+	(8, 2, 9, "I forgot the ingredients!"),
+	(9, 1, 10, "Made it with my eyes closed!"),
+	(10, 2, 10, "I ate it!");
+
+-- ADD DATA TO INGREDIENT TABLE
+INSERT INTO ingredient (ingredient_id, `name`) VALUES
+	(1, "egg"),
+	(2, "flour"),
+	(3, "sugar"),
+	(4, "salt"),
+	(5, "white bread"),
+	(6, "cheese"),
+	(7, "salmon"),
+	(8, "butter");
+
+-- ADD DATA TO RECIPE_CATEGORY TABLE
+INSERT INTO recipe_category(recipe_id, category_id) VALUES
+	(1,1),
+	(1,2),
+	(2,1),
+	(3,4),
+	(4,3),
+	(5,6),
+	(6,5);
+
+-- ADD DATA TO RECIPE_INGREDIENT TABLE
+INSERT INTO recipe_ingredient (recipe_id, ingredient_id, unit, quantity) VALUES
+	(1, 2, NULL, 3),
+	(2, 1, "tbsp", 1),
+	(3, 3, NULL, 1),
+	(4, 4, "slice", 2),
+	(5, 5, "slice", 2),
+	(6, 6, "tbsp", 1),
+	(1, 7, NULL, 3),
+	(2, 8, "lb", 1);
+
+-- ADD DATA TO INSTRUCTION TABLE
+INSERT INTO instruction (instruction_id, recipe_id, step_number, `description`) VALUES
+	(1, 1, 1, "Add Water"),
+	(2, 2, 1, "Add Soup"),
+	(3, 3, 1, "Add chicken"),
+	(4, 4, 1, "Add beef"),
+	(5, 5, 1, "Add pepper"),
+	(6, 6, 1, "Add salt"),
+	(7, 1, 2, "Add cucumber"),
+	(8, 2, 1, "Add lettuce");
