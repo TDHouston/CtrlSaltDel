@@ -19,16 +19,15 @@ import java.util.stream.Collectors;
 @Component
 public class JwtConverter {
 
-    private String secret = "Secret for now but this needs to be changed";
     private Key key;
     private final String ISSUER = "CtrlSaltDel";
-    private final int EXPIRATION_MINUTES = 5;
+    private final int EXPIRATION_MINUTES = 10;
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
 
 
     public String getTokenFromUser(User user) {
 
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         String roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));

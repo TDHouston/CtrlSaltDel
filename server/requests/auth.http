@@ -1,0 +1,23 @@
+@url = http://localhost:8080/api/auth
+@token = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdHJsU2FsdERlbCIsInN1YiI6Impkb2VAZ21haWwuY29tIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE3NTMzNzkzNDl9.VM-eVaa1haLEt-y9CZXhIIr7Y1W5OR_M90pH81KxcsU
+### GOOD
+### Register 
+POST {{url}}/register
+Content-Type: application/json
+
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "jdoe",
+    "email": "jdoe@gmail.com",
+    "password": "123"
+}
+
+### Login
+POST {{url}}/login
+Content-Type: application/json
+
+{
+    "email": "jdoe@gmail.com",
+    "password": "123"
+}
