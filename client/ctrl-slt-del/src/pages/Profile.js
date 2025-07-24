@@ -92,11 +92,20 @@ function Profile() {
 
   const handlePromoteToAdmin = (userId) => {
     const selected = users.find((u) => u.userId === userId);
+    const toUpdate = {
+      userId: selected.userId,
+      firstName: selected.firstName,
+      lastName: selected.lastName,
+      username: selected.username,
+      email: selected.email,
+      password: selected.password,
+      role: "ADMIN",
+    };
     if (window.confirm(`Promote ${selected.username} to admin?`)) {
       fetch(`http://localhost:8080/api/user/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...selected, role: "ADMIN" }),
+        body: JSON.stringify(toUpdate),
       })
         .then((res) => {
           if (res.status === 204) {
@@ -282,4 +291,3 @@ function Profile() {
 }
 
 export default Profile;
-
