@@ -3,6 +3,7 @@ package capstone.round_table.controllers;
 import capstone.round_table.domain.IngredientService;
 import capstone.round_table.domain.Result;
 import capstone.round_table.models.Ingredient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,6 @@ public class IngredientController {
     public IngredientController(IngredientService service) {
         this.service = service;
     }
-
 
     @GetMapping
     public List<Ingredient> findAll() {

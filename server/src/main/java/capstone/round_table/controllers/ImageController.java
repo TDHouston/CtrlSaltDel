@@ -17,12 +17,8 @@ import java.util.List;
 @RequestMapping("/api/recipes/images")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ImageController {
-
-    @Autowired
-    private S3Service s3Service;
-
-    @Autowired
-    private RecipeService recipeService;
+    private final S3Service s3Service;
+    private final RecipeService recipeService;
 
     private static final List<String> ALLOWED_EXTENSIONS =
         Arrays.asList("jpg", "jpeg", "png", "gif", "webp");
@@ -30,16 +26,28 @@ public class ImageController {
     // MAX_FILE_SIZE equivalent to 10 MB
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    @PostMapping("/{recipeId}")
-    public ResponseEntity<?> uploadRecipeImage(
-        @PathVariable int recipeId,
-        @RequestParam("file") MultipartFile file) {
+    public ImageController(S3Service s3Service, RecipeService recipeService) {
+        this.s3Service = s3Service;
+        this.recipeService = recipeService;
+    }
 
+    /**
+     * Uploads a recipe image. If one exists, old one will be deleted.
+     * @param recipeId
+     * @param file
+     * @return
+     */
+    @PostMapping("/{recipeId}")
+    public ResponseEntity<Object> uploadRecipeImage(
+        @PathVariable int recipeId,
+        @RequestParam("file") MultipartFile file
+    ) {
         try {
             // Validate file
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body("File is empty");
             }
+
             if (file.getSize() > MAX_FILE_SIZE) {
                 return ResponseEntity.badRequest().body("File size exceeds 10MB limit");
             }
@@ -52,7 +60,7 @@ public class ImageController {
             // Check if recipe exists
             Recipe recipe = recipeService.findByRecipeId(recipeId);
             if (recipe == null) {
-                return ResponseEntity.notFound().build();
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             // Delete old image if exists
@@ -78,12 +86,17 @@ public class ImageController {
         }
     }
 
+    /**
+     * Delete an image from recipe.
+     * @param recipeId
+     * @return
+     */
     @DeleteMapping("/{recipeId}")
-    public ResponseEntity<?> deleteRecipeImage(@PathVariable int recipeId) {
+    public ResponseEntity<Object> deleteRecipeImage(@PathVariable int recipeId) {
         try {
             Recipe recipe = recipeService.findByRecipeId(recipeId);
             if (recipe == null) {
-                return ResponseEntity.notFound().build();
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             if (recipe.getImageUrl() != null) {
@@ -97,7 +110,7 @@ public class ImageController {
                 recipeService.updateRecipe(recipe);
             }
 
-            return ResponseEntity.ok().build();
+            return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

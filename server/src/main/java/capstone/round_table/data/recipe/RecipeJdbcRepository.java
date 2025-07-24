@@ -168,7 +168,10 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "difficulty = ?, " +
             "cook_time = ?, " +
             "servings = ?, " +
-            "`description` = ? " +
+            "`description` = ?," +
+            "featured = ?, " +
+            "image_url = ?, " +
+            "thumbnail_url = ? " +
             "WHERE recipe_id = ?" +
             ";";
 
@@ -179,6 +182,9 @@ public class RecipeJdbcRepository implements RecipeRepository {
             recipe.getCookTime(),
             recipe.getServings(),
             recipe.getDescription(),
+            recipe.isFeatured(),
+            recipe.getImageUrl(),
+            recipe.getThumbnailUrl(),
             recipe.getRecipeId()
         ) > 0;
     }
@@ -200,17 +206,6 @@ public class RecipeJdbcRepository implements RecipeRepository {
         }
 
         return jdbcTemplate.update(String.format(sql, "recipe"), recipeId) > 0;
-    }
-
-    @Override
-    public boolean updateRecipeImage(int recipeId, String imageUrl, String thumbnailUrl) {
-        final String sql = "UPDATE recipe SET " +
-            "image_url = ?, " +
-            "thumbnail_url = ? " +
-            "WHERE recipe_id = ?" +
-            ";";
-
-        return jdbcTemplate.update(sql, imageUrl, thumbnailUrl, recipeId) > 0;
     }
 
     /**
