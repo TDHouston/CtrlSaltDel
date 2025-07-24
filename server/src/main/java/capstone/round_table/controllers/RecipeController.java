@@ -57,6 +57,7 @@ public class RecipeController {
 
         Result<Recipe> result = service.updateRecipe(recipe);
         if (result.isSuccess()) {
+            recipeSearchService.update(recipe);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ErrorResponse.build(result);
