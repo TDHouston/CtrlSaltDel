@@ -214,7 +214,7 @@ function Home() {
         </div>
       </section>
 
-      <section>
+      {/* <section>
         <div className="mx-auto mx-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight mb-3 text-gray-900 sm:text-6xl ">
             Picks from our moderators
@@ -227,7 +227,7 @@ function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
