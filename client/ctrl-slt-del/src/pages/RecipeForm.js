@@ -38,7 +38,6 @@ function RecipeForm({ onSave, onCancel }) {
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.userId !== user?.userId) return;
-                    console.log(data);
                     setRecipe(data);
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
