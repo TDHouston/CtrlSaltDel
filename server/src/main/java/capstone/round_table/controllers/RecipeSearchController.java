@@ -32,4 +32,9 @@ public class RecipeSearchController {
         return categorySearchService.findByName(name);
     }
 
+    @GetMapping("/recipe/{searchTerm}/{category}")
+    public List<RecipeDocument> filterByCategory(@PathVariable String searchTerm, @PathVariable String category) {
+        return service.filterByCategory(searchTerm, category);
+    }
+
 }

@@ -30,8 +30,8 @@ public class RecipeDocument {
     @Field(type = FieldType.Keyword)
     private Difficulty difficulty;
 
-    @Field(type = FieldType.Nested, includeInParent = true)
-    private List<Category> categories;
+    @Field(type = FieldType.Keyword)
+    private List<String> categories;
 
     @Field(type = FieldType.Text, analyzer = "standard")
     private String author;
@@ -60,11 +60,11 @@ public class RecipeDocument {
         this.author = author;
     }
 
-    public List<Category> getCategories() {
+    public List<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
     }
 

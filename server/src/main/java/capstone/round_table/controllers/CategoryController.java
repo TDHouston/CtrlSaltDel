@@ -1,5 +1,6 @@
 package capstone.round_table.controllers;
 
+import capstone.round_table.domain.CategorySearchService;
 import capstone.round_table.domain.CategoryService;
 import capstone.round_table.domain.Result;
 import capstone.round_table.models.Category;
@@ -15,11 +16,13 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    public CategoryController(CategoryService service) {
-        this.service = service;
-    }
-
     private final CategoryService service;
+    private final CategorySearchService categorySearchService;
+
+    public CategoryController(CategoryService service, CategorySearchService categorySearchService) {
+        this.service = service;
+        this.categorySearchService = categorySearchService;
+    }
 
     @GetMapping
     public List<Category> findAll() {
@@ -30,6 +33,7 @@ public class CategoryController {
     public ResponseEntity<Object> add(@RequestBody Category category) {
         Result<Category> result =  service.addCategory(category);
         if (result.isSuccess()) {
+            categorySearchService.add(category);
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
         return ErrorResponse.build(result);

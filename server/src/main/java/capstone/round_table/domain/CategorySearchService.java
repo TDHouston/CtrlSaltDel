@@ -1,12 +1,10 @@
 package capstone.round_table.domain;
 
 import capstone.round_table.data.CategoryElasticRepository;
-import capstone.round_table.models.Category;
-import capstone.round_table.models.CategoryDocument;
-import capstone.round_table.models.Recipe;
-import capstone.round_table.models.RecipeDocument;
+import capstone.round_table.models.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,8 +20,20 @@ public class CategorySearchService {
         return categoryElasticRepository.save(document);
     }
 
-    public void update() {
 
+
+    public List<String> convertToCDList(List<RecipeCategory> recipeCategories) {
+        List<String> result = new ArrayList<>();
+        for (RecipeCategory recipeCategory : recipeCategories) {
+            int categoryId = recipeCategory.getCategoryId();
+            CategoryDocument document = findById(categoryId);
+            result.add(document.getName());
+        }
+        return result;
+    }
+
+    public CategoryDocument findById(int categoryId) {
+        return categoryElasticRepository.findById(categoryId).orElse(null);
     }
 
     public List<CategoryDocument> findByName(String name) {
