@@ -11,7 +11,10 @@ function Profile() {
   const [favorites, setFavorites] = useState([]);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+<<<<<<< Updated upstream
   const [newCategory, setNewCategory] = useState("");
+=======
+>>>>>>> Stashed changes
   const { id } = useParams();
 
   useEffect(() => {
@@ -122,6 +125,11 @@ function Profile() {
     { key: "categories", label: "View Categories" },
   ];
 
+<<<<<<< Updated upstream
+=======
+  const allTabs = [...baseTabs, ...(user?.role === "ADMIN" ? adminTabs : [])];
+
+>>>>>>> Stashed changes
   return (
     <section className="flex min-h-screen bg-gray-100">
       <aside className="w-64 bg-white border-r border-gray-200 shadow-sm">
@@ -132,9 +140,14 @@ function Profile() {
           </p>
         </div>
 
+<<<<<<< Updated upstream
         {/* User Tabs */}
         <ul className="mt-6 space-y-1">
           {baseTabs.map(({ key, label }) => (
+=======
+        <ul className="mt-6 space-y-1">
+          {allTabs.map(({ key, label }) => (
+>>>>>>> Stashed changes
             <li key={key}>
               <button
                 className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
@@ -147,6 +160,7 @@ function Profile() {
             </li>
           ))}
         </ul>
+<<<<<<< Updated upstream
 
         {/* Admin Panel Tabs */}
         {user?.role === "ADMIN" && (
@@ -168,6 +182,8 @@ function Profile() {
             </ul>
           </div>
         )}
+=======
+>>>>>>> Stashed changes
       </aside>
 
       <main className="flex-1 p-10">
@@ -228,6 +244,27 @@ function Profile() {
                       </button>
                     )}
                   </div>
+<<<<<<< Updated upstream
+=======
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {activeTab === "categories" && (
+          <section>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+              Categories
+            </h1>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map((cat) => (
+                <div
+                  key={cat.categoryId}
+                  className="bg-white text-center p-4 rounded shadow-sm"
+                >
+                  {cat.name}
+>>>>>>> Stashed changes
                 </div>
               ))}
             </div>
