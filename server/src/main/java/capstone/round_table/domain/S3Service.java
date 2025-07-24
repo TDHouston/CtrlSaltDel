@@ -41,9 +41,6 @@ public class S3Service {
             metadata
         );
 
-        // Make file publicly readable
-        request.withCannedAcl(CannedAccessControlList.PublicRead);
-
         amazonS3.putObject(request);
 
         // Return the file URL
