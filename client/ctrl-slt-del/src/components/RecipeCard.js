@@ -1,16 +1,20 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../helpers/AuthContext";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
 
 const PLACEHOLDER_IMG =
   "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
 
-function RecipeCard({ recipe }) {
+function RecipeCard({ recipe, onImageLoad }) {
   const { user } = useContext(AuthContext);
   const favoriteUrl = "http://localhost:8080/api/favorite";
   const recipeId = recipe.recipeId || recipe.id;
   const [favorited, setFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(recipe.favorited || 0);
+
+  const cardRef = useRef();
+  const imageRef = useRef();
 
   useEffect(() => {
     if (user && recipeId) {
@@ -57,20 +61,67 @@ function RecipeCard({ recipe }) {
       .catch((err) => console.error("Favorite toggle failed:", err));
   };
 
-  return (
-    <div className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-800">
-      {/* Image */}
-      {console.log("Recipe Image URL:", recipe.imageUrl)}
+  const handleMouseEnter = () => {
+    gsap.to(cardRef.current, {
+      scale: 1.03,
+      y: -6,
+      boxShadow: "0px 12px 30px rgba(0,0,0,0.12)",
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  };
 
+  const handleMouseMove = (e) => {
+    const bounds = cardRef.current.getBoundingClientRect();
+    const relX = e.clientX - bounds.left;
+    const relY = e.clientY - bounds.top;
+
+    const xMove = (relX / bounds.width - 0.5) * 10; // max 5px left/right
+    const yMove = (relY / bounds.height - 0.5) * 10;
+
+    gsap.to(imageRef.current, {
+      x: xMove,
+      y: yMove,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  };
+
+  const handleMouseLeave = () => {
+    gsap.to(cardRef.current, {
+      scale: 1,
+      y: 0,
+      boxShadow: "0px 6px 12px rgba(0,0,0,0.08)",
+      duration: 0.3,
+      ease: "power2.out",
+    });
+
+    gsap.to(imageRef.current, {
+      x: 0,
+      y: 0,
+      duration: 0.4,
+      ease: "power3.out",
+    });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-800 transition-all"
+    >
       <Link to={`/recipe/${recipeId}`} className="md:w-48 w-full">
         <img
+          ref={imageRef}
           className="object-cover w-full rounded-t-lg h-96 md:h-auto md:rounded-none md:rounded-s-lg"
-          src={recipe?.imageUrl || PLACEHOLDER_IMG}
+          src={recipe.imageUrl || PLACEHOLDER_IMG}
           alt={recipe.name}
+          onLoad={onImageLoad}
         />
       </Link>
 
-      {/* Content */}
       <div className="flex flex-col justify-between p-4 flex-1">
         <div>
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

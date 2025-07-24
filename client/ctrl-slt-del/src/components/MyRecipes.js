@@ -1,24 +1,60 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import RecipeCard from "./RecipeCard";
 import RecipeForm from "../pages/RecipeForm";
 import { AuthContext } from "../helpers/AuthContext";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
 
 function MyRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const cardsRef = useRef([]);
+  const loadedImages = useRef(0);
+
+  // Fetch recipes for this user
   useEffect(() => {
     if (user?.userId) {
       fetch(`http://localhost:8080/api/recipes/user?id=${user.userId}`)
         .then((res) => res.json())
-        .then((data) => setRecipes(data))
+        .then((data) => {
+          setRecipes(data);
+          loadedImages.current = 0;
+          setImagesLoaded(false); // Reset loading state
+        })
         .catch((err) => console.error("Error fetching user recipes:", err));
     }
   }, [user]);
+
+  // Animate cards once all images are loaded
+  useEffect(() => {
+    if (!imagesLoaded || cardsRef.current.length === 0) return;
+
+    gsap.fromTo(
+      cardsRef.current,
+      { opacity: 0, y: 40, scale: 0.95 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.6,
+        ease: "power3.out",
+        stagger: 0.15,
+        clearProps: "all",
+      }
+    );
+  }, [imagesLoaded]);
+
+  const handleImageLoad = () => {
+    loadedImages.current += 1;
+    if (loadedImages.current === recipes.length) {
+      setImagesLoaded(true);
+    }
+  };
 
   const handleDelete = (recipeId) => {
     if (!window.confirm("Are you sure you want to delete this recipe?")) return;
@@ -74,9 +110,13 @@ function MyRecipes() {
 
       {!showForm && recipes.length > 0 ? (
         <div className="grid gap-10 pt-6 sm:grid-cols-2 lg:grid-cols-3">
-          {recipes.map((recipe) => (
-            <div key={recipe.recipeId} className="flex flex-col items-center">
-              <RecipeCard recipe={recipe} />
+          {recipes.map((recipe, index) => (
+            <div
+              key={recipe.recipeId}
+              ref={(el) => (cardsRef.current[index] = el)}
+              className="transition-transform duration-300 will-change-transform"
+            >
+              <RecipeCard recipe={recipe} onImageLoad={handleImageLoad} />
               <div
                 className="mt-4 inline-flex rounded-md shadow-sm"
                 role="group"
