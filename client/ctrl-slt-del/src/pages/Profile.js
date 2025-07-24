@@ -29,6 +29,13 @@ function Profile() {
   }, []);
 
   useEffect(() => {
+    fetch(`http://localhost:8080/api/category`)
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
     if (activeTab === "favorites" && user) {
       fetch(`http://localhost:8080/api/favorite/${user.userId}`)
         .then((res) => res.json())
@@ -36,13 +43,6 @@ function Profile() {
         .catch(console.error);
     }
   }, [activeTab, user]);
-
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/category`)
-      .then((res) => res.json())
-      .then(setCategories)
-      .catch(console.error);
-  }, []);
 
   const handleCategoryChange = (e) => setNewCategory(e.target.value);
 
@@ -99,7 +99,7 @@ function Profile() {
         body: JSON.stringify({ ...selected, role: "ADMIN" }),
       })
         .then((res) => {
-          if (res.ok) {
+          if (res.status === 204) {
             setUsers((prev) =>
               prev.map((u) =>
                 u.userId === userId ? { ...u, role: "ADMIN" } : u
@@ -111,8 +111,16 @@ function Profile() {
     }
   };
 
-  const showUserTabs = ["account", "recipes", "favorites"];
-  const showAdminTabs = ["users", "categories"];
+  const baseTabs = [
+    { key: "account", label: "Account" },
+    { key: "recipes", label: "My Recipes" },
+    { key: "favorites", label: "View Favorites" },
+  ];
+
+  const adminTabs = [
+    { key: "users", label: "View Users" },
+    { key: "categories", label: "View Categories" },
+  ];
 
   return (
     <section className="flex min-h-screen bg-gray-100">
@@ -124,8 +132,9 @@ function Profile() {
           </p>
         </div>
 
+        {/* User Tabs */}
         <ul className="mt-6 space-y-1">
-          {showUserTabs.map((key) => (
+          {baseTabs.map(({ key, label }) => (
             <li key={key}>
               <button
                 className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
@@ -133,21 +142,18 @@ function Profile() {
                 }`}
                 onClick={() => setActiveTab(key)}
               >
-                {key === "account"
-                  ? "Account"
-                  : key === "recipes"
-                  ? "My Recipes"
-                  : "View Favorites"}
+                {label}
               </button>
             </li>
           ))}
         </ul>
 
+        {/* Admin Panel Tabs */}
         {user?.role === "ADMIN" && (
           <div className="mt-6 px-6">
             <h2 className="text-md font-medium text-gray-800">Admin Panel</h2>
             <ul className="mt-4 space-y-1">
-              {showAdminTabs.map((key) => (
+              {adminTabs.map(({ key, label }) => (
                 <li key={key}>
                   <button
                     className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
@@ -155,7 +161,7 @@ function Profile() {
                     }`}
                     onClick={() => setActiveTab(key)}
                   >
-                    {key === "users" ? "View Users" : "View Categories"}
+                    {label}
                   </button>
                 </li>
               ))}
@@ -233,6 +239,7 @@ function Profile() {
             <h1 className="text-2xl font-semibold text-gray-800 mb-4">
               Categories
             </h1>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {categories.map((cat) => (
                 <div
