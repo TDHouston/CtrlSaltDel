@@ -20,4 +20,6 @@ public interface RecipeRepository {
 
     @Transactional
     boolean deleteRecipeById(int recipeId);
+
+    boolean updateRecipeImage(int recipeId, String imageUrl, String thumbnailUrl);
 }

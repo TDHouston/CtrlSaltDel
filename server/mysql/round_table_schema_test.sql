@@ -41,6 +41,8 @@ CREATE TABLE recipe (
     servings INT,
     `description` VARCHAR(200),
     featured bit default false,
+    image_url VARCHAR(500),
+	thumbnail_url VARCHAR(500),
     -- Foreign Keys
     CONSTRAINT fk_user
 		FOREIGN KEY (user_id)

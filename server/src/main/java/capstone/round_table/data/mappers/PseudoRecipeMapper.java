@@ -31,6 +31,10 @@ public class PseudoRecipeMapper implements RowMapper<Recipe> {
 
         recipe.setDescription(resultSet.getString("description"));
 
+        recipe.setImageUrl(resultSet.getString("image_url"));
+
+        recipe.setThumbnailUrl(resultSet.getString("thumbnail_url"));
+
         // This column is from joining tables w/ User
         recipe.setAuthor(resultSet.getString("username"));
 

@@ -19,7 +19,7 @@ public class FavoriteJdbcRepository implements FavoriteRepository {
 
     @Override
     public List<Recipe> findTopFavorites(int num) {
-        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, COUNT(f.recipe_id) as favorite_count " +
+        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, r.image_url, r.thumbnail_url, COUNT(f.recipe_id) as favorite_count " +
                 "from favorite f join recipe r on f.recipe_id = r.recipe_id " +
                 "group by f.recipe_id " +
                 "order by favorite_count desc " +
@@ -42,10 +42,9 @@ public class FavoriteJdbcRepository implements FavoriteRepository {
 
     @Override
     public List<Recipe> findUserFavorites(int userId) {
-        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, u.username " +
+        final String sql = "select f.recipe_id, r.user_id, r.name as recipe_name, r.difficulty, r.cook_time, r.servings, r.description, r.featured, r.image_url, r.thumbnail_url " +
                 "from favorite f " +
                 "join recipe r on r.recipe_id = f.recipe_id " +
-                "join user u on u.user_id = r.user_id " +
                 "where f.user_id = ?;";
         return jdbcTemplate.query(sql, new RecipeMapper(), userId);
     }

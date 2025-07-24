@@ -38,9 +38,11 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "difficulty, " +
             "cook_time, " +
             "servings, " +
-            "`description`" +
+            "`description`, " +
+            "image_url, " +
+            "thumbnail_url" +
             ") " +
-            "VALUES (?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
@@ -51,6 +53,8 @@ public class RecipeJdbcRepository implements RecipeRepository {
             ps.setInt(4, recipe.getCookTime());
             ps.setInt(5, recipe.getServings());
             ps.setString(6, recipe.getDescription());
+            ps.setString(7, recipe.getImageUrl());
+            ps.setString(8, recipe.getThumbnailUrl());
             return ps;
         }, keyHolder);
 
@@ -77,7 +81,9 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "servings, " +
             "`description`, " +
             "u.username, " +
-            "featured " +
+            "featured, " +
+            "image_url, " +
+            "thumbnail_url " +
             "FROM recipe INNER JOIN user u ON recipe.user_id = u.user_id" +
             ";";
 
@@ -101,7 +107,9 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "servings, " +
             "`description`, " +
             "u.username, "+
-            "featured " +
+            "featured, " +
+            "image_url, " +
+            "thumbnail_url " +
             "FROM recipe INNER JOIN user u ON u.user_id = recipe.user_id " +
             "WHERE recipe_id = ?" +
             ";";
@@ -136,7 +144,9 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-            "featured " +
+            "featured, " +
+            "image_url, " +
+            "thumbnail_url " +
             "FROM recipe " +
             "WHERE user_id = ?" +
             ";";
@@ -190,6 +200,17 @@ public class RecipeJdbcRepository implements RecipeRepository {
         }
 
         return jdbcTemplate.update(String.format(sql, "recipe"), recipeId) > 0;
+    }
+
+    @Override
+    public boolean updateRecipeImage(int recipeId, String imageUrl, String thumbnailUrl) {
+        final String sql = "UPDATE recipe SET " +
+            "image_url = ?, " +
+            "thumbnail_url = ? " +
+            "WHERE recipe_id = ?" +
+            ";";
+
+        return jdbcTemplate.update(sql, imageUrl, thumbnailUrl, recipeId) > 0;
     }
 
     /**

@@ -16,6 +16,8 @@ public class Recipe {
     private String author;
     private int favorited;
     private boolean featured;
+    private String imageUrl;
+    private String thumbnailUrl;
 
     public Recipe(){}
 
@@ -165,5 +167,21 @@ public class Recipe {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

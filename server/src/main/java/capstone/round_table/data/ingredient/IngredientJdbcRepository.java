@@ -132,7 +132,9 @@ public class IngredientJdbcRepository implements IngredientRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-            "featured " +
+            "featured, " +
+            "image_url, " +
+            "thumbnail_url " +
             "FROM recipe_ingredient ri " +
             "JOIN ingredient i ON ri.ingredient_id = i.ingredient_id " +
             "JOIN recipe r ON ri.recipe_id = r.recipe_id " +
