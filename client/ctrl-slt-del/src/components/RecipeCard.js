@@ -36,14 +36,6 @@ function RecipeCard({ recipe, onImageLoad }) {
       .catch((err) => console.error("Favorite count fetch failed", err));
   }, [recipeId]);
 
-  useEffect(() => {
-    if (!recipeId) return;
-
-    fetch(`http://localhost:8080/api/recipes/images/${recipeId}`).then((res) =>
-      console.log(res)
-    );
-  });
-
   const toggleFavorite = () => {
     if (!user || !recipeId) return;
 
