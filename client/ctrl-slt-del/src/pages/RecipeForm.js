@@ -38,11 +38,8 @@ function RecipeForm({ onSave, onCancel }) {
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.userId !== user?.userId) return;
+                    console.log(data);
                     setRecipe(data);
-                    setIngredients(data.ingredients || []);
-                    setInstructions(
-                        data.instructions?.map((i) => i.instruction) || []
-                    );
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
@@ -53,7 +50,7 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/recipe_ingredient/${id}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    console.log("Recipe?", data);
                     if (data.userId !== user?.userId) return;
                     setIngredients(data.ingredients || []);
                 })
@@ -66,8 +63,8 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/instruction/${id}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    if (data.userId !== user?.userId) return;
-                    setIngredients(data.instructions || []);
+                    const instructionMap = data.map((data) => data.description);
+                    setInstructions(instructionMap || []);
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
@@ -97,6 +94,7 @@ function RecipeForm({ onSave, onCancel }) {
     };
 
     const addInstruction = () => {
+        console.log(instructions);
         if (instruction.trim()) {
             setInstructions([...instructions, instruction]);
             setInstruction("");
