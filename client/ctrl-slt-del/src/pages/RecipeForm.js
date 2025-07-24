@@ -11,6 +11,7 @@ const RECIPE_DEFAULT = {
   instructions: [],
   ingredients: [],
   comments: [],
+  imageUrl: "",
 };
 
 function RecipeForm({ onSave, onCancel }) {
@@ -23,6 +24,10 @@ function RecipeForm({ onSave, onCancel }) {
   const [instruction, setInstruction] = useState("");
   const [instructions, setInstructions] = useState([]);
 
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
   const { user } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,18 +37,12 @@ function RecipeForm({ onSave, onCancel }) {
       fetch(`http://localhost:8080/api/recipes/${id}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data.userId !== user?.userId) {
-            // Not this user's recipe — don't load it
-            console.warn("This recipe does not belong to the current user.");
-            return;
-          }
+          if (data.userId !== user?.userId) return;
           setRecipe(data);
           setIngredients(data.ingredients || []);
           setInstructions(data.instructions?.map((i) => i.instruction) || []);
         })
-        .catch((err) => {
-          console.error("Failed to fetch recipe for editing:", err);
-        });
+        .catch((err) => console.error("Failed to fetch recipe:", err));
     }
   }, [id, user]);
 
@@ -52,9 +51,7 @@ function RecipeForm({ onSave, onCancel }) {
   };
 
   const handleIngredientChange = (e) => {
-    const newIngredient = { ...ingredient };
-    newIngredient[e.target.name] = e.target.value;
-    setIngredient(newIngredient);
+    setIngredient({ ...ingredient, [e.target.name]: e.target.value });
   };
 
   const addIngredient = () => {
@@ -79,7 +76,50 @@ function RecipeForm({ onSave, onCancel }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setUploadError("");
+  };
+
+  const handleUpload = async (recipeId) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setUploading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/recipes/images/${recipeId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!res.ok) throw new Error(await res.text());
+
+      const data = await res.json();
+
+      // Update imageUrl and clear preview
+      setRecipe((prev) => ({
+        ...prev,
+        imageUrl: data.imageUrl,
+        previewUrl: null,
+      }));
+
+      setFile(null); // reset file input
+
+      return data.imageUrl;
+    } catch (err) {
+      setUploadError("Image upload failed: " + err.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newRecipe = {
@@ -97,28 +137,49 @@ function RecipeForm({ onSave, onCancel }) {
       ? `http://localhost:8080/api/recipes/${id}`
       : "http://localhost:8080/api/recipes";
 
-    fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newRecipe),
-    })
-      .then((res) => {
-        if (res.status === 201) return res.json();
-        if (res.status === 204) return null; // just a success
-        if (res.status === 400)
-          return res.json().then((data) => Promise.reject(data));
-        return Promise.reject(["Unexpected server error."]);
-      })
-      .then((data) => {
-        onSave?.(data);
-        navigate("/profile/" + user.userId);
-      })
-      .catch((errs) => {
-        console.error(errs);
-        setErrors(Array.isArray(errs) ? errs : ["An error occurred."]);
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newRecipe),
       });
+
+      if (res.status === 201 || res.status === 204) {
+        // If it's a new recipe, get the created recipe with ID
+        const updated = recipe?.userId ? recipe : await res.json();
+
+        // If an image file was uploaded
+        if (file) {
+          const imageUrl = await handleUpload(updated.recipeId || updated.id);
+          if (imageUrl) {
+            updated.imageUrl = imageUrl;
+
+            // 🔁 PATCH the imageUrl back to the recipe
+            await fetch(
+              `http://localhost:8080/api/recipes/${
+                updated.recipeId || updated.id
+              }`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updated),
+              }
+            );
+          }
+        }
+
+        onSave?.(updated);
+        navigate(`/profile/${user.userId}`);
+      } else if (res.status === 400) {
+        const errData = await res.json();
+        throw errData;
+      } else {
+        throw ["Unexpected server error."];
+      }
+    } catch (errs) {
+      console.error(errs);
+      setErrors(Array.isArray(errs) ? errs : ["An error occurred."]);
+    }
   };
 
   return (
@@ -141,7 +202,6 @@ function RecipeForm({ onSave, onCancel }) {
             value={recipe.name}
             onChange={handleInputChange}
             required
-            placeholder="Amazing Recipe"
             className="w-full border rounded-md px-3 py-2"
           />
         </div>
@@ -156,9 +216,31 @@ function RecipeForm({ onSave, onCancel }) {
             value={recipe.description}
             onChange={handleInputChange}
             required
-            placeholder="What makes this dish special?"
             className="w-full border rounded-md px-3 py-2"
           />
+        </div>
+
+        {/* Image Upload */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Recipe Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              handleFileChange(e);
+              const previewUrl = URL.createObjectURL(e.target.files[0]);
+              setRecipe((prev) => ({ ...prev, previewUrl }));
+            }}
+          />
+          {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
+          {uploadError && <p className="text-red-600">{uploadError}</p>}
+          {(recipe.previewUrl || recipe.imageUrl) && (
+            <img
+              src={recipe.previewUrl || recipe.imageUrl}
+              alt="Recipe Preview"
+              className="mt-2 rounded max-h-40 mx-auto"
+            />
+          )}
         </div>
 
         {/* Ingredients */}
@@ -166,7 +248,7 @@ function RecipeForm({ onSave, onCancel }) {
           <h3 className="font-semibold mb-2">Ingredients</h3>
           {ingredients.map((ing, idx) => (
             <p key={idx}>
-              {ing.ingredientQuantity} {ing.ingredientUnit.toLowerCase()}{" "}
+              {ing.ingredientQuantity} {ing.ingredientUnit?.toLowerCase()}{" "}
               {ing.ingredientName}
             </p>
           ))}
@@ -243,7 +325,7 @@ function RecipeForm({ onSave, onCancel }) {
           </div>
         </div>
 
-        {/* Buttons */}
+        {/* Submit */}
         <div className="flex justify-center gap-4 mt-6">
           <button
             type="submit"
@@ -266,7 +348,6 @@ function RecipeForm({ onSave, onCancel }) {
           </button>
         </div>
 
-        {/* Errors */}
         {errors.length > 0 && (
           <div className="mt-4 text-red-600">
             {errors.map((err, idx) => (

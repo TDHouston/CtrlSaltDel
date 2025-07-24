@@ -12,7 +12,6 @@ function RecipeCard({ recipe }) {
   const [favorited, setFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(recipe.favorited || 0);
 
-  // Check if this recipe is in the user's favorites
   useEffect(() => {
     if (user && recipeId) {
       fetch(`${favoriteUrl}/${user.userId}`)
@@ -24,7 +23,6 @@ function RecipeCard({ recipe }) {
     }
   }, [user, recipeId]);
 
-  // Fetch live favorite count
   useEffect(() => {
     if (!recipeId) return;
 
@@ -34,7 +32,6 @@ function RecipeCard({ recipe }) {
       .catch((err) => console.error("Favorite count fetch failed", err));
   }, [recipeId]);
 
-  // Toggle favorite
   const toggleFavorite = () => {
     if (!user || !recipeId) return;
 
@@ -61,38 +58,43 @@ function RecipeCard({ recipe }) {
   };
 
   return (
-    <div className="recipe-card flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800">
-      <Link to={`/recipe/${recipeId}`} className="w-full md:w-48">
+    <div className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-800">
+      {/* Image */}
+      {console.log("Recipe Image URL:", recipe.imageUrl)}
+
+      <Link to={`/recipe/${recipeId}`} className="md:w-48 w-full">
         <img
           className="object-cover w-full rounded-t-lg h-96 md:h-auto md:rounded-none md:rounded-s-lg"
-          src={recipe.img || PLACEHOLDER_IMG}
-          alt={recipe.description}
+          src={recipe?.imageUrl || PLACEHOLDER_IMG}
+          alt={recipe.name}
         />
       </Link>
 
-      <div className="flex flex-col justify-between p-4 leading-normal">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {recipe.name}
-        </h5>
-        <h6 className="mb-3">
-          authored by <span className="font-bold">{recipe.author}</span>
-        </h6>
-        <p className="mb-3 text-gray-700 dark:text-gray-400">
-          {recipe.description}
-        </p>
-        <p className="mb-3 text-gray-700 dark:text-gray-400">
-          {recipe.cookTime}m • difficulty rating{" "}
-          <span className="font-bold">{recipe.difficulty}</span>
-        </p>
-
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Favorited {favoriteCount} {favoriteCount === 1 ? "time" : "times"}
-        </p>
+      {/* Content */}
+      <div className="flex flex-col justify-between p-4 flex-1">
+        <div>
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {recipe.name}
+          </h5>
+          <h6 className="mb-2 text-sm text-gray-700 dark:text-gray-300">
+            authored by <span className="font-bold">{recipe.author}</span>
+          </h6>
+          <p className="text-gray-700 dark:text-gray-400 mb-2">
+            {recipe.description}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            {recipe.cookTime}m • difficulty rating{" "}
+            <span className="font-bold">{recipe.difficulty}</span>
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Favorited {favoriteCount} {favoriteCount === 1 ? "time" : "times"}
+          </p>
+        </div>
 
         {user && (
-          <div className="flex flex-row mt-2">
+          <div className="flex flex-row mt-4">
             <button
-              className={`mx-5 px-3 py-1 rounded-xl ${
+              className={`px-4 py-2 rounded-md ${
                 favorited
                   ? "bg-red-300 hover:bg-red-400"
                   : "bg-yellow-200 hover:bg-yellow-400"
