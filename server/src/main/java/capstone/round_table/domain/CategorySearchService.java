@@ -47,4 +47,8 @@ public class CategorySearchService {
         return document;
     }
 
+    public void deleteCategoryById(int categoryId) {
+        categoryElasticRepository.deleteById(categoryId);
+    }
+
 }

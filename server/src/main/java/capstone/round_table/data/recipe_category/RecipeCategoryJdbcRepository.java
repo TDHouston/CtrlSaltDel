@@ -37,6 +37,7 @@ public class RecipeCategoryJdbcRepository implements RecipeCategoryRepository{
     public boolean batchAddRecipeCategory(List<RecipeCategory> recipeCategories) {
         boolean success = true;
         for (RecipeCategory recipeCategory : recipeCategories) {
+            deleteRecipeCategory(recipeCategory.getRecipeId(), recipeCategory.getCategoryId());
             success = addRecipeCategory(recipeCategory.getRecipeId(), recipeCategory.getCategoryId()) && success;
         }
         return success;

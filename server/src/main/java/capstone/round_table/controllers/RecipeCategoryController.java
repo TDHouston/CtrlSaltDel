@@ -60,9 +60,11 @@ public class RecipeCategoryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    // probably don't need to use and just batch update
     @DeleteMapping("/{recipeId}/{categoryId}")
     public ResponseEntity<Void> deleteRecipeCategory(@PathVariable int recipeId, @PathVariable int categoryId) {
         if (service.deleteRecipeCategory(recipeId, categoryId)) {
+
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

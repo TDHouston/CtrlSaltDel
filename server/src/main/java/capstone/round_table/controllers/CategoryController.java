@@ -54,6 +54,7 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> delete(@PathVariable int categoryId) {
         if (service.deleteCategory(categoryId)) {
+            categorySearchService.deleteCategoryById(categoryId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
