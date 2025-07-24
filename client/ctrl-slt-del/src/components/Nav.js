@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import { RecipeContext } from "../helpers/RecipeContext";
+import Recipe from "../pages/Recipe";
 
 function Nav() {
     const [isAuth, setIsAuth] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
-    const { setRecipes, getAllRecipe } = useContext(RecipeContext);
+    const { recipes, setRecipes, getAllRecipe } = useContext(RecipeContext);
     const [searchQuery, setSearchQuery] = useState("");
 
     const fuzzyUrl = "http://localhost:8080/api/elastic";
@@ -20,6 +21,9 @@ function Nav() {
             setIsAuth(false);
         }
     }, [user]);
+
+    // refreshes if recipe changes
+    useEffect(() => {}, [recipes]);
 
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
