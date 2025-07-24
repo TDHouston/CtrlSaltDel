@@ -39,10 +39,9 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "cook_time, " +
             "servings, " +
             "`description`, " +
-            "image_url, " +
-            "thumbnail_url" +
+            "image_url" +
             ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
@@ -54,7 +53,6 @@ public class RecipeJdbcRepository implements RecipeRepository {
             ps.setInt(5, recipe.getServings());
             ps.setString(6, recipe.getDescription());
             ps.setString(7, recipe.getImageUrl());
-            ps.setString(8, recipe.getThumbnailUrl());
             return ps;
         }, keyHolder);
 
@@ -82,8 +80,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "`description`, " +
             "u.username, " +
             "featured, " +
-            "image_url, " +
-            "thumbnail_url " +
+            "image_url " +
             "FROM recipe INNER JOIN user u ON recipe.user_id = u.user_id" +
             ";";
 
@@ -108,8 +105,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "`description`, " +
             "u.username, "+
             "featured, " +
-            "image_url, " +
-            "thumbnail_url " +
+            "image_url " +
             "FROM recipe INNER JOIN user u ON u.user_id = recipe.user_id " +
             "WHERE recipe_id = ?" +
             ";";
@@ -145,8 +141,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "servings, " +
             "`description`, " +
             "featured, " +
-            "image_url, " +
-            "thumbnail_url " +
+            "image_url " +
             "FROM recipe " +
             "WHERE user_id = ?" +
             ";";
@@ -170,8 +165,7 @@ public class RecipeJdbcRepository implements RecipeRepository {
             "servings = ?, " +
             "`description` = ?," +
             "featured = ?, " +
-            "image_url = ?, " +
-            "thumbnail_url = ? " +
+            "image_url = ? " +
             "WHERE recipe_id = ?" +
             ";";
 
@@ -184,7 +178,6 @@ public class RecipeJdbcRepository implements RecipeRepository {
             recipe.getDescription(),
             recipe.isFeatured(),
             recipe.getImageUrl(),
-            recipe.getThumbnailUrl(),
             recipe.getRecipeId()
         ) > 0;
     }

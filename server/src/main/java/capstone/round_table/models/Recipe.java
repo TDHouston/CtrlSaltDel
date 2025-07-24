@@ -17,7 +17,6 @@ public class Recipe {
     private int favorited;
     private boolean featured;
     private String imageUrl;
-    private String thumbnailUrl;
 
     public Recipe(){}
 
@@ -175,13 +174,5 @@ public class Recipe {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
     }
 }

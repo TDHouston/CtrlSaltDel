@@ -35,8 +35,6 @@ public class RecipeMapper implements RowMapper<Recipe> {
 
         recipe.setImageUrl(resultSet.getString("image_url"));
 
-        recipe.setThumbnailUrl(resultSet.getString("thumbnail_url"));
-
         return recipe;
     }
 }
