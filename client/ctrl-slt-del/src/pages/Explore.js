@@ -14,7 +14,9 @@ function Explore() {
     const { recipes } = useContext(RecipeContext);
 
     const sortItems = () => {
-        if (!recipes || !Array.isArray(recipes)) return [];
+        if (!recipes || !Array.isArray(recipes)) {
+            return [];
+        }
         switch (sortBy) {
             case "Favorited (high to low)":
                 return recipes.sort((a, b) => b.favorited - a.favorited);
