@@ -36,6 +36,21 @@ public class RecipeDocument {
     @Field(type = FieldType.Text, analyzer = "standard")
     private String author;
 
+    @Field(type = FieldType.Text, analyzer = "standard")
+    private String imageUrl;
+
+    private int favorited;
+
+    private boolean featured;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public boolean isFeatured() {
         return featured;
     }
@@ -63,13 +78,9 @@ public class RecipeDocument {
     public List<String> getCategories() {
         return categories;
     }
-
     public void setCategories(List<String> categories) {
         this.categories = categories;
     }
-
-    private int favorited;
-    private boolean featured;
 
     public Difficulty getDifficulty() {
         return difficulty;

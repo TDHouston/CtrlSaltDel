@@ -1,5 +1,6 @@
 @url = http://localhost:8080/api/auth
-@token = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdHJsU2FsdERlbCIsInN1YiI6Impkb2VAZ21haWwuY29tIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE3NTMzNzkzNDl9.VM-eVaa1haLEt-y9CZXhIIr7Y1W5OR_M90pH81KxcsU
+@user_url = http://localhost:8080/api/user
+@token = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdHJsU2FsdERlbCIsInN1YiI6Impkb2VAZ21haWwuY29tIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE3NTMzODM4NzR9.k80ySaj77B6LNaMkR3-Q_OpTvJhmsZ4y0RsFSF_-9C8
 ### GOOD
 ### Register 
 POST {{url}}/register
@@ -21,3 +22,35 @@ Content-Type: application/json
     "email": "jdoe@gmail.com",
     "password": "123"
 }
+
+### BAD
+### Register
+POST {{url}}/register
+Content-Type: application/json
+
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "asd",
+    "email": "",
+    "password": "123"
+}
+
+### Login
+POST {{url}}/login
+Content-Type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "541"
+}
+
+
+######## User
+GET {{user_url}} HTTP/1.1
+Authorization: Bearer {{token}}
+
+### 
+
+GET {{user_url}}/1 HTTP/1.1
+Authorization: Bearer {{token}}

@@ -121,6 +121,7 @@ public class RecipeSearchService {
         document.setDescription(recipe.getDescription());
         document.setCookTime(recipe.getCookTime());
         document.setDifficulty(recipe.getDifficulty());
+        document.setImageUrl(recipe.getImageUrl());
         return document;
     }
 
