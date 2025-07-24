@@ -20,9 +20,41 @@ Content-Type: application/json
     "difficulty": "ADVANCED",
     "cookTime":60,
     "servings":3,
-    "description":"blah"
+    "description":"blah",
+    "instructions" : [
+        "boil"
+    ]
 }
 ###
 
 GET {{url}}/user?id=3 HTTP/1.1
+
+###
+
+POST http://localhost:8080/api/recipe_ingredient HTTP/1.1
+Content-Type: application/json
+
+{
+    "recipeId":1,
+    "ingredientId":1,
+    "unit": "TEASPOON",
+    "quantity":1
+}
+
+###
+
+GET http://localhost:8080/api/ingredients HTTP/1.1
+
+###
+
+POST http://localhost:8080/api/ingredients HTTP/1.1
+Content-Type: application/json
+
+{
+    "name":"fdfdsfds"
+}
+
+###
+
+GET http://localhost:8080/api/recipe_ingredient/1 HTTP/1.1
 
