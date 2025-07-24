@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/recipes/*").permitAll()
             .antMatchers("/api/recipe_ingredient/*").permitAll()
             .antMatchers("/api/recipe_category/*").permitAll()
-            .anyRequest().authenticated() // All other requests require authentication
+            .anyRequest().permitAll()
             .and()
             .addFilter(new JwtRequestFilter(authenticationManager(), converter))
             .sessionManagement()
