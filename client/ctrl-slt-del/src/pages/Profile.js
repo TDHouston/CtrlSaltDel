@@ -10,8 +10,6 @@ function Profile() {
   const [activeTab, setActiveTab] = useState("account");
   const [favorites, setFavorites] = useState([]);
   const [users, setUsers] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -80,13 +78,19 @@ function Profile() {
         `Remove user ${userToDelete.username}? This action cannot be undone!`
       )
     ) {
-      fetch(`http://localhost:8080/api/user/${userId}`, { method: "DELETE" })
-        .then((res) => {
-          if (res.status === 204) {
-            setUsers((prev) => prev.filter((u) => u.userId !== userId));
+      const init = {
+        method: "DELETE",
+      };
+      fetch(`http://localhost:8080/api/user/${userId}`, init)
+        .then((response) => {
+          if (response.status === 204) {
+            const newUsers = users.filter((u) => u.id !== userId);
+            setUsers(newUsers);
+          } else {
+            return Promise.reject(`Unexpected status code ${response.status}`);
           }
         })
-        .catch(console.error);
+        .catch(console.log);
     }
   };
 
@@ -95,32 +99,22 @@ function Profile() {
     if (window.confirm(`Promote ${selected.username} to admin?`)) {
       fetch(`http://localhost:8080/api/user/${userId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...selected, role: "ADMIN" }),
-      })
-        .then((res) => {
-          if (res.status === 204) {
-            setUsers((prev) =>
-              prev.map((u) =>
-                u.userId === userId ? { ...u, role: "ADMIN" } : u
-              )
-            );
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      };
+      fetch(`http://localhost:8080/api/user/${userId}`, init)
+        .then((response) => {
+          if (response.status === 204) {
+            setUsers(users);
+          } else {
+            return Promise.reject(`Unexpected status code ${response.status}`);
           }
         })
-        .catch(console.error);
+        .catch(console.log);
     }
   };
-
-  const baseTabs = [
-    { key: "account", label: "Account" },
-    { key: "recipes", label: "My Recipes" },
-    { key: "favorites", label: "View Favorites" },
-  ];
-
-  const adminTabs = [
-    { key: "users", label: "View Users" },
-    { key: "categories", label: "View Categories" },
-  ];
 
   return (
     <section className="flex min-h-screen bg-gray-100">
@@ -132,10 +126,10 @@ function Profile() {
           </p>
         </div>
 
-        {/* User Tabs */}
-        <ul className="mt-6 space-y-1">
-          {baseTabs.map(({ key, label }) => (
-            <li key={key}>
+        {/* User menu */}
+        {user?.role === "USER" && (
+          <ul className="mt-6 space-y-1">
+            <li>
               <button
                 className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
                   activeTab === key ? "bg-gray-100 font-semibold" : ""
@@ -145,26 +139,47 @@ function Profile() {
                 {label}
               </button>
             </li>
-          ))}
-        </ul>
+            <li>
+              <button
+                className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                  activeTab === "recipes" ? "bg-gray-100 font-semibold" : ""
+                }`}
+                onClick={() => setActiveTab("recipes")}
+              >
+                My Recipes
+              </button>
+            </li>
+            <li>
+              <button
+                className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                  activeTab === "favorites" ? "bg-gray-100 font-semibold" : ""
+                }`}
+                onClick={() => setActiveTab("favorites")}
+              >
+                View Favorites
+              </button>
+            </li>
+          </ul>
+        )}
 
-        {/* Admin Panel Tabs */}
+        {/* Admin panel */}
         {user?.role === "ADMIN" && (
           <div className="mt-6 px-6">
             <h2 className="text-md font-medium text-gray-800">Admin Panel</h2>
-            <ul className="mt-4 space-y-1">
-              {adminTabs.map(({ key, label }) => (
-                <li key={key}>
-                  <button
-                    className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
-                      activeTab === key ? "bg-gray-100 font-semibold" : ""
-                    }`}
-                    onClick={() => setActiveTab(key)}
-                  >
-                    {label}
-                  </button>
-                </li>
-              ))}
+            <p className="text-sm text-gray-500 mt-1">
+              You have admin privileges.
+            </p>
+            <ul className="mt-6 space-y-1">
+              <li>
+                <button
+                  className={`w-full text-left px-6 py-3 hover:bg-gray-100 ${
+                    activeTab === "users" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => setActiveTab("users")}
+                >
+                  View Users
+                </button>
+              </li>
             </ul>
           </div>
         )}
@@ -214,20 +229,12 @@ function Profile() {
                   <UserCard user={u} />
                   <div className="mt-2 flex gap-2">
                     <button
-                      className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-600"
-                      onClick={() => handleDeleteUser(u.userId)}
+                      className="ml-3 bg-yellow-800 text-black rounded-xl p-1 hover:bg-yellow-600"
+                      onClick={() => handlePromoteToAdmin(user.userId)}
                     >
-                      Remove
+                      Promote to admin
                     </button>
-                    {u.role !== "ADMIN" && (
-                      <button
-                        className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-300"
-                        onClick={() => handlePromoteToAdmin(u.userId)}
-                      >
-                        Promote to Admin
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
