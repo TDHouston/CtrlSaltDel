@@ -82,6 +82,37 @@ public class RecipeSearchService {
 
     }
 
+    public List<RecipeDocument> searchRecipes(String searchTerm) {
+        Query query = new NativeSearchQueryBuilder()
+                .withQuery(multiMatchQuery(searchTerm)
+                        .field("name", 3.0f)
+                        .field("description", 1.5f)
+                        .fuzziness("AUTO"))
+                .build();
+
+        SearchHits<RecipeDocument> searchHits =
+                elasticsearchOperations.search(query, RecipeDocument.class);
+
+        return searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .collect(Collectors.toList());
+    }
+
+    // Autocomplete suggestions
+    public List<String> getRecipeSuggestions(String prefix) {
+        Query query = new NativeSearchQueryBuilder()
+                .withQuery(prefixQuery("name", prefix.toLowerCase()))
+                .withMaxResults(5)
+                .build();
+
+        SearchHits<RecipeDocument> searchHits =
+                elasticsearchOperations.search(query, RecipeDocument.class);
+
+        return searchHits.getSearchHits().stream()
+                .map(hit -> hit.getContent().getName())
+                .collect(Collectors.toList());
+    }
+
     private RecipeDocument convertToDocument(Recipe recipe) {
         RecipeDocument document = new RecipeDocument();
         document.setRecipeId(recipe.getRecipeId());

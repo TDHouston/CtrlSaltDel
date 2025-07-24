@@ -37,4 +37,16 @@ public class RecipeSearchController {
         return service.filterByCategory(searchTerm, category);
     }
 
+
+    @GetMapping("/fuzzy/{term}")
+    public List<RecipeDocument> findRecipeByTerm(@PathVariable String term) {
+        return service.searchRecipes(term);
+    }
+
+    @GetMapping("/auto/{prefix}")
+    public List<String> autoSuggest(@PathVariable String prefix) {
+        return service.getRecipeSuggestions(prefix);
+    }
+
+
 }

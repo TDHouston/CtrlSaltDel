@@ -2,10 +2,14 @@ package capstone.round_table.domain;
 
 import capstone.round_table.data.CategoryElasticRepository;
 import capstone.round_table.models.*;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 @Service
 public class CategorySearchService {
@@ -50,5 +54,7 @@ public class CategorySearchService {
     public void deleteCategoryById(int categoryId) {
         categoryElasticRepository.deleteById(categoryId);
     }
+
+
 
 }

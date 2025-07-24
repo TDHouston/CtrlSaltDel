@@ -33,8 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/recipes/*").permitAll()
                 .anyRequest().permitAll()
                 .and()
-                .addFilter(new JwtRequestFilter(authenticationManager(), converter)) // 3
-                .sessionManagement() // 4
+                .addFilter(new JwtRequestFilter(authenticationManager(), converter))
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
     }
 
