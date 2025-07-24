@@ -46,6 +46,31 @@ function RecipeForm({ onSave, onCancel }) {
     }
   }, [id, user]);
 
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:8080/api/recipe_ingredient/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.userId !== user?.userId) return;
+          setIngredients(data.ingredients || []);
+        })
+        .catch((err) => console.error("Failed to fetch recipe:", err));
+    }
+  }, [id, user]);
+
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:8080/api/instruction/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.userId !== user?.userId) return;
+          setIngredients(data.instructions || []);
+        })
+        .catch((err) => console.error("Failed to fetch recipe:", err));
+    }
+  }, [id, user]);
+
   const handleInputChange = (e) => {
     setRecipe({ ...recipe, [e.target.name]: e.target.value });
   };
@@ -143,10 +168,99 @@ function RecipeForm({ onSave, onCancel }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRecipe),
       });
-
       if (res.status === 201 || res.status === 204) {
         // If it's a new recipe, get the created recipe with ID
         const updated = recipe?.userId ? recipe : await res.json();
+        const recipeId = res.recipeId ? res.recipeId : updated.recipeId;
+
+        const fetchedIngredients = await fetch(
+          "http://localhost:8080/api/ingredients"
+        );
+        const existingIngredients = await fetchedIngredients.json();
+        for (let i of ingredients) {
+          if (
+            // Case where ingredient already exists in database
+            existingIngredients
+              .map((ing) => ing.name)
+              .includes(i.ingredientName)
+          ) {
+            let ingredientId = existingIngredients.find(
+              (ing) => ing.name === i.ingredientName
+            ).ingredientId;
+            const ingredient_recipe = {
+              recipeId: recipeId,
+              ingredientId: ingredientId,
+              unit: i.ingredientUnit,
+              quantity: i.ingredientQuantity,
+            };
+
+            const ingRes = await fetch(
+              "http://localhost:8080/api/recipe_ingredient",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(ingredient_recipe),
+              }
+            );
+            const ingResJson = await ingRes.json();
+            console.log(ingResJson);
+          } else {
+            // Ingredient needs to be added to database
+            const addedIngredient = await fetch(
+              "http://localhost:8080/api/ingredients",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name: i.ingredientName,
+                }),
+              }
+            );
+            const added = await addedIngredient.json();
+
+            const ingredient_recipe = {
+              recipeId: recipeId,
+              ingredientId: added.ingredientId,
+              unit: i.ingredientUnit,
+              quantity: i.ingredientQuantity,
+            };
+            const ingRes = await fetch(
+              "http://localhost:8080/api/recipe_ingredient",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(ingredient_recipe),
+              }
+            );
+          }
+        }
+
+        // Handle adding instructions to DB
+
+        for (let i = 0; i < instructions.length; i++) {
+          const instructionToAdd = {
+            recipeId: recipeId,
+            stepNumber: i + 1,
+            description: instructions[i],
+          };
+          console.log(instructionToAdd);
+          const instructionRes = await fetch(
+            "http://localhost:8080/api/instruction",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(instructionToAdd),
+            }
+          );
+        }
 
         // If an image file was uploaded
         if (file) {
