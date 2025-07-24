@@ -39,8 +39,6 @@ function RecipeForm({ onSave, onCancel }) {
         .then((data) => {
           if (data.userId !== user?.userId) return;
           setRecipe(data);
-          setIngredients(data.ingredients || []);
-          setInstructions(data.instructions?.map((i) => i.instruction) || []);
         })
         .catch((err) => console.error("Failed to fetch recipe:", err));
     }
@@ -51,9 +49,8 @@ function RecipeForm({ onSave, onCancel }) {
       fetch(`http://localhost:8080/api/recipe_ingredient/${id}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           if (data.userId !== user?.userId) return;
-          setIngredients(data.ingredients || []);
+          setIngredients(data || []);
         })
         .catch((err) => console.error("Failed to fetch recipe:", err));
     }
@@ -65,7 +62,7 @@ function RecipeForm({ onSave, onCancel }) {
         .then((res) => res.json())
         .then((data) => {
           if (data.userId !== user?.userId) return;
-          setIngredients(data.instructions || []);
+          setInstructions(data || []);
         })
         .catch((err) => console.error("Failed to fetch recipe:", err));
     }
@@ -80,22 +77,18 @@ function RecipeForm({ onSave, onCancel }) {
   };
 
   const addIngredient = () => {
-    if (
-      ingredient.ingredientName &&
-      ingredient.ingredientQuantity &&
-      ingredient.ingredientUnit
-    ) {
+    if (ingredient.ingredientName && ingredient.quantity && ingredient.unit) {
       setIngredients([...ingredients, ingredient]);
       setIngredient({});
     }
   };
 
   const handleInstructionChange = (e) => {
-    setInstruction(e.target.value);
+    setInstruction({ description: e.target.value });
   };
 
   const addInstruction = () => {
-    if (instruction.trim()) {
+    if (instruction.description.trim()) {
       setInstructions([...instructions, instruction]);
       setInstruction("");
     }
@@ -247,7 +240,7 @@ function RecipeForm({ onSave, onCancel }) {
           const instructionToAdd = {
             recipeId: recipeId,
             stepNumber: i + 1,
-            description: instructions[i],
+            description: instructions[i].description,
           };
           console.log(instructionToAdd);
           const instructionRes = await fetch(
@@ -362,8 +355,7 @@ function RecipeForm({ onSave, onCancel }) {
           <h3 className="font-semibold mb-2">Ingredients</h3>
           {ingredients.map((ing, idx) => (
             <p key={idx}>
-              {ing.ingredientQuantity} {ing.ingredientUnit?.toLowerCase()}{" "}
-              {ing.ingredientName}
+              {ing.quantity} {ing.unit?.toLowerCase()} {ing.ingredientName}
             </p>
           ))}
 
@@ -418,13 +410,13 @@ function RecipeForm({ onSave, onCancel }) {
           <h3 className="font-semibold mb-2">Instructions</h3>
           {instructions.map((inst, i) => (
             <p key={i}>
-              {i + 1}. {inst}
+              {i + 1}. {inst.description}
             </p>
           ))}
           <div className="flex gap-2 mt-2">
             <input
               type="text"
-              value={instruction}
+              value={instruction.description || ""}
               onChange={handleInstructionChange}
               placeholder="e.g., Preheat oven to 350°F"
               className="w-full border rounded-md px-2 py-1"
