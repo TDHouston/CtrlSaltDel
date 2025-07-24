@@ -1,4 +1,5 @@
 @url = http://localhost:8080/api/recipes
+@token = eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdHJsU2FsdERlbCIsInN1YiI6Impkb2VAZ21haWwuY29tIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE3NTMzOTQzOTF9.tl1qtawTtT9HJTtuCcdL46lY_A6n2pNB8JZiuIFdbgE
 
 GET {{url}} HTTP/1.1
 
@@ -12,18 +13,17 @@ GET {{url}}/user?id=1 HTTP/1.1
 ###
 
 POST {{url}} HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdHJsU2FsdERlbCIsInN1YiI6InRlc3RAZ21haWwuY29tIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE3NTMzOTM5NzF9.ulZEAX06wzidjMlPXHv3Ib_ZIe6qJepJdy8p551hKUA
 Content-Type: application/json
 
 {
-    "userId": 1,
+    "userId": 7,
     "name": "stew",
     "difficulty": "ADVANCED",
     "cookTime":60,
     "servings":3,
     "description":"blah",
-    "instructions" : [
-        "boil"
-    ]
+    "imageUrl": ""
 }
 ###
 
@@ -58,3 +58,8 @@ Content-Type: application/json
 
 GET http://localhost:8080/api/recipe_ingredient/1 HTTP/1.1
 
+
+
+###
+
+GET http://localhost:8080/api/recipes/user?id=10 HTTP/1.1

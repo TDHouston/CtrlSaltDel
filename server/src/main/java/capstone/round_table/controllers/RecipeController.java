@@ -34,9 +34,9 @@ public class RecipeController {
     }
 
     //user?id=1
-    @GetMapping("/user")
-    public List<Recipe> findByUserId(@RequestParam int id) {
-        return service.findRecipeByUserId(id);
+    @GetMapping("/user/{userId}")
+    public List<Recipe> findByUserId(@PathVariable int userId) {
+        return service.findRecipeByUserId(userId);
     }
 
     @PostMapping
