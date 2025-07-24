@@ -8,34 +8,39 @@ const PLACEHOLDER_IMG =
 function RecipeCard({ recipe }) {
   const { user } = useContext(AuthContext);
   const favoriteUrl = "http://localhost:8080/api/favorite";
+  const recipeId = recipe.recipeId || recipe.id;
   const [favorited, setFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(recipe.favorited || 0);
 
   // Check if this recipe is in the user's favorites
   useEffect(() => {
-    if (user) {
+    if (user && recipeId) {
       fetch(`${favoriteUrl}/${user.userId}`)
         .then((res) => res.json())
         .then((data) => {
-          const isFavorited = data.some((r) => r.recipeId === recipe.recipeId);
+          const isFavorited = data.some((r) => r.recipeId === recipeId);
           setFavorited(isFavorited);
         });
     }
-  }, [user, recipe.recipeId]);
+  }, [user, recipeId]);
 
   // Fetch live favorite count
   useEffect(() => {
-    fetch(`${favoriteUrl}/count/${recipe.recipeId}`)
+    if (!recipeId) return;
+
+    fetch(`${favoriteUrl}/count/${recipeId}`)
       .then((res) => res.json())
       .then((count) => setFavoriteCount(count))
       .catch((err) => console.error("Favorite count fetch failed", err));
-  }, [recipe.recipeId]);
+  }, [recipeId]);
 
   // Toggle favorite
   const toggleFavorite = () => {
+    if (!user || !recipeId) return;
+
     const body = {
-      userId: user?.userId,
-      recipeId: recipe.recipeId,
+      userId: user.userId,
+      recipeId: recipeId,
     };
 
     const init = {
@@ -57,7 +62,7 @@ function RecipeCard({ recipe }) {
 
   return (
     <div className="recipe-card flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800">
-      <Link to={`/recipe/${recipe.recipeId}`} className="w-full md:w-48">
+      <Link to={`/recipe/${recipeId}`} className="w-full md:w-48">
         <img
           className="object-cover w-full rounded-t-lg h-96 md:h-auto md:rounded-none md:rounded-s-lg"
           src={recipe.img || PLACEHOLDER_IMG}
