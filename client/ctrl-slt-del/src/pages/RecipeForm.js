@@ -241,6 +241,27 @@ function RecipeForm({ onSave, onCancel }) {
           }
         }
 
+        // Handle adding instructions to DB
+
+        for (let i = 0; i < instructions.length; i++) {
+          const instructionToAdd = {
+            recipeId: recipeId,
+            stepNumber: i + 1,
+            description: instructions[i],
+          };
+          console.log(instructionToAdd);
+          const instructionRes = await fetch(
+            "http://localhost:8080/api/instruction",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(instructionToAdd),
+            }
+          );
+        }
+
         // If an image file was uploaded
         if (file) {
           const imageUrl = await handleUpload(updated.recipeId || updated.id);
