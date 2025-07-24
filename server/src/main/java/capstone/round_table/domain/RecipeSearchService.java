@@ -55,6 +55,10 @@ public class RecipeSearchService {
         return recipeElasticRepository.findById(recipeId).orElse(null);
     }
 
+    public void deleteById(int recipeId) {
+        recipeElasticRepository.deleteById(recipeId);
+    }
+
     public List<RecipeDocument> filterByCategory(String searchTerm, String category) {
         BoolQueryBuilder boolQuery = boolQuery();
         boolQuery.must(multiMatchQuery(searchTerm)
