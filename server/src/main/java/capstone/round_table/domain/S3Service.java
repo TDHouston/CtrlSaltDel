@@ -1,7 +1,6 @@
 package capstone.round_table.domain;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,7 @@ public class S3Service {
             metadata
         );
 
+        // Add object to file
         amazonS3.putObject(request);
 
         // Return the file URL
@@ -53,10 +53,6 @@ public class S3Service {
 
     public void deleteFile(String key) {
         amazonS3.deleteObject(bucketName, key);
-    }
-
-    public boolean fileExists(String key) {
-        return amazonS3.doesObjectExist(bucketName, key);
     }
 
     // Extract key from full URL for deletion

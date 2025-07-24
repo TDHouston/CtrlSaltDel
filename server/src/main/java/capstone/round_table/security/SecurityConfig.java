@@ -28,14 +28,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors();
         http.authorizeRequests()
-                .antMatchers("/api/auth/*").permitAll()
-                .antMatchers("/api/favorite/top").permitAll()
-                .antMatchers("/api/recipes/*").permitAll()
-                .anyRequest().permitAll()
-                .and()
-                .addFilter(new JwtRequestFilter(authenticationManager(), converter))
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
+            .antMatchers("/api/auth/*").permitAll() // Login/Register
+            .antMatchers("/api/category").permitAll() // View all Categories
+            .antMatchers("/api/comment/recipe/{recipeId}").permitAll() // View Recipe Comments
+            .antMatchers("/api/comment/recipe").hasRole("WRITE") // Add Recipe Comments
+            .antMatchers("/api/favorite/top").permitAll() // View Top Favorite Recipes
+            .antMatchers("/api/favorite/count/{recipeId}").permitAll()
+            .antMatchers("/api/ingredients").permitAll()
+            .antMatchers("/api/recipes/*").permitAll()
+            .antMatchers("/api/recipe_ingredient/*").permitAll()
+            .antMatchers("/api/recipe_category/*").permitAll()
+            .anyRequest().authenticated() // All other requests require authentication
+            .and()
+            .addFilter(new JwtRequestFilter(authenticationManager(), converter))
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);;
     }
 
     @Override
