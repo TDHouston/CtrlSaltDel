@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const storedToken = localStorage.getItem("jwt_token");
         const storedUser = localStorage.getItem("user_data");
-
         if (storedToken && storedUser) {
             setTokenState(storedToken);
             setUserState(JSON.parse(storedUser));
@@ -21,6 +20,17 @@ export function AuthProvider({ children }) {
             });
         }
     }, []);
+
+    useEffect(() => {
+        if (token) {
+            setHeaders({
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            });
+        } else {
+            setHeaders(null);
+        }
+    }, [token]);
 
     // Persist user state to localStorage on update
     const setUser = (userData) => {
@@ -36,6 +46,10 @@ export function AuthProvider({ children }) {
         setTokenState(jwtToken);
         if (jwtToken) {
             localStorage.setItem("jwt_token", jwtToken);
+            setHeaders({
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            });
         } else {
             localStorage.removeItem("jwt_token");
         }
