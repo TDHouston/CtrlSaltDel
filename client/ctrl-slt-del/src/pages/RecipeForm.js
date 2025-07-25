@@ -21,8 +21,12 @@ function RecipeForm({ onSave, onCancel }) {
     const [ingredients, setIngredients] = useState([]);
     const [ingredient, setIngredient] = useState({});
 
+    const [instructionKeys, setInstructionKeys] = useState([]);
     const [instruction, setInstruction] = useState("");
     const [instructions, setInstructions] = useState([]);
+    const [instructionStageToDelete, setInstructionStageToDelete] = useState(
+        []
+    );
 
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
@@ -67,9 +71,13 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/instruction/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    console.log("HEREHER", data);
                     const instructionMap = data.map((data) => data.description);
+                    const InstrunctionKey = data.map(
+                        (data) => data.instructionId
+                    );
                     setInstructions(instructionMap || []);
+                    setInstructionKeys(InstrunctionKey);
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
@@ -96,6 +104,16 @@ function RecipeForm({ onSave, onCancel }) {
 
     const handleInstructionChange = (e) => {
         setInstruction(e.target.value);
+    };
+
+    const handleDeleteInstruction = (id) => {
+        let key = instructionKeys.splice(id, 1);
+        instructions.splice(id, 1);
+        setInstructionKeys([...instructionKeys]);
+        setInstructions([...instructions]);
+        let stage = [...instructionStageToDelete];
+        stage.push(key);
+        setInstructionStageToDelete(stage);
     };
 
     const addInstruction = () => {
@@ -223,6 +241,7 @@ function RecipeForm({ onSave, onCancel }) {
                                 }),
                             }
                         );
+
                         const added = await addedIngredient.json();
 
                         const ingredient_recipe = {
@@ -245,6 +264,23 @@ function RecipeForm({ onSave, onCancel }) {
                 }
 
                 // Handle adding instructions to DB
+
+                if (recipeId) {
+                    const url = "http://localhost:8080/api/instruction";
+                    try {
+                        for (
+                            let i = 0;
+                            i < instructionStageToDelete.length;
+                            i++
+                        ) {
+                            fetch(`${url}/${instructionStageToDelete[i]}`, {
+                                method: "DELETE",
+                            });
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
 
                 for (let i = 0; i < instructions.length; i++) {
                     const instructionToAdd = {
@@ -467,9 +503,19 @@ function RecipeForm({ onSave, onCancel }) {
                 <div className="mb-4">
                     <h3 className="font-semibold mb-2">Instructions</h3>
                     {instructions.map((inst, i) => (
-                        <p key={i}>
-                            {i + 1}. {inst}
-                        </p>
+                        <>
+                            <div className="grid grid-cols-6 mb-2 ">
+                                <p key={i} className="col-span-5 text-left">
+                                    {i + 1}. {inst}
+                                </p>
+                                <buttom
+                                    className="border bg-red-400 rounded-md hover:bg-red-600 text-white hover:cursor-pointer p-1"
+                                    onClick={() => handleDeleteInstruction(i)}
+                                >
+                                    Delete
+                                </buttom>
+                            </div>
+                        </>
                     ))}
                     <div className="flex gap-2 mt-2">
                         <input
