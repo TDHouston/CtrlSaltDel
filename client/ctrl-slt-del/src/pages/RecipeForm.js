@@ -4,9 +4,9 @@ import { AuthContext } from "../helpers/AuthContext";
 
 const RECIPE_DEFAULT = {
     name: "",
-    difficulty: 3,
-    cookTime: 30,
-    servings: 1,
+    difficulty: "EASY",
+    cookTime: 0,
+    servings: 0,
     description: "",
     instructions: [],
     ingredients: [],
@@ -29,12 +29,12 @@ function RecipeForm({ onSave, onCancel }) {
     const [uploadError, setUploadError] = useState("");
 
     const { user, headers } = useContext(AuthContext);
-    const { id } = useParams();
+    const { recipeId } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (id) {
-            fetch(`http://localhost:8080/api/recipes/${id}`)
+        if (recipeId) {
+            fetch(`http://localhost:8080/api/recipes/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.userId !== user?.userId) return;
@@ -42,11 +42,11 @@ function RecipeForm({ onSave, onCancel }) {
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
-    }, [id, user]);
+    }, [recipeId, user]);
 
     useEffect(() => {
-        if (id) {
-            fetch(`http://localhost:8080/api/recipe_ingredient/${id}`)
+        if (recipeId) {
+            fetch(`http://localhost:8080/api/recipe_ingredient/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     const IngredientMap = data.map(
@@ -60,11 +60,11 @@ function RecipeForm({ onSave, onCancel }) {
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
-    }, [id, user]);
+    }, [recipeId, user]);
 
     useEffect(() => {
-        if (id) {
-            fetch(`http://localhost:8080/api/instruction/${id}`)
+        if (recipeId) {
+            fetch(`http://localhost:8080/api/instruction/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     console.log(data);
@@ -73,7 +73,7 @@ function RecipeForm({ onSave, onCancel }) {
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
-    }, [id, user]);
+    }, [recipeId, user]);
 
     const handleInputChange = (e) => {
         setRecipe({ ...recipe, [e.target.name]: e.target.value });
@@ -110,7 +110,7 @@ function RecipeForm({ onSave, onCancel }) {
         setUploadError("");
     };
 
-    const handleUpload = async (recipeId) => {
+    const handleUpload = async (RecipeId) => {
         if (!file) return;
 
         const formData = new FormData();
@@ -119,7 +119,7 @@ function RecipeForm({ onSave, onCancel }) {
         setUploading(true);
         try {
             const res = await fetch(
-                `http://localhost:8080/api/recipes/images/${recipeId}`,
+                `http://localhost:8080/api/recipes/images/${RecipeId}`,
                 {
                     method: "POST",
                     body: formData,
@@ -163,7 +163,7 @@ function RecipeForm({ onSave, onCancel }) {
 
         const method = recipe?.userId ? "PUT" : "POST";
         const url = recipe?.userId
-            ? `http://localhost:8080/api/recipes/${id}`
+            ? `http://localhost:8080/api/recipes/${recipeId}`
             : "http://localhost:8080/api/recipes";
 
         try {
@@ -339,6 +339,40 @@ function RecipeForm({ onSave, onCancel }) {
                         required
                         className="w-full border rounded-md px-3 py-2"
                     />
+                </div>
+
+                <div className="mb-4">
+                    <h3 className="font-semibold mb-2">Details</h3>
+
+                    <div className="grid grid-cols-3 gap-2 mt-2">
+                        <input
+                            type="number"
+                            name="cookTime"
+                            placeholder="Minutes"
+                            value={recipe.cookTime || ""}
+                            onChange={handleInputChange}
+                            className="border rounded-md px-2 py-1"
+                        />
+                        <input
+                            type="number"
+                            name="servings"
+                            placeholder="Servings"
+                            value={recipe.servings || ""}
+                            onChange={handleInputChange}
+                            className="border rounded-md px-2 py-1"
+                        />
+                        <select
+                            name="difficulty"
+                            value={recipe.difficulty}
+                            onChange={handleInputChange}
+                            className="border rounded-md px-2 py-1"
+                        >
+                            <option value="EASY">Easy</option>
+                            <option value="INTERMEDIATE">Intermediate</option>
+                            <option value="ADVANCED">Advanced</option>
+                            <option value="EXPERT">Expert</option>
+                        </select>
+                    </div>
                 </div>
 
                 {/* Image Upload */}
