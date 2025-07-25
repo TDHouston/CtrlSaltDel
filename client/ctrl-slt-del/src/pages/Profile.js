@@ -12,6 +12,12 @@ function Profile() {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
+  const [allRecipes, setAllRecipes] = useState([]);
+  const [moderatorPicks, setModeratorPicks] = useState(() => {
+    const saved = localStorage.getItem("moderatorPicks");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -43,6 +49,15 @@ function Profile() {
         .catch(console.error);
     }
   }, [activeTab, user]);
+
+  useEffect(() => {
+    if (activeTab === "moderator") {
+      fetch("http://localhost:8080/api/recipes")
+        .then((res) => res.json())
+        .then(setAllRecipes)
+        .catch((err) => console.error("Recipe fetch error:", err));
+    }
+  }, [activeTab]);
 
   const handleCategoryChange = (e) => setNewCategory(e.target.value);
 
@@ -120,6 +135,23 @@ function Profile() {
     }
   };
 
+  const toggleModeratorPick = (recipeId) => {
+    let updated;
+
+    if (moderatorPicks.includes(recipeId)) {
+      updated = moderatorPicks.filter((id) => id !== recipeId);
+    } else {
+      if (moderatorPicks.length >= 3) {
+        alert("You can only select up to 3 moderator picks.");
+        return;
+      }
+      updated = [...moderatorPicks, recipeId];
+    }
+
+    setModeratorPicks(updated);
+    localStorage.setItem("moderatorPicks", JSON.stringify(updated));
+  };
+
   const baseTabs = [
     { key: "account", label: "Account" },
     { key: "recipes", label: "My Recipes" },
@@ -129,6 +161,7 @@ function Profile() {
   const adminTabs = [
     { key: "users", label: "View Users" },
     { key: "categories", label: "View Categories" },
+    { key: "moderator", label: "Moderator Picks" },
   ];
 
   return (
@@ -283,6 +316,51 @@ function Profile() {
                 Add Category
               </button>
             </form>
+          </section>
+        )}
+
+        {activeTab === "moderator" && (
+          <section>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+              Select Moderator Picks
+            </h1>
+            {allRecipes.length === 0 ? (
+              <p className="text-gray-500 italic">Loading recipes...</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {allRecipes.map((recipe) => (
+                  <div
+                    key={recipe.recipeId}
+                    className="bg-white p-4 shadow rounded-lg flex flex-col justify-between"
+                  >
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900">
+                        {recipe.name}
+                      </h2>
+                      <p className="text-sm text-gray-500">
+                        {recipe.description}
+                      </p>
+                      <p className="text-sm text-gray-400 mt-2">
+                        Cook time: {recipe.cookTime} mins | Difficulty:{" "}
+                        {recipe.difficulty}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => toggleModeratorPick(recipe.recipeId)}
+                      className={`mt-4 px-4 py-2 rounded text-sm font-medium ${
+                        moderatorPicks.includes(recipe.recipeId)
+                          ? "bg-red-100 text-red-700 hover:bg-red-200"
+                          : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      }`}
+                    >
+                      {moderatorPicks.includes(recipe.recipeId)
+                        ? "Remove from Picks"
+                        : "Add to Picks"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         )}
       </main>
