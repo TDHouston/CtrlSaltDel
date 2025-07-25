@@ -36,18 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/recipes").hasAnyRole("USER", "ADMIN", "ROLE_USER")
                 .antMatchers(HttpMethod.PUT, "/api/recipes/{recipeId}").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/recipes/{recipeId}").hasAnyRole("USER", "ADMIN")
-
-
-//                .antMatchers("/api/user").permitAll()
-//                .antMatchers("/api/category").permitAll() // View all Categories
-//                .antMatchers("/api/comment/recipe/{recipeId}").permitAll() // View Recipe Comments
-//                .antMatchers("/api/comment/recipe").hasRole("WRITE") // Add Recipe Comments
-//                .antMatchers("/api/favorite/*").permitAll()
-//                .antMatchers("/api/favorite/top").permitAll() // View Top Favorite Recipes
-//                .antMatchers("/api/favorite/count/{recipeId}").permitAll() // View Favorite Recipes
-//                .antMatchers("/api/ingredients").permitAll() // View all Ingredients
-//                .antMatchers("/api/recipe_ingredient/*").permitAll()
-//                .antMatchers("/api/recipe_category/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/user").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/user/userId").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/user/{userId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/user/{userId}").hasRole("ADMIN")
                 .anyRequest().permitAll()
                 .and()
                 .addFilter(new JwtRequestFilter(authenticationManager(), converter))
