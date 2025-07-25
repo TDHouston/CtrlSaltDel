@@ -36,6 +36,7 @@ function RecipeForm({ onSave, onCancel }) {
 
     const { user, headers } = useContext(AuthContext);
     const { recipeId } = useParams();
+    const { recipeId: idToCheck } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -55,7 +56,6 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/recipe_ingredient/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log("HEREHER", data);
                     const ingredientKey = data.map((data) => data.ingredientId);
                     const IngredientMap = data.map(
                         ({ ingredientName, quantity, unit }) => ({
@@ -118,19 +118,17 @@ function RecipeForm({ onSave, onCancel }) {
         let stage = [...instructionStageToDelete];
         stage.push(key);
         setInstructionStageToDelete(stage);
+        console.log(stage);
     };
 
     const handleDeleteIngredient = (id) => {
-        console.log(ingredientKeys);
-        // let key = ingredientKeys.splice(id, 1);
-        // ingredients.splice(id, 1);
-        // console.log(instructionKeys);
-        // setIngredientKeys([...ingredientKeys]);
-        // setIngredients([...ingredients]);
-        // let stage = [...ingridentStageToDelete];
-        // stage.push(key);
-        // console.log(key);
-        // setIngredientStageToDelete(stage)
+        let key = ingredientKeys.splice(id, 1);
+        ingredients.splice(id, 1);
+        setIngredientKeys([...ingredientKeys]);
+        setIngredients([...ingredients]);
+        let stage = [...ingridentStageToDelete];
+        stage.push(key);
+        setIngredientStageToDelete(stage);
     };
 
     const addInstruction = () => {
@@ -208,6 +206,23 @@ function RecipeForm({ onSave, onCancel }) {
                 body: JSON.stringify(newRecipe),
             });
             if (res.status === 201 || res.status === 204) {
+                if (idToCheck) {
+                    const url = "http://localhost:8080/api/ingredients";
+                    try {
+                        for (
+                            let i = 0;
+                            i < ingridentStageToDelete.length;
+                            i++
+                        ) {
+                            fetch(`${url}/${ingridentStageToDelete[i]}`, {
+                                method: "DELETE",
+                            });
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
                 // If it's a new recipe, get the created recipe with ID
                 const updated = recipe?.userId ? recipe : await res.json();
                 const recipeId = res.recipeId ? res.recipeId : updated.recipeId;
