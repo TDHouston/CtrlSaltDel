@@ -63,3 +63,6 @@ GET http://localhost:8080/api/recipe_ingredient/1 HTTP/1.1
 ###
 
 GET http://localhost:8080/api/recipes/user?id=10 HTTP/1.1
+
+### 
+GET http://localhost:8080/api/recipes/user?id=10

@@ -18,8 +18,10 @@ function RecipeForm({ onSave, onCancel }) {
     const [recipe, setRecipe] = useState(RECIPE_DEFAULT);
     const [errors, setErrors] = useState([]);
 
+    const [ingredientKeys, setIngredientKeys] = useState([]);
     const [ingredients, setIngredients] = useState([]);
     const [ingredient, setIngredient] = useState({});
+    const [ingridentStageToDelete, setIngredientStageToDelete] = useState([]);
 
     const [instructionKeys, setInstructionKeys] = useState([]);
     const [instruction, setInstruction] = useState("");
@@ -53,6 +55,8 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/recipe_ingredient/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log("HEREHER", data);
+                    const ingredientKey = data.map((data) => data.ingredientId);
                     const IngredientMap = data.map(
                         ({ ingredientName, quantity, unit }) => ({
                             ingredientName,
@@ -61,6 +65,7 @@ function RecipeForm({ onSave, onCancel }) {
                         })
                     );
                     setIngredients(IngredientMap || []);
+                    setIngredientKeys(ingredientKey);
                 })
                 .catch((err) => console.error("Failed to fetch recipe:", err));
         }
@@ -71,7 +76,6 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/instruction/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log("HEREHER", data);
                     const instructionMap = data.map((data) => data.description);
                     const InstrunctionKey = data.map(
                         (data) => data.instructionId
@@ -114,6 +118,19 @@ function RecipeForm({ onSave, onCancel }) {
         let stage = [...instructionStageToDelete];
         stage.push(key);
         setInstructionStageToDelete(stage);
+    };
+
+    const handleDeleteIngredient = (id) => {
+        console.log(ingredientKeys);
+        // let key = ingredientKeys.splice(id, 1);
+        // ingredients.splice(id, 1);
+        // console.log(instructionKeys);
+        // setIngredientKeys([...ingredientKeys]);
+        // setIngredients([...ingredients]);
+        // let stage = [...ingridentStageToDelete];
+        // stage.push(key);
+        // console.log(key);
+        // setIngredientStageToDelete(stage)
     };
 
     const addInstruction = () => {
@@ -445,12 +462,23 @@ function RecipeForm({ onSave, onCancel }) {
                 {/* Ingredients */}
                 <div className="mb-4">
                     <h3 className="font-semibold mb-2">Ingredients</h3>
+
                     {ingredients.map((ing, idx) => (
-                        <p key={idx}>
-                            {ing.ingredientQuantity}{" "}
-                            {ing.ingredientUnit?.toLowerCase()}{" "}
-                            {ing.ingredientName}
-                        </p>
+                        <>
+                            <div className="mb-2">
+                                <p key={idx} className="mb-2">
+                                    {ing.ingredientQuantity}{" "}
+                                    {ing.ingredientUnit?.toLowerCase()}{" "}
+                                    {ing.ingredientName}
+                                </p>
+                                <buttom
+                                    className="border bg-red-400 rounded-md hover:bg-red-600 text-white hover:cursor-pointer p-1"
+                                    onClick={() => handleDeleteIngredient(idx)}
+                                >
+                                    Delete
+                                </buttom>
+                            </div>
+                        </>
                     ))}
 
                     <div className="grid grid-cols-3 gap-2 mt-2">
