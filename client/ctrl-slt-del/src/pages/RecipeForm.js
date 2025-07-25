@@ -49,7 +49,6 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/recipe_ingredient/${id}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log("Recipe?", data);
                     const IngredientMap = data.map(
                         ({ ingredientName, quantity, unit }) => ({
                             ingredientName,
@@ -167,12 +166,6 @@ function RecipeForm({ onSave, onCancel }) {
             : "http://localhost:8080/api/recipes";
 
         try {
-            console.log({
-                method,
-                headers,
-                body: JSON.stringify(newRecipe),
-            });
-
             const res = await fetch(url, {
                 method,
                 headers,
@@ -215,7 +208,6 @@ function RecipeForm({ onSave, onCancel }) {
                             }
                         );
                         const ingResJson = await ingRes.json();
-                        console.log(ingResJson);
                     } else {
                         // Ingredient needs to be added to database
                         const addedIngredient = await fetch(
@@ -259,7 +251,6 @@ function RecipeForm({ onSave, onCancel }) {
                         stepNumber: i + 1,
                         description: instructions[i],
                     };
-                    console.log(instructionToAdd);
                     const instructionRes = await fetch(
                         "http://localhost:8080/api/instruction",
                         {
