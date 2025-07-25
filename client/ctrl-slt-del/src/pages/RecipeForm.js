@@ -67,6 +67,7 @@ function RecipeForm({ onSave, onCancel }) {
             fetch(`http://localhost:8080/api/instruction/${id}`)
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data);
                     const instructionMap = data.map((data) => data.description);
                     setInstructions(instructionMap || []);
                 })
