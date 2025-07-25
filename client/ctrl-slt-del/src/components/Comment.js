@@ -57,7 +57,7 @@ function Comment({ comment }) {
             </svg>
           </button>
         )}
-        {user?.role === "ADMIN" && (
+        {user?.role === "ADMIN" && comment.userId !== user?.userId && (
           <button onClick={handleDeleteComment}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

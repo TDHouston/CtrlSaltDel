@@ -10,4 +10,8 @@ services:
       cluster.initial_master_nodes: es01
       cluster.name: round_table_cluster
       bootstrap.memory_lock: "true"
+      xpack.security.enabled: true
+      xpack.security.transport.ssl.enabled: true
+      ELASTIC_PASSWORD: roundtable
       ES_JAVA_OPTS: -Xms256m -Xmx256m
+

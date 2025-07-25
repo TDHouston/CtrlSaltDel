@@ -31,19 +31,19 @@ public class UserController {
         return service.findById(userId);
     }
 
-    @GetMapping("email/{userEmail}")
-    public User findByEmail(@PathVariable String userEmail) {
-        return service.findByEmail(userEmail);
-    }
+//    @GetMapping("/email/{userEmail}")
+//    public User findByEmail(@PathVariable String userEmail) {
+//        return service.findByEmail(userEmail);
+//    }
 
-    @PostMapping
-    public ResponseEntity<Object> add(@RequestBody User user) {
-        Result<User> result = service.addUser(user);
-        if (result.isSuccess()) {
-            return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
-        }
-        return ErrorResponse.build(result);
-    }
+//    @PostMapping
+//    public ResponseEntity<Object> add(@RequestBody User user) {
+//        Result<User> result = service.addUser(user);
+//        if (result.isSuccess()) {
+//            return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
+//        }
+//        return ErrorResponse.build(result);
+//    }
 
     @PutMapping("/{userId}")
     public ResponseEntity<Object> update(@PathVariable int userId, @RequestBody User user) {

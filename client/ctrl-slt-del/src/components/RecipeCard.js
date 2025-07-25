@@ -39,20 +39,13 @@ function RecipeCard({ recipe, onImageLoad }) {
   const toggleFavorite = () => {
     if (!user || !recipeId) return;
 
-    const body = {
-      userId: user.userId,
-      recipeId: recipeId,
-    };
+    const body = { userId: user.userId, recipeId };
 
-    const init = {
+    fetch(favoriteUrl, {
       method: favorited ? "DELETE" : "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    };
-
-    fetch(favoriteUrl, init)
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to toggle favorite.");
         setFavorited(!favorited);
@@ -76,7 +69,7 @@ function RecipeCard({ recipe, onImageLoad }) {
     const relX = e.clientX - bounds.left;
     const relY = e.clientY - bounds.top;
 
-    const xMove = (relX / bounds.width - 0.5) * 10; // max 5px left/right
+    const xMove = (relX / bounds.width - 0.5) * 10;
     const yMove = (relY / bounds.height - 0.5) * 10;
 
     gsap.to(imageRef.current, {
@@ -110,12 +103,12 @@ function RecipeCard({ recipe, onImageLoad }) {
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-800 transition-all"
+      className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden transition-all duration-300"
     >
       <Link to={`/recipe/${recipeId}`} className="md:w-48 w-full">
         <img
           ref={imageRef}
-          className="object-cover w-full rounded-t-lg h-96 md:h-auto md:rounded-none md:rounded-s-lg"
+          className="object-cover w-full h-64 md:h-full md:rounded-l-xl rounded-t-xl"
           src={recipe.imageUrl || PLACEHOLDER_IMG}
           alt={recipe.name}
           onLoad={onImageLoad}
@@ -124,35 +117,42 @@ function RecipeCard({ recipe, onImageLoad }) {
 
       <div className="flex flex-col justify-between p-4 flex-1">
         <div>
-          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <h5 className="text-2xl font-semibold text-gray-900 mb-1">
             {recipe.name}
           </h5>
-          <h6 className="mb-2 text-sm text-gray-700 dark:text-gray-300">
-            authored by <span className="font-bold">{recipe.author}</span>
-          </h6>
-          <p className="text-gray-700 dark:text-gray-400 mb-2">
+          <p className="text-sm text-gray-600 mb-2">
+            by <span className="font-semibold">{recipe.author}</span>
+          </p>
+          <p className="text-gray-700 text-sm mb-3 line-clamp-3">
             {recipe.description}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-            {recipe.cookTime}m • difficulty rating{" "}
-            <span className="font-bold">{recipe.difficulty}</span>
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Favorited {favoriteCount} {favoriteCount === 1 ? "time" : "times"}
-          </p>
+
+          <div className="text-sm text-gray-600 space-y-1">
+            <p>
+              ⏱️ <span className="font-medium">{recipe.cookTime} min</span>
+            </p>
+            <p>
+              🧩 Difficulty:{" "}
+              <span className="font-medium">{recipe.difficulty}</span>
+            </p>
+            <p>
+              ❤️ Favorited <span className="font-medium">{favoriteCount}</span>{" "}
+              {favoriteCount === 1 ? "time" : "times"}
+            </p>
+          </div>
         </div>
 
         {user && (
-          <div className="flex flex-row mt-4">
+          <div className="mt-4">
             <button
-              className={`px-4 py-2 rounded-md ${
-                favorited
-                  ? "bg-red-300 hover:bg-red-400"
-                  : "bg-yellow-200 hover:bg-yellow-400"
-              }`}
               onClick={toggleFavorite}
+              className={`text-sm px-4 py-2 rounded-md font-medium shadow-sm transition ${
+                favorited
+                  ? "bg-red-100 text-red-700 hover:bg-red-200"
+                  : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+              }`}
             >
-              {favorited ? "Remove from Favorites" : "Add to Favorites"}
+              {favorited ? "★ Remove from Favorites" : "☆ Add to Favorites"}
             </button>
           </div>
         )}
