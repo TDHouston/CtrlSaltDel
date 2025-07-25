@@ -22,7 +22,7 @@ public class JwtConverter {
     private String secret = "Secret for now but this needs to be changed";
     private Key key;
     private final String ISSUER = "CtrlSaltDel";
-    private final int EXPIRATION_MINUTES = 30;
+    private final int EXPIRATION_MINUTES = 300;
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
 
     public String getTokenFromUser(User user) {
