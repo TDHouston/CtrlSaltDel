@@ -16,8 +16,12 @@ RUN apt-get update && \
 # Build the application
 RUN mvn clean package -DskipTests
 
+# Copy start script
+COPY start.sh ./
+RUN chmod +x start.sh
+
 # Expose port
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "-Dserver.port=${PORT:-8080}", "target/Server-1.0-SNAPSHOT.jar"]
+CMD ["./start.sh"]
