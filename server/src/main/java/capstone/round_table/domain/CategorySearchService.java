@@ -1,3 +1,10 @@
+/*
+ * DISABLED FOR DEPLOYMENT - ELASTICSEARCH NOT AVAILABLE
+ * This service requires ElasticSearch which is not available in production.
+ * All search functionality has been temporarily disabled to allow deployment.
+ */
+
+/*
 package capstone.round_table.domain;
 
 import capstone.round_table.data.CategoryElasticRepository;
@@ -58,3 +65,4 @@ public class CategorySearchService {
 
 
 }
+*/

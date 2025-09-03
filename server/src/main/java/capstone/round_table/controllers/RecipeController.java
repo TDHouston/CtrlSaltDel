@@ -1,6 +1,6 @@
 package capstone.round_table.controllers;
 
-import capstone.round_table.domain.RecipeSearchService;
+// import capstone.round_table.domain.RecipeSearchService;
 import capstone.round_table.domain.RecipeService;
 import capstone.round_table.domain.Result;
 import capstone.round_table.models.Recipe;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 public class RecipeController {
     private final RecipeService service;
-    private final RecipeSearchService recipeSearchService;
+    // private final RecipeSearchService recipeSearchService;
 
-    public RecipeController(RecipeService service, RecipeSearchService recipeSearchService) {
+    public RecipeController(RecipeService service) {
         this.service = service;
-        this.recipeSearchService = recipeSearchService;
+        // this.recipeSearchService = recipeSearchService;
     }
 
 
@@ -43,7 +43,7 @@ public class RecipeController {
     public ResponseEntity<Object> add(@RequestBody Recipe recipe) {
         Result<Recipe> result = service.addRecipe(recipe);
         if (result.isSuccess()) {
-            recipeSearchService.add(result.getPayload());
+            // recipeSearchService.add(result.getPayload());
             return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
         }
         return ErrorResponse.build(result);
@@ -57,7 +57,7 @@ public class RecipeController {
 
         Result<Recipe> result = service.updateRecipe(recipe);
         if (result.isSuccess()) {
-            recipeSearchService.update(recipe);
+            // recipeSearchService.update(recipe);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ErrorResponse.build(result);
@@ -66,7 +66,7 @@ public class RecipeController {
     @DeleteMapping("/{recipeId}")
     public ResponseEntity<Void> deleteById(@PathVariable int recipeId) {
         if (service.deleteRecipeById(recipeId).isSuccess()) {
-            recipeSearchService.deleteById(recipeId);
+            // recipeSearchService.deleteById(recipeId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

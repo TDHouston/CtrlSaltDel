@@ -1,3 +1,10 @@
+/*
+ * DISABLED FOR DEPLOYMENT - ELASTICSEARCH NOT AVAILABLE
+ * This controller requires ElasticSearch which is not available in production.
+ * All search functionality has been temporarily disabled to allow deployment.
+ */
+
+/*
 package capstone.round_table.controllers;
 
 import capstone.round_table.domain.CategorySearchService;
@@ -10,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Temporarily disabled for deployment - ElasticSearch not available
-// @RestController
-// @RequestMapping("/api/elastic")
-public class RecipeSearchController_DISABLED {
+@RestController
+@RequestMapping("/api/elastic")
+public class RecipeSearchController {
     private final RecipeSearchService service;
     private final CategorySearchService categorySearchService;
 
