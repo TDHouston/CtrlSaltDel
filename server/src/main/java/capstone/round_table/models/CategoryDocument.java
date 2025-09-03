@@ -1,3 +1,10 @@
+/*
+ * DISABLED FOR DEPLOYMENT - ELASTICSEARCH NOT AVAILABLE
+ * This model class requires ElasticSearch which is not available in production.
+ * All search functionality has been temporarily disabled to allow deployment.
+ */
+
+/*
 package capstone.round_table.models;
 
 import org.springframework.data.annotation.Id;
@@ -29,3 +36,4 @@ public class CategoryDocument {
         this.name = name;
     }
 }
+*/

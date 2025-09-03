@@ -1,3 +1,10 @@
+/*
+ * DISABLED FOR DEPLOYMENT - ELASTICSEARCH NOT AVAILABLE
+ * This configuration requires ElasticSearch which is not available in production.
+ * All search functionality has been temporarily disabled to allow deployment.
+ */
+
+/*
 package capstone.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,3 +21,4 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 public class ElasticSearchConfig {
     // ElasticSearch configuration will only be loaded if elasticsearch.enabled=true
 }
+*/
