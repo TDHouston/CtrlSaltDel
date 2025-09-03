@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/elastic")
-public class RecipeSearchController {
+// Temporarily disabled for deployment - ElasticSearch not available
+// @RestController
+// @RequestMapping("/api/elastic")
+public class RecipeSearchController_DISABLED {
     private final RecipeSearchService service;
     private final CategorySearchService categorySearchService;
 
