@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import MyRecipes from "../components/MyRecipes";
 import UserCard from "../components/UserCard";
 import { AuthContext } from "../helpers/AuthContext";
+import { API_ENDPOINTS } from "../config/api";
 
 function Profile() {
     const [user, setUser] = useState(null);
@@ -23,7 +24,7 @@ function Profile() {
     const { headers, token } = useContext(AuthContext);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user/${id}`, {
+        fetch(API_ENDPOINTS.USER.BY_ID(id), {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -36,7 +37,7 @@ function Profile() {
     }, [id]);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user`, {
+        fetch(API_ENDPOINTS.USER.BASE, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ function Profile() {
     }, []);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/category`)
+        fetch(`${API_ENDPOINTS.USER.BASE.replace('/user', '/category')}`)
             .then((res) => res.json())
             .then(setCategories)
             .catch(console.error);
@@ -57,7 +58,7 @@ function Profile() {
 
     useEffect(() => {
         if (activeTab === "favorites" && user) {
-            fetch(`http://localhost:8080/api/favorite/${user.userId}`)
+            fetch(`${API_ENDPOINTS.USER.BASE.replace('/user', '/favorite')}/${user.userId}`)
                 .then((res) => res.json())
                 .then(setFavorites)
                 .catch(console.error);
@@ -66,7 +67,7 @@ function Profile() {
 
     useEffect(() => {
         if (activeTab === "moderator") {
-            fetch("http://localhost:8080/api/recipes")
+            fetch(API_ENDPOINTS.RECIPES.BASE)
                 .then((res) => res.json())
                 .then(setAllRecipes)
                 .catch((err) => console.error("Recipe fetch error:", err));
@@ -79,7 +80,7 @@ function Profile() {
         e.preventDefault();
         if (!newCategory.trim()) return;
 
-        fetch("http://localhost:8080/api/category", {
+        fetch(`${API_ENDPOINTS.USER.BASE.replace('/user', '/category')}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: newCategory }),
@@ -93,7 +94,7 @@ function Profile() {
     };
 
     const handleDeleteCategory = (id) => {
-        fetch(`http://localhost:8080/api/category/${id}`, { method: "DELETE" })
+        fetch(`${API_ENDPOINTS.USER.BASE.replace('/user', '/category')}/${id}`, { method: "DELETE" })
             .then((res) => {
                 if (res.ok) {
                     setCategories(
@@ -111,7 +112,7 @@ function Profile() {
                 `Remove user ${userToDelete.username}? This action cannot be undone!`
             )
         ) {
-            fetch(`http://localhost:8080/api/user/${userId}`, {
+            fetch(API_ENDPOINTS.USER.BY_ID(userId), {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -141,7 +142,7 @@ function Profile() {
             role: "ADMIN",
         };
         if (window.confirm(`Promote ${selected.username} to admin?`)) {
-            fetch(`http://localhost:8080/api/user/${userId}`, {
+            fetch(API_ENDPOINTS.USER.UPDATE(userId), {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,

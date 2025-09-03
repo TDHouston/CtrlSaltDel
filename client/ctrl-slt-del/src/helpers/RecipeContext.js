@@ -1,13 +1,12 @@
 import { createContext, useEffect, useState } from "react";
+import { API_ENDPOINTS } from "../config/api";
 
 export const RecipeContext = createContext();
 
 export function RecipeProvider({ children }) {
     const [recipes, setRecipes] = useState(null);
-    const url = "http://localhost:8080/api/recipes";
-
     const getAllRecipe = () => {
-        fetch(url)
+        fetch(API_ENDPOINTS.RECIPES.BASE)
             .then((response) => {
                 if (response.status === 200) {
                     return response.json();

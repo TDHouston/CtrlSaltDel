@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_ENDPOINTS } from "../config/api";
 
 function RecipeImageUploader({ recipeId, onUploadSuccess }) {
   const [file, setFile] = useState(null);
@@ -22,7 +23,7 @@ function RecipeImageUploader({ recipeId, onUploadSuccess }) {
     setUploading(true);
     try {
       const res = await fetch(
-        `http://localhost:8080/api/recipes/images/${recipeId}`,
+        API_ENDPOINTS.RECIPES.IMAGES(recipeId),
         {
           method: "POST",
           body: formData,

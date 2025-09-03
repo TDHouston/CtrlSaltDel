@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import { API_ENDPOINTS } from "../config/api";
 
 const RECIPE_DEFAULT = {
     name: "",
@@ -41,7 +42,7 @@ function RecipeForm({ onSave, onCancel }) {
 
     useEffect(() => {
         if (recipeId) {
-            fetch(`http://localhost:8080/api/recipes/${recipeId}`)
+            fetch(API_ENDPOINTS.RECIPES.BY_ID(recipeId))
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.userId !== user?.userId) return;
@@ -53,7 +54,7 @@ function RecipeForm({ onSave, onCancel }) {
 
     useEffect(() => {
         if (recipeId) {
-            fetch(`http://localhost:8080/api/recipe_ingredient/${recipeId}`)
+            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     const ingredientKey = data.map((data) => data.ingredientId);
@@ -73,7 +74,7 @@ function RecipeForm({ onSave, onCancel }) {
 
     useEffect(() => {
         if (recipeId) {
-            fetch(`http://localhost:8080/api/instruction/${recipeId}`)
+            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}/${recipeId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     const instructionMap = data.map((data) => data.description);
@@ -152,7 +153,7 @@ function RecipeForm({ onSave, onCancel }) {
         setUploading(true);
         try {
             const res = await fetch(
-                `http://localhost:8080/api/recipes/images/${RecipeId}`,
+                API_ENDPOINTS.RECIPES.IMAGES(RecipeId),
                 {
                     method: "POST",
                     body: formData,
@@ -196,8 +197,8 @@ function RecipeForm({ onSave, onCancel }) {
 
         const method = recipe?.userId ? "PUT" : "POST";
         const url = recipe?.userId
-            ? `http://localhost:8080/api/recipes/${recipeId}`
-            : "http://localhost:8080/api/recipes";
+            ? API_ENDPOINTS.RECIPES.BY_ID(recipeId)
+            : API_ENDPOINTS.RECIPES.BASE;
 
         try {
             const res = await fetch(url, {
@@ -207,7 +208,7 @@ function RecipeForm({ onSave, onCancel }) {
             });
             if (res.status === 201 || res.status === 204) {
                 if (idToCheck) {
-                    const url = "http://localhost:8080/api/ingredients";
+                    const url = `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/ingredients')}`;
                     try {
                         for (
                             let i = 0;
@@ -228,7 +229,7 @@ function RecipeForm({ onSave, onCancel }) {
                 const recipeId = res.recipeId ? res.recipeId : updated.recipeId;
 
                 const fetchedIngredients = await fetch(
-                    "http://localhost:8080/api/ingredients"
+                    `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/ingredients')}`
                 );
                 const existingIngredients = await fetchedIngredients.json();
                 for (let i of ingredients) {
@@ -249,7 +250,7 @@ function RecipeForm({ onSave, onCancel }) {
                         };
 
                         const ingRes = await fetch(
-                            "http://localhost:8080/api/recipe_ingredient",
+                            `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}`,
                             {
                                 method: "POST",
                                 headers: {
@@ -262,7 +263,7 @@ function RecipeForm({ onSave, onCancel }) {
                     } else {
                         // Ingredient needs to be added to database
                         const addedIngredient = await fetch(
-                            "http://localhost:8080/api/ingredients",
+                            `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/ingredients')}`,
                             {
                                 method: "POST",
                                 headers: {
@@ -283,7 +284,7 @@ function RecipeForm({ onSave, onCancel }) {
                             quantity: i.ingredientQuantity,
                         };
                         const ingRes = await fetch(
-                            "http://localhost:8080/api/recipe_ingredient",
+                            `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}`,
                             {
                                 method: "POST",
                                 headers: {
@@ -298,7 +299,7 @@ function RecipeForm({ onSave, onCancel }) {
                 // Handle adding instructions to DB
 
                 if (recipeId) {
-                    const url = "http://localhost:8080/api/instruction";
+                    const url = `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}`;
                     try {
                         for (
                             let i = 0;
@@ -321,7 +322,7 @@ function RecipeForm({ onSave, onCancel }) {
                         description: instructions[i],
                     };
                     const instructionRes = await fetch(
-                        "http://localhost:8080/api/instruction",
+                        `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}`,
                         {
                             method: "POST",
                             headers: {
@@ -342,9 +343,7 @@ function RecipeForm({ onSave, onCancel }) {
 
                         // 🔁 PATCH the imageUrl back to the recipe
                         await fetch(
-                            `http://localhost:8080/api/recipes/${
-                                updated.recipeId || updated.id
-                            }`,
+                            API_ENDPOINTS.RECIPES.BY_ID(updated.recipeId || updated.id),
                             {
                                 method: "PUT",
                                 headers: { "Content-Type": "application/json" },

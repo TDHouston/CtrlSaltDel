@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import { API_ENDPOINTS } from "../config/api";
 
 function SignUpForm({ user, setUser, setPage }) {
   const [password, setPassword] = useState("");
@@ -24,7 +25,7 @@ function SignUpForm({ user, setUser, setPage }) {
       body: JSON.stringify(user),
     };
 
-    fetch("http://localhost:8080/api/auth/register", init)
+    fetch(API_ENDPOINTS.AUTH.REGISTER, init)
       .then((response) => {
         if (response.status === 201) return response.json();
         if (response.status === 400) return response.json();

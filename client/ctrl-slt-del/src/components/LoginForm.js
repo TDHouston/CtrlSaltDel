@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import { API_ENDPOINTS } from "../config/api";
 
 function LoginForm({ setPage }) {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ function LoginForm({ setPage }) {
       body: JSON.stringify({ email, password }),
     };
 
-    fetch("http://localhost:8080/api/auth/login", init)
+    fetch(API_ENDPOINTS.AUTH.LOGIN, init)
       .then((res) => {
         if (res.ok) return res.json();
         if (res.status === 403) throw new Error("Invalid email or password.");

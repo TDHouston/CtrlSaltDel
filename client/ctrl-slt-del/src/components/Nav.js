@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import { RecipeContext } from "../helpers/RecipeContext";
 import Recipe from "../pages/Recipe";
+import { API_ENDPOINTS } from "../config/api";
 
 function Nav() {
     const [isAuth, setIsAuth] = useState(false);
@@ -11,8 +12,7 @@ function Nav() {
     const { recipes, setRecipes, getAllRecipe } = useContext(RecipeContext);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fuzzyUrl = "http://localhost:8080/api/elastic";
-    const filterUrl = "http://localhost:8080/api/elastic";
+    const elasticBaseUrl = `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/elastic')}`;
 
     useEffect(() => {
         if (user?.role === "ADMIN" || user?.role === "USER") {
@@ -33,7 +33,7 @@ function Nav() {
                     .substring("category=".length)
                     .split(" ")
                     .map((s) => s.trim());
-                fetch(`${filterUrl}/recipe/${queries[1]}/${queries[0]}`)
+                fetch(`${elasticBaseUrl}/recipe/${queries[1]}/${queries[0]}`)
                     .then((response) => {
                         if (response.status === 200) {
                             return response.json();
@@ -46,7 +46,7 @@ function Nav() {
                     .then((data) => console.log(data));
             } else {
                 //  if its regular search like stw -> hit fuzzy search
-                fetch(`${fuzzyUrl}/fuzzy/${searchQuery}`)
+                fetch(`${elasticBaseUrl}/fuzzy/${searchQuery}`)
                     .then((response) => {
                         if (response.status === 200) {
                             return response.json();

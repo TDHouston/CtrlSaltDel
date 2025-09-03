@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../helpers/AuthContext";
+import { API_ENDPOINTS } from "../config/api";
 
 function AccountForm({ account }) {
   const [user, setUser] = useState(account);
@@ -34,7 +35,7 @@ function AccountForm({ account }) {
       body: JSON.stringify(payload),
     };
 
-    fetch(`http://localhost:8080/api/user/${user.userId}`, init)
+    fetch(API_ENDPOINTS.USER.UPDATE(user.userId), init)
       .then((response) => {
         if (response.status === 204) return null;
         if (response.status === 400) return response.json();

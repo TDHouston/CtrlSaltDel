@@ -2,13 +2,14 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../helpers/AuthContext";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import { API_ENDPOINTS } from "../config/api";
 
 const PLACEHOLDER_IMG =
   "https://cdn-icons-png.flaticon.com/512/1830/1830839.png";
 
 function RecipeCard({ recipe, onImageLoad }) {
   const { user } = useContext(AuthContext);
-  const favoriteUrl = "http://localhost:8080/api/favorite";
+  const favoriteUrl = `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/favorite')}`;
   const recipeId = recipe.recipeId || recipe.id;
   const [favorited, setFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(recipe.favorited || 0);

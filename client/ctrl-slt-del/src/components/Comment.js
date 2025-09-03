@@ -1,5 +1,6 @@
 import { AuthContext } from "../helpers/AuthContext";
 import { useContext } from "react";
+import { API_ENDPOINTS } from "../config/api";
 
 function Comment({ comment }) {
   const { user } = useContext(AuthContext);
@@ -9,7 +10,7 @@ function Comment({ comment }) {
     const init = {
       method: "DELETE",
     };
-    fetch(`http://localhost:8080/api/comment/${comment.commentId}`, init)
+    fetch(`${API_ENDPOINTS.COMMENTS.BASE.replace('/comments', '/comment')}/${comment.commentId}`, init)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(`Unexpected error: ${response.status}`);

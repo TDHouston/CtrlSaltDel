@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Carousel, IconButton } from "@material-tailwind/react";
+import { API_ENDPOINTS } from "../config/api";
 
-const COMMUNITY_URL = "http://localhost:8080/api/recipes";
 
 function Home() {
   const [communityRecipes, setCommunityRecipes] = useState([]);
@@ -12,7 +12,7 @@ function Home() {
   useEffect(() => {
     const picks = JSON.parse(localStorage.getItem("moderatorPicks")) || [];
 
-    fetch("http://localhost:8080/api/recipes")
+    fetch(API_ENDPOINTS.RECIPES.BASE)
       .then((res) => res.json())
       .then((data) => {
         const featured = data.filter((r) => picks.includes(r.recipeId));
@@ -22,7 +22,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    fetch(COMMUNITY_URL)
+    fetch(API_ENDPOINTS.RECIPES.BASE)
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) =>
         data.sort((a, b) => b.favorited - a.favorited).slice(0, 5)
@@ -32,7 +32,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    fetch(COMMUNITY_URL)
+    fetch(API_ENDPOINTS.RECIPES.BASE)
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data) => data.filter((r) => r.featured === true).slice(0, 3))
       .then(setAdminRecipes)

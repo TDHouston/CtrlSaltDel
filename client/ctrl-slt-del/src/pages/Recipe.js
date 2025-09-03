@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import Comment from "../components/Comment";
+import { API_ENDPOINTS } from "../config/api";
 
 const RECIPE_DEFAULT = {
     name: "Chocolate Cake",
@@ -22,14 +23,10 @@ function Recipe() {
     const { id } = useParams();
     const { user } = useContext(AuthContext);
 
-    const recipeUrl = "http://localhost:8080/api/recipes";
-    const recipeIngredientUrl = "http://localhost:8080/api/recipe_ingredient";
-    const instructionURL = "http://localhost:8080/api/instruction";
-    const commentUrl = "http://localhost:8080/api/comment/recipe";
 
     useEffect(() => {
         if (!id) return setRecipe(RECIPE_DEFAULT);
-        fetch(`${recipeUrl}/${id}`)
+        fetch(API_ENDPOINTS.RECIPES.BY_ID(id))
             .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
             .then(setRecipe)
             .catch(console.error);
@@ -37,7 +34,7 @@ function Recipe() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`${recipeIngredientUrl}/${id}`)
+        fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}/${id}`)
             .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
             .then(setIngredients)
             .catch(console.error);
@@ -45,7 +42,7 @@ function Recipe() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`${instructionURL}/${id}`)
+        fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}/${id}`)
             .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
             .then(setInstructions)
             .catch(console.error);
@@ -53,7 +50,7 @@ function Recipe() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`${commentUrl}/${id}`)
+        fetch(API_ENDPOINTS.COMMENTS.BY_RECIPE(id))
             .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
             .then(setComments)
             .catch(console.error);
@@ -67,7 +64,7 @@ function Recipe() {
             content: commentContent,
         };
 
-        fetch("http://localhost:8080/api/comment", {
+        fetch(`${API_ENDPOINTS.COMMENTS.BASE.replace('/comments', '/comment')}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(comment),

@@ -4,6 +4,7 @@ import RecipeForm from "../pages/RecipeForm";
 import { AuthContext } from "../helpers/AuthContext";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
+import { API_ENDPOINTS } from "../config/api";
 
 function MyRecipes() {
     const [recipes, setRecipes] = useState([]);
@@ -19,7 +20,7 @@ function MyRecipes() {
     // Fetch recipes for this user
     useEffect(() => {
         if (user?.userId) {
-            fetch(`http://localhost:8080/api/recipes/user/${user.userId}`, {
+            fetch(API_ENDPOINTS.RECIPES.BY_USER(user.userId), {
                 method: "GET",
                 headers,
             })
@@ -65,7 +66,7 @@ function MyRecipes() {
         if (!window.confirm("Are you sure you want to delete this recipe?"))
             return;
 
-        fetch(`http://localhost:8080/api/recipes/${recipeId}`, {
+        fetch(API_ENDPOINTS.RECIPES.BY_ID(recipeId), {
             method: "DELETE",
             headers,
         })
