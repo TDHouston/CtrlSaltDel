@@ -31,12 +31,12 @@ const SearchBar = ({
             placeholder="Search recipes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="!border-t-blue-gray-200 focus:!border-t-gray-900 pl-10 w-full"
+            className="!border-t-blue-gray-200 focus:!border-t-gray-900 dark:focus:!border-t-gray-400 pl-10 w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
           />
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
         </div>
         
         <div className="flex gap-2 flex-shrink-0">
@@ -44,7 +44,7 @@ const SearchBar = ({
             variant={showFilters ? "filled" : "outlined"}
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="min-w-[40px]"
+            className="min-w-[40px] dark:border-gray-600 dark:text-white"
           >
             <FunnelIcon className="h-4 w-4" />
           </IconButton>
@@ -54,7 +54,7 @@ const SearchBar = ({
               variant="outlined"
               size="sm"
               onClick={clearSearch}
-              className="flex items-center gap-1 whitespace-nowrap"
+              className="flex items-center gap-1 whitespace-nowrap dark:border-gray-600 dark:text-white"
             >
               <XMarkIcon className="h-4 w-4" />
               <span className="hidden sm:inline">Clear</span>
@@ -65,7 +65,7 @@ const SearchBar = ({
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border dark:border-gray-700">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Difficulty Filter */}
             <div>
@@ -75,7 +75,7 @@ const SearchBar = ({
               <Select
                 value={filters.difficulty}
                 onChange={(value) => updateFilter('difficulty', value)}
-                className="w-full"
+                className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
               >
                 <Option value="">All Levels</Option>
                 {difficulties.map((difficulty) => (
@@ -94,7 +94,7 @@ const SearchBar = ({
               <Select
                 value={filters.category}
                 onChange={(value) => updateFilter('category', value)}
-                className="w-full"
+                className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
               >
                 <Option value="">All Categories</Option>
                 {categories.map((category) => (
@@ -113,7 +113,7 @@ const SearchBar = ({
               <Select
                 value={filters.maxCookTime}
                 onChange={(value) => updateFilter('maxCookTime', value)}
-                className="w-full"
+                className="w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
               >
                 <Option value="">Any Duration</Option>
                 {cookTimeOptions.map((option) => (

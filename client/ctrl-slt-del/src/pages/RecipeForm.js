@@ -35,27 +35,73 @@ function RecipeForm({ onSave, onCancel }) {
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState("");
 
-    const { user, headers } = useContext(AuthContext);
+    const { user, token } = useContext(AuthContext);
     const { recipeId } = useParams();
     const { recipeId: idToCheck } = useParams();
     const navigate = useNavigate();
 
+    // Authentication check - redirect to login if not authenticated
     useEffect(() => {
-        if (recipeId) {
-            fetch(API_ENDPOINTS.RECIPES.BY_ID(recipeId))
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.userId !== user?.userId) return;
-                    setRecipe(data);
-                })
-                .catch((err) => console.error("Failed to fetch recipe:", err));
+        if (!user || !token) {
+            navigate('/login');
+            return;
         }
-    }, [recipeId, user]);
+    }, [user, token, navigate]);
 
     useEffect(() => {
-        if (recipeId) {
-            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}/${recipeId}`)
-                .then((res) => res.json())
+        if (recipeId && user && token) {
+            fetch(API_ENDPOINTS.RECIPES.BY_ID(recipeId), {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        if (res.status === 401 || res.status === 403) {
+                            navigate('/login');
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    // Only allow editing if user owns the recipe or user is admin
+                    if (data.userId !== user.userId && user.role !== "ADMIN") {
+                        alert("You can only edit your own recipes.");
+                        navigate('/');
+                        return;
+                    }
+                    setRecipe(data);
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch recipe:", err);
+                    if (err.message.includes('401') || err.message.includes('403')) {
+                        navigate('/login');
+                    }
+                });
+        }
+    }, [recipeId, user, token, navigate]);
+
+    useEffect(() => {
+        if (recipeId && user && token) {
+            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}/${recipeId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        if (res.status === 401 || res.status === 403) {
+                            navigate('/login');
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then((data) => {
                     const ingredientKey = data.map((data) => data.ingredientId);
                     const IngredientMap = data.map(
@@ -68,14 +114,33 @@ function RecipeForm({ onSave, onCancel }) {
                     setIngredients(IngredientMap || []);
                     setIngredientKeys(ingredientKey);
                 })
-                .catch((err) => console.error("Failed to fetch recipe:", err));
+                .catch((err) => {
+                    console.error("Failed to fetch ingredients:", err);
+                    if (err.message.includes('401') || err.message.includes('403')) {
+                        navigate('/login');
+                    }
+                });
         }
-    }, [recipeId, user]);
+    }, [recipeId, user, token, navigate]);
 
     useEffect(() => {
-        if (recipeId) {
-            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}/${recipeId}`)
-                .then((res) => res.json())
+        if (recipeId && user && token) {
+            fetch(`${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}/${recipeId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        if (res.status === 401 || res.status === 403) {
+                            navigate('/login');
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then((data) => {
                     const instructionMap = data.map((data) => data.description);
                     const InstrunctionKey = data.map(
@@ -84,9 +149,14 @@ function RecipeForm({ onSave, onCancel }) {
                     setInstructions(instructionMap || []);
                     setInstructionKeys(InstrunctionKey);
                 })
-                .catch((err) => console.error("Failed to fetch recipe:", err));
+                .catch((err) => {
+                    console.error("Failed to fetch instructions:", err);
+                    if (err.message.includes('401') || err.message.includes('403')) {
+                        navigate('/login');
+                    }
+                });
         }
-    }, [recipeId, user]);
+    }, [recipeId, user, token, navigate]);
 
     const handleInputChange = (e) => {
         setRecipe({ ...recipe, [e.target.name]: e.target.value });
@@ -156,11 +226,20 @@ function RecipeForm({ onSave, onCancel }) {
                 API_ENDPOINTS.RECIPES.IMAGES(RecipeId),
                 {
                     method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    },
                     body: formData,
                 }
             );
 
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                    navigate('/login');
+                    return null;
+                }
+                throw new Error(await res.text());
+            }
 
             const data = await res.json();
 
@@ -203,7 +282,10 @@ function RecipeForm({ onSave, onCancel }) {
         try {
             const res = await fetch(url, {
                 method,
-                headers,
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(newRecipe),
             });
             if (res.status === 201 || res.status === 204) {
@@ -217,6 +299,10 @@ function RecipeForm({ onSave, onCancel }) {
                         ) {
                             fetch(`${url}/${ingridentStageToDelete[i]}`, {
                                 method: "DELETE",
+                                headers: {
+                                    "Authorization": `Bearer ${token}`,
+                                    "Content-Type": "application/json"
+                                }
                             });
                         }
                     } catch (error) {
@@ -229,7 +315,13 @@ function RecipeForm({ onSave, onCancel }) {
                 const recipeId = res.recipeId ? res.recipeId : updated.recipeId;
 
                 const fetchedIngredients = await fetch(
-                    `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/ingredients')}`
+                    `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/ingredients')}`,
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        }
+                    }
                 );
                 const existingIngredients = await fetchedIngredients.json();
                 for (let i of ingredients) {
@@ -249,17 +341,17 @@ function RecipeForm({ onSave, onCancel }) {
                             quantity: i.ingredientQuantity,
                         };
 
-                        const ingRes = await fetch(
+                        await fetch(
                             `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}`,
                             {
                                 method: "POST",
                                 headers: {
+                                    "Authorization": `Bearer ${token}`,
                                     "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify(ingredient_recipe),
                             }
                         );
-                        const ingResJson = await ingRes.json();
                     } else {
                         // Ingredient needs to be added to database
                         const addedIngredient = await fetch(
@@ -267,6 +359,7 @@ function RecipeForm({ onSave, onCancel }) {
                             {
                                 method: "POST",
                                 headers: {
+                                    "Authorization": `Bearer ${token}`,
                                     "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify({
@@ -283,11 +376,12 @@ function RecipeForm({ onSave, onCancel }) {
                             unit: i.ingredientUnit,
                             quantity: i.ingredientQuantity,
                         };
-                        const ingRes = await fetch(
+                        await fetch(
                             `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/recipe_ingredient')}`,
                             {
                                 method: "POST",
                                 headers: {
+                                    "Authorization": `Bearer ${token}`,
                                     "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify(ingredient_recipe),
@@ -308,6 +402,10 @@ function RecipeForm({ onSave, onCancel }) {
                         ) {
                             fetch(`${url}/${instructionStageToDelete[i]}`, {
                                 method: "DELETE",
+                                headers: {
+                                    "Authorization": `Bearer ${token}`,
+                                    "Content-Type": "application/json"
+                                }
                             });
                         }
                     } catch (error) {
@@ -321,11 +419,12 @@ function RecipeForm({ onSave, onCancel }) {
                         stepNumber: i + 1,
                         description: instructions[i],
                     };
-                    const instructionRes = await fetch(
+                    await fetch(
                         `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/instruction')}`,
                         {
                             method: "POST",
                             headers: {
+                                "Authorization": `Bearer ${token}`,
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify(instructionToAdd),
@@ -346,7 +445,10 @@ function RecipeForm({ onSave, onCancel }) {
                             API_ENDPOINTS.RECIPES.BY_ID(updated.recipeId || updated.id),
                             {
                                 method: "PUT",
-                                headers: { "Content-Type": "application/json" },
+                                headers: { 
+                                    "Authorization": `Bearer ${token}`,
+                                    "Content-Type": "application/json" 
+                                },
                                 body: JSON.stringify(updated),
                             }
                         );
@@ -354,254 +456,428 @@ function RecipeForm({ onSave, onCancel }) {
                 }
 
                 onSave?.(updated);
-                navigate(`/profile/${user.userId}`);
+                navigate('/profile');
+            } else if (res.status === 401 || res.status === 403) {
+                alert("Your session has expired. Please log in again.");
+                navigate('/login');
+                return;
             } else if (res.status === 400) {
                 const errData = await res.json();
                 throw errData;
             } else {
-                throw ["Unexpected server error."];
+                throw new Error("Unexpected server error.");
             }
         } catch (errs) {
             console.error(errs);
+            if (errs.message && (errs.message.includes('401') || errs.message.includes('403'))) {
+                alert("Your session has expired. Please log in again.");
+                navigate('/login');
+                return;
+            }
             setErrors(Array.isArray(errs) ? errs : ["An error occurred."]);
         }
     };
 
     return (
-        <section>
+        <section className="max-w-4xl mx-auto">
             <form
                 onSubmit={handleSubmit}
-                className="text-center mx-auto max-w-2xl bg-white shadow-md p-8 rounded-md"
+                className="space-y-8"
             >
-                <h2 className="text-2xl font-bold mb-6">
-                    {recipe?.userId ? "Edit Recipe" : "Add a New Recipe"}
-                </h2>
-
-                {/* Name */}
-                <div className="mb-4">
-                    <label htmlFor="name" className="block font-medium mb-1">
-                        Recipe Name
-                    </label>
-                    <input
-                        name="name"
-                        value={recipe.name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full border rounded-md px-3 py-2"
-                    />
+                {/* Header */}
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        {recipe?.userId ? "Edit Recipe" : "Create New Recipe"}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                        {recipe?.userId ? "Update your recipe details" : "Share your culinary masterpiece with the community"}
+                    </p>
                 </div>
 
-                {/* Description */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="description"
-                        className="block font-medium mb-1"
-                    >
-                        Description
-                    </label>
-                    <textarea
-                        name="description"
-                        value={recipe.description}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full border rounded-md px-3 py-2"
-                    />
-                </div>
+                {/* Basic Information Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+                            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+                    </div>
 
-                <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Details</h3>
+                    <div className="space-y-6">
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Recipe Name *
+                            </label>
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                value={recipe.name}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Enter a delicious recipe name..."
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                        </div>
 
-                    <div className="grid grid-cols-3 gap-2 mt-2">
-                        <input
-                            type="number"
-                            name="cookTime"
-                            placeholder="Minutes"
-                            value={recipe.cookTime || ""}
-                            onChange={handleInputChange}
-                            className="border rounded-md px-2 py-1"
-                        />
-                        <input
-                            type="number"
-                            name="servings"
-                            placeholder="Servings"
-                            value={recipe.servings || ""}
-                            onChange={handleInputChange}
-                            className="border rounded-md px-2 py-1"
-                        />
-                        <select
-                            name="difficulty"
-                            value={recipe.difficulty}
-                            onChange={handleInputChange}
-                            className="border rounded-md px-2 py-1"
-                        >
-                            <option value="EASY">Easy</option>
-                            <option value="INTERMEDIATE">Intermediate</option>
-                            <option value="ADVANCED">Advanced</option>
-                            <option value="EXPERT">Expert</option>
-                        </select>
+                        <div>
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Description *
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={recipe.description}
+                                onChange={handleInputChange}
+                                required
+                                rows={4}
+                                placeholder="Describe your recipe - what makes it special?"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500 resize-none"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label htmlFor="cookTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Cook Time (minutes)
+                                </label>
+                                <input
+                                    id="cookTime"
+                                    type="number"
+                                    name="cookTime"
+                                    min="1"
+                                    value={recipe.cookTime || ""}
+                                    onChange={handleInputChange}
+                                    placeholder="30"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="servings" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Servings
+                                </label>
+                                <input
+                                    id="servings"
+                                    type="number"
+                                    name="servings"
+                                    min="1"
+                                    value={recipe.servings || ""}
+                                    onChange={handleInputChange}
+                                    placeholder="4"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Difficulty Level
+                                </label>
+                                <select
+                                    id="difficulty"
+                                    name="difficulty"
+                                    value={recipe.difficulty}
+                                    onChange={handleInputChange}
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                >
+                                    <option value="EASY">Easy</option>
+                                    <option value="INTERMEDIATE">Intermediate</option>
+                                    <option value="ADVANCED">Advanced</option>
+                                    <option value="EXPERT">Expert</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Image Upload */}
-                <div className="mb-4">
-                    <label className="block font-medium mb-1">
-                        Recipe Image
-                    </label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                            handleFileChange(e);
-                            const previewUrl = URL.createObjectURL(
-                                e.target.files[0]
-                            );
-                            setRecipe((prev) => ({ ...prev, previewUrl }));
-                        }}
-                    />
-                    {uploading && (
-                        <p className="text-sm text-gray-500">Uploading...</p>
-                    )}
-                    {uploadError && (
-                        <p className="text-red-600">{uploadError}</p>
-                    )}
-                    {(recipe.previewUrl || recipe.imageUrl) && (
-                        <img
-                            src={recipe.previewUrl || recipe.imageUrl}
-                            alt="Recipe Preview"
-                            className="mt-2 rounded max-h-40 mx-auto"
-                        />
-                    )}
-                </div>
-
-                {/* Ingredients */}
-                <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Ingredients</h3>
-
-                    {ingredients.map((ing, idx) => (
-                        <>
-                            <div className="mb-2">
-                                <p key={idx} className="mb-2">
-                                    {ing.ingredientQuantity}{" "}
-                                    {ing.ingredientUnit?.toLowerCase()}{" "}
-                                    {ing.ingredientName}
-                                </p>
-                                <buttom
-                                    className="border bg-red-400 rounded-md hover:bg-red-600 text-white hover:cursor-pointer p-1"
-                                    onClick={() => handleDeleteIngredient(idx)}
-                                >
-                                    Delete
-                                </buttom>
-                            </div>
-                        </>
-                    ))}
-
-                    <div className="grid grid-cols-3 gap-2 mt-2">
-                        <input
-                            type="text"
-                            name="ingredientName"
-                            placeholder="Name"
-                            value={ingredient.ingredientName || ""}
-                            onChange={handleIngredientChange}
-                            className="border rounded-md px-2 py-1"
-                        />
-                        <input
-                            type="number"
-                            name="ingredientQuantity"
-                            placeholder="Qty"
-                            value={ingredient.ingredientQuantity || ""}
-                            onChange={handleIngredientChange}
-                            className="border rounded-md px-2 py-1"
-                        />
-                        <select
-                            name="ingredientUnit"
-                            value={ingredient.ingredientUnit || ""}
-                            onChange={handleIngredientChange}
-                            className="border rounded-md px-2 py-1"
-                        >
-                            <option value="">unit</option>
-                            <option value="TEASPOON">tsp</option>
-                            <option value="TABLESPOON">tbsp</option>
-                            <option value="CUP">cup</option>
-                            <option value="OUNCE">oz</option>
-                            <option value="GRAM">g</option>
-                            <option value="KILOGRAM">kg</option>
-                            <option value="LITER">L</option>
-                            <option value="MILLILITER">mL</option>
-                            <option value="PINCH">pinch</option>
-                            <option value="SLICE">slice</option>
-                        </select>
+                {/* Image Upload Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center">
+                            <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Recipe Image</h3>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={addIngredient}
-                        className="mt-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-500"
-                    >
-                        Add Ingredient
-                    </button>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Upload an appetizing photo of your recipe
+                            </label>
+                            <div className="relative">
+                                <input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        if (e.target.files[0]) {
+                                            handleFileChange(e);
+                                            const previewUrl = URL.createObjectURL(e.target.files[0]);
+                                            setRecipe((prev) => ({ ...prev, previewUrl }));
+                                        }
+                                    }}
+                                    className="w-full px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 dark:file:bg-purple-900/20 dark:file:text-purple-400 dark:hover:file:bg-purple-900/30"
+                                />
+                                {uploading && (
+                                    <div className="absolute inset-0 bg-white dark:bg-gray-800 bg-opacity-90 dark:bg-opacity-90 rounded-xl flex items-center justify-center">
+                                        <div className="flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400">
+                                            <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0V9a8 8 0 1115.356 2M15 15v4h5m-5-4a8 8 0 01-15.356 2" />
+                                            </svg>
+                                            Uploading...
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {uploadError && (
+                            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                                <p className="text-sm text-red-700 dark:text-red-400">{uploadError}</p>
+                            </div>
+                        )}
+                        
+                        {(recipe.previewUrl || recipe.imageUrl) && (
+                            <div className="relative max-w-md mx-auto">
+                                <img
+                                    src={recipe.previewUrl || recipe.imageUrl}
+                                    alt="Recipe Preview"
+                                    className="w-full h-48 object-cover rounded-xl shadow-md"
+                                />
+                                <div className="absolute top-2 right-2">
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-lg">
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        </svg>
+                                        Image Ready
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* Instructions */}
-                <div className="mb-4">
-                    <h3 className="font-semibold mb-2">Instructions</h3>
-                    {instructions.map((inst, i) => (
-                        <>
-                            <div className="grid grid-cols-6 mb-2 ">
-                                <p key={i} className="col-span-5 text-left">
-                                    {i + 1}. {inst}
-                                </p>
-                                <buttom
-                                    className="border bg-red-400 rounded-md hover:bg-red-600 text-white hover:cursor-pointer p-1"
-                                    onClick={() => handleDeleteInstruction(i)}
-                                >
-                                    Delete
-                                </buttom>
-                            </div>
-                        </>
-                    ))}
-                    <div className="flex gap-2 mt-2">
-                        <input
-                            type="text"
-                            value={instruction}
-                            onChange={handleInstructionChange}
-                            placeholder="e.g., Preheat oven to 350°F"
-                            className="w-full border rounded-md px-2 py-1"
-                        />
+                {/* Ingredients Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
+                            <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Ingredients</h3>
+                    </div>
+
+                    {/* Ingredient List */}
+                    {ingredients.length > 0 && (
+                        <div className="mb-6 space-y-3">
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Added Ingredients:</h4>
+                            {ingredients.map((ing, idx) => (
+                                <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                    <span className="text-sm text-gray-900 dark:text-gray-100">
+                                        <span className="font-medium">{ing.ingredientQuantity}</span>
+                                        <span className="text-gray-500 dark:text-gray-400 mx-1">
+                                            {ing.ingredientUnit?.toLowerCase()}
+                                        </span>
+                                        <span className="font-medium">{ing.ingredientName}</span>
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/20 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors duration-200"
+                                        onClick={() => handleDeleteIngredient(idx)}
+                                    >
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Add New Ingredient */}
+                    <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4">
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Add New Ingredient:</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <input
+                                type="text"
+                                name="ingredientName"
+                                placeholder="Ingredient name (e.g., flour)"
+                                value={ingredient.ingredientName || ""}
+                                onChange={handleIngredientChange}
+                                className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                            <input
+                                type="number"
+                                name="ingredientQuantity"
+                                placeholder="Amount (e.g., 2)"
+                                min="0"
+                                step="0.01"
+                                value={ingredient.ingredientQuantity || ""}
+                                onChange={handleIngredientChange}
+                                className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                            <select
+                                name="ingredientUnit"
+                                value={ingredient.ingredientUnit || ""}
+                                onChange={handleIngredientChange}
+                                className="px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                            >
+                                <option value="">Select unit</option>
+                                <option value="TEASPOON">tsp</option>
+                                <option value="TABLESPOON">tbsp</option>
+                                <option value="CUP">cup</option>
+                                <option value="OUNCE">oz</option>
+                                <option value="GRAM">g</option>
+                                <option value="KILOGRAM">kg</option>
+                                <option value="LITER">L</option>
+                                <option value="MILLILITER">mL</option>
+                                <option value="PINCH">pinch</option>
+                                <option value="SLICE">slice</option>
+                                <option value="PIECE">piece</option>
+                                <option value="CLOVE">clove</option>
+                                <option value="BUNCH">bunch</option>
+                            </select>
+                        </div>
                         <button
                             type="button"
-                            onClick={addInstruction}
-                            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-500"
+                            onClick={addIngredient}
+                            disabled={!ingredient.ingredientName || !ingredient.ingredientQuantity || !ingredient.ingredientUnit}
+                            className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200"
                         >
-                            Add Step
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            Add Ingredient
                         </button>
                     </div>
                 </div>
 
-                {/* Submit */}
-                <div className="flex justify-center gap-4 mt-6">
-                    <button
-                        type="submit"
-                        className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-md"
-                    >
-                        Save Recipe
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (onCancel) {
-                                onCancel();
-                            } else {
-                                navigate(`/profile/${user?.userId}`);
-                            }
-                        }}
-                        className="bg-gray-400 hover:bg-gray-300 text-white px-6 py-2 rounded-md"
-                    >
-                        Cancel
-                    </button>
+                {/* Instructions Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
+                            <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Cooking Instructions</h3>
+                    </div>
+
+                    {/* Instructions List */}
+                    {instructions.length > 0 && (
+                        <div className="mb-6 space-y-3">
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Step by Step Instructions:</h4>
+                            {instructions.map((inst, i) => (
+                                <div key={i} className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                    <div className="flex-shrink-0 w-8 h-8 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center">
+                                        <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">{i + 1}</span>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm text-gray-900 dark:text-gray-100 leading-relaxed">
+                                            {inst}
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/20 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors duration-200"
+                                        onClick={() => handleDeleteInstruction(i)}
+                                    >
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Add New Instruction */}
+                    <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4">
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                            Add Step {instructions.length + 1}:
+                        </h4>
+                        <div className="flex gap-3">
+                            <input
+                                type="text"
+                                value={instruction}
+                                onChange={handleInstructionChange}
+                                placeholder="e.g., Preheat oven to 350°F and grease a 9x13 inch baking pan..."
+                                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={addInstruction}
+                                disabled={!instruction.trim()}
+                                className="inline-flex items-center gap-2 px-4 py-3 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-all duration-200"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Add Step
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Submit Actions */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button
+                            type="submit"
+                            disabled={!recipe.name || !recipe.description || ingredients.length === 0 || instructions.length === 0}
+                            className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
+                            {recipe?.userId ? "Update Recipe" : "Save Recipe"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (onCancel) {
+                                    onCancel();
+                                } else {
+                                    navigate('/profile');
+                                }
+                            }}
+                            className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-xl border border-gray-300 dark:border-gray-600 transition-all duration-200"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </button>
+                    </div>
+                    
+                    {/* Form validation hints */}
+                    {(!recipe.name || !recipe.description || ingredients.length === 0 || instructions.length === 0) && (
+                        <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                            <div className="flex items-start gap-2">
+                                <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                    <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-1">Complete all required fields:</h4>
+                                    <ul className="text-xs text-amber-700 dark:text-amber-300 space-y-1">
+                                        {!recipe.name && <li>• Recipe name is required</li>}
+                                        {!recipe.description && <li>• Recipe description is required</li>}
+                                        {ingredients.length === 0 && <li>• At least one ingredient is required</li>}
+                                        {instructions.length === 0 && <li>• At least one instruction step is required</li>}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {errors.length > 0 && (
-                    <div className="mt-4 text-red-600">
+                    <div className="mt-4 text-red-600 dark:text-red-400">
                         {errors.map((err, idx) => (
                             <p key={idx}>{err}</p>
                         ))}

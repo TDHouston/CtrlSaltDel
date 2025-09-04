@@ -28,9 +28,9 @@ export const API_ENDPOINTS = {
   
   // Comment endpoints
   COMMENTS: {
-    BASE: `${API_BASE_URL}/api/comments`,
-    BY_RECIPE: (recipeId) => `${API_BASE_URL}/api/comments/recipe/${recipeId}`,
-    BY_ID: (id) => `${API_BASE_URL}/api/comments/${id}`
+    BASE: `${API_BASE_URL}/api/comment`,
+    BY_RECIPE: (recipeId) => `${API_BASE_URL}/api/comment/recipe/${recipeId}`,
+    BY_ID: (id) => `${API_BASE_URL}/api/comment/${id}`
   }
 };
 

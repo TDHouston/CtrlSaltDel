@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import RecipeCard from "./RecipeCard";
+import ProfileRecipeCard from "./ProfileRecipeCard";
 import RecipeForm from "../pages/RecipeForm";
 import { AuthContext } from "../helpers/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -19,12 +19,17 @@ function MyRecipes() {
 
     // Fetch recipes for this user
     useEffect(() => {
-        if (user?.userId) {
+        if (user?.userId && headers?.Authorization) {
             fetch(API_ENDPOINTS.RECIPES.BY_USER(user.userId), {
                 method: "GET",
                 headers,
             })
-                .then((res) => res.json())
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then((data) => {
                     setRecipes(data);
                     loadedImages.current = 0;
@@ -34,7 +39,7 @@ function MyRecipes() {
                     console.error("Error fetching user recipes:", err)
                 );
         }
-    }, [user]);
+    }, [user, headers]);
 
     // Animate cards once all images are loaded
     useEffect(() => {
@@ -87,27 +92,30 @@ function MyRecipes() {
     };
 
     return (
-        <section className="px-6 py-10 max-w-7xl mx-auto">
-            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+        <section className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                         My Recipes
                     </h1>
-                    <p className="mt-1 text-gray-600 dark:text-gray-300">
-                        View and manage the recipes you’ve submitted.
+                    <p className="mt-1 text-gray-600 dark:text-gray-400">
+                        View and manage your recipe collection
                     </p>
                 </div>
 
                 <button
                     onClick={() => setShowForm(true)}
-                    className="mt-4 sm:mt-0 px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white text-sm font-medium rounded-lg shadow-md transition"
+                    className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                 >
-                    + Add Recipe
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Recipe
                 </button>
             </div>
 
             {showForm && (
-                <div className="mb-10 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <RecipeForm
                         onSave={(newRecipe) => {
                             setRecipes((prev) => [...prev, newRecipe]);
@@ -119,46 +127,47 @@ function MyRecipes() {
             )}
 
             {!showForm && recipes.length > 0 ? (
-                <div className="grid gap-10 pt-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="space-y-4">
                     {recipes.map((recipe, index) => (
                         <div
                             key={recipe.recipeId}
                             ref={(el) => (cardsRef.current[index] = el)}
-                            className="transition-transform duration-300 will-change-transform"
+                            className="transition-all duration-300 will-change-transform"
                         >
-                            <RecipeCard
+                            <ProfileRecipeCard
                                 recipe={recipe}
                                 onImageLoad={handleImageLoad}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                                showActions={true}
                             />
-                            <div
-                                className="mt-4 inline-flex rounded-md shadow-sm"
-                                role="group"
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => handleEdit(recipe.recipeId)}
-                                    className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white"
-                                >
-                                    Update
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleDelete(recipe.recipeId)
-                                    }
-                                    className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-red-600 focus:z-10 focus:ring-2 focus:ring-red-500 focus:text-red-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-red-400"
-                                >
-                                    Delete
-                                </button>
-                            </div>
                         </div>
                     ))}
                 </div>
             ) : (
                 !showForm && (
-                    <p className="text-center text-gray-600 dark:text-gray-300">
-                        You haven’t added any recipes yet.
-                    </p>
+                    <div className="text-center py-16 bg-gray-50 dark:bg-gray-700/50 rounded-2xl">
+                        <div className="w-24 h-24 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg className="w-12 h-12 text-blue-400 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                            No recipes yet
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                            Start building your recipe collection by adding your first recipe. Share your culinary creations with the world!
+                        </p>
+                        <button
+                            onClick={() => setShowForm(true)}
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Create Your First Recipe
+                        </button>
+                    </div>
                 )
             )}
         </section>

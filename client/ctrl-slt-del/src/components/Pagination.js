@@ -40,7 +40,7 @@ const Pagination = ({
           size="sm"
           onClick={goToFirstPage}
           disabled={!hasPreviousPage}
-          className="hidden sm:flex"
+          className="hidden sm:flex dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 transition-colors duration-300"
         >
           <ChevronDoubleLeftIcon className="h-4 w-4" />
         </IconButton>
@@ -51,6 +51,7 @@ const Pagination = ({
           size="sm"
           onClick={goToPreviousPage}
           disabled={!hasPreviousPage}
+          className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 transition-colors duration-300"
         >
           <ChevronLeftIcon className="h-4 w-4" />
         </IconButton>
@@ -63,10 +64,10 @@ const Pagination = ({
               variant={currentPage === pageNum ? "filled" : "outlined"}
               size="sm"
               onClick={() => goToPage(pageNum)}
-              className={`min-w-[2.5rem] ${
+              className={`min-w-[2.5rem] transition-colors duration-300 ${
                 currentPage === pageNum
-                  ? "bg-gray-900 dark:bg-gray-700 text-white"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  ? "bg-gray-900 dark:bg-gray-700 text-white dark:text-white"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >
               {pageNum}
@@ -80,6 +81,7 @@ const Pagination = ({
           size="sm"
           onClick={goToNextPage}
           disabled={!hasNextPage}
+          className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 transition-colors duration-300"
         >
           <ChevronRightIcon className="h-4 w-4" />
         </IconButton>
@@ -90,7 +92,7 @@ const Pagination = ({
           size="sm"
           onClick={goToLastPage}
           disabled={!hasNextPage}
-          className="hidden sm:flex"
+          className="hidden sm:flex dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 transition-colors duration-300"
         >
           <ChevronDoubleRightIcon className="h-4 w-4" />
         </IconButton>

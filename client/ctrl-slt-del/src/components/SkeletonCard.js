@@ -1,38 +1,49 @@
 const SkeletonCard = () => {
   return (
-    <div className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden animate-pulse">
+    <div className="w-full h-full bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700/50 animate-pulse">
       {/* Image skeleton */}
-      <div className="md:w-48 w-full">
-        <div className="bg-gray-200 w-full h-64 md:h-full md:rounded-l-xl rounded-t-xl" />
+      <div className="relative w-full h-56">
+        <div className="bg-gray-200 dark:bg-gray-700 w-full h-full" />
+        {/* Difficulty badge skeleton */}
+        <div className="absolute top-3 left-3 w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded-full" />
       </div>
 
       {/* Content skeleton */}
-      <div className="flex flex-col justify-between p-4 flex-1">
-        <div className="space-y-3">
+      <div className="p-5 space-y-3">
+        <div className="space-y-2">
           {/* Title skeleton */}
-          <div className="h-6 bg-gray-200 rounded w-3/4" />
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-4/5" />
           
           {/* Author skeleton */}
-          <div className="h-4 bg-gray-200 rounded w-1/2" />
+          <div className="flex items-center gap-1">
+            <div className="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+          </div>
           
           {/* Description skeleton */}
           <div className="space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-full" />
-            <div className="h-4 bg-gray-200 rounded w-5/6" />
-            <div className="h-4 bg-gray-200 rounded w-4/6" />
-          </div>
-
-          {/* Meta info skeleton */}
-          <div className="space-y-2 pt-2">
-            <div className="h-3 bg-gray-200 rounded w-1/3" />
-            <div className="h-3 bg-gray-200 rounded w-1/4" />
-            <div className="h-3 bg-gray-200 rounded w-2/5" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
           </div>
         </div>
 
-        {/* Button skeleton */}
-        <div className="mt-4">
-          <div className="h-9 bg-gray-200 rounded w-40" />
+        {/* Recipe Stats skeleton */}
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-10" />
+            </div>
+            
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-6" />
+            </div>
+          </div>
+
+          {/* Save button skeleton */}
+          <div className="w-16 h-7 bg-gray-200 dark:bg-gray-700 rounded-full" />
         </div>
       </div>
     </div>

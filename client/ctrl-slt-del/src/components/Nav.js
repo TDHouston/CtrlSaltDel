@@ -1,219 +1,270 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import { RecipeContext } from "../helpers/RecipeContext";
 import ThemeToggle from "./ThemeToggle";
-import Recipe from "../pages/Recipe";
-import { API_ENDPOINTS } from "../config/api";
 
 function Nav() {
     const [isAuth, setIsAuth] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
-    const { recipes, setRecipes, getAllRecipe } = useContext(RecipeContext);
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const elasticBaseUrl = `${API_ENDPOINTS.RECIPES.BASE.replace('/recipes', '/elastic')}`;
+    const { getAllRecipe } = useContext(RecipeContext);
+    const location = useLocation();
 
     useEffect(() => {
-        if (user?.role === "ADMIN" || user?.role === "USER") {
-            setIsAuth(true);
-        } else {
-            setIsAuth(false);
-        }
+        setIsAuth(!!(user?.role === "ADMIN" || user?.role === "USER"));
     }, [user]);
 
-    // refreshes if recipe changes
-    useEffect(() => {}, [recipes]);
-
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            // if its category=raw, stew -> hit find and filter
-            if (searchQuery.startsWith("category=")) {
-                let queries = searchQuery
-                    .substring("category=".length)
-                    .split(" ")
-                    .map((s) => s.trim());
-                fetch(`${elasticBaseUrl}/recipe/${queries[1]}/${queries[0]}`)
-                    .then((response) => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return Promise.reject(
-                                `Unexpected status code ${response.status}`
-                            );
-                        }
-                    })
-                    .then((data) => console.log(data));
-            } else {
-                //  if its regular search like stw -> hit fuzzy search
-                fetch(`${elasticBaseUrl}/fuzzy/${searchQuery}`)
-                    .then((response) => {
-                        if (response.status === 200) {
-                            return response.json();
-                        } else {
-                            return Promise.reject(
-                                `Unexpected status code ${response.status}`
-                            );
-                        }
-                    })
-                    .then((data) => setRecipes(data));
-            }
-        }
+    const handleLogout = () => {
+        logout();
+        setDropdownOpen(false);
+        setMobileMenuOpen(false);
     };
 
-    function handleLogout() {
-        logout();
-    }
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
+
+    const isActivePath = (path) => {
+        return location.pathname === path;
+    };
+
+    // Generate user initials for avatar
+    const getUserInitials = () => {
+        if (!user) return "U";
+        const firstName = user.firstName || "";
+        const lastName = user.lastName || "";
+        return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || user.username?.charAt(0).toUpperCase() || "U";
+    };
 
     return (
-        <nav className="bg-white border-gray-200 dark:bg-gray-900">
-            <div className="max-w-full flex flex-wrap items-center justify-between p-4">
-                <Link
-                    to="/"
-                    className="flex items-center space-x-3 rtl:space-x-reverse"
-                >
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                        Round Table
-                    </span>
-                </Link>
-
-                <div className=" md:flex md:order-1 w-full md:w-[400px] px-4">
-                    <div className="relative w-full">
-                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg
-                                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                                />
-                            </svg>
-                            <span className="sr-only">Search icon</span>
-                        </div>
-                        <input
-                            type="text"
-                            id="search-navbar"
-                            className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
+        <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 dark:bg-gray-900/95 dark:border-gray-800 transition-colors duration-300">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    
+                    {/* Logo */}
+                    <div className="flex items-center">
+                        <Link 
+                            to="/" 
+                            className="flex items-center space-x-2 group"
+                            onClick={closeMobileMenu}
+                        >
+                            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm group-hover:scale-105 transition-transform duration-200">
+                                RT
+                            </div>
+                            <span className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                                Round Table
+                            </span>
+                        </Link>
                     </div>
-                </div>
 
-                <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                    <ThemeToggle className="mr-4" />
-                    <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                        <li>
+                    {/* Centered Desktop Navigation */}
+                    <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
+                        <div className="flex items-center space-x-8">
                             <Link
                                 to="/"
-                                className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                                aria-current="page"
+                                onClick={closeMobileMenu}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                    isActivePath('/') 
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400'
+                                }`}
                             >
                                 Home
                             </Link>
-                        </li>
-                        <li>
+                            
                             <Link
-                                onClick={getAllRecipe}
                                 to="/explore"
-                                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                                onClick={() => {
+                                    getAllRecipe();
+                                    closeMobileMenu();
+                                }}
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                    isActivePath('/explore') 
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400'
+                                }`}
+                            >
+                                Explore
+                            </Link>
+
+                        </div>
+                    </div>
+
+                    {/* Right side - Theme toggle and user menu */}
+                    <div className="hidden md:flex items-center space-x-4">
+                        <ThemeToggle />
+                        
+                        {isAuth ? (
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900"
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                    aria-expanded={dropdownOpen}
+                                >
+                                    <span className="sr-only">Open user menu</span>
+                                    <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm hover:scale-105 transition-transform duration-200">
+                                        {getUserInitials()}
+                                    </div>
+                                </button>
+                                
+                                {dropdownOpen && (
+                                    <div className="absolute right-0 mt-2 w-56 rounded-xl shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
+                                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                                {user?.firstName} {user?.lastName}
+                                            </p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                                                {user?.email}
+                                            </p>
+                                            {user?.role === "ADMIN" && (
+                                                <span className="inline-flex items-center px-2 py-1 mt-2 text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 rounded-full">
+                                                    Admin
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="py-1">
+                                            <Link
+                                                to="/profile"
+                                                onClick={() => setDropdownOpen(false)}
+                                                className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                                            >
+                                                <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                                Dashboard
+                                            </Link>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+                                            >
+                                                <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                                </svg>
+                                                Sign out
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link
+                                to="/login"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+                            >
+                                Sign In
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                            </Link>
+                        )}
+                    </div>
+
+                    {/* Mobile menu button */}
+                    <div className="md:hidden flex items-center space-x-2">
+                        <ThemeToggle />
+                        <button
+                            type="button"
+                            className="inline-flex items-center justify-center p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            aria-expanded={mobileMenuOpen}
+                        >
+                            <span className="sr-only">Open main menu</span>
+                            {!mobileMenuOpen ? (
+                                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                            ) : (
+                                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile menu */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+                        <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-900">
+                            <Link
+                                to="/"
+                                onClick={closeMobileMenu}
+                                className={`block px-3 py-2 rounded-lg text-base font-medium ${
+                                    isActivePath('/') 
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                }`}
+                            >
+                                Home
+                            </Link>
+                            
+                            <Link
+                                to="/explore"
+                                onClick={() => {
+                                    getAllRecipe();
+                                    closeMobileMenu();
+                                }}
+                                className={`block px-3 py-2 rounded-lg text-base font-medium ${
+                                    isActivePath('/explore') 
+                                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' 
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                }`}
                             >
                                 Explore Recipes
                             </Link>
-                        </li>
-                        {/* <li>
-                            <Link
-                                to="/about"
-                                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                            >
-                                About
-                            </Link>
-                        </li> */}
-                        {isAuth ? (
-                            <li>
-                                <div className="relative">
-                                    <button
-                                        type="button"
-                                        className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                                        id="user-menu-button"
-                                        aria-expanded={dropdownOpen}
-                                        onClick={() =>
-                                            setDropdownOpen(!dropdownOpen)
-                                        }
-                                    >
-                                        <span className="sr-only">
-                                            Open user menu
-                                        </span>
-                                        <img
-                                            className="w-8 h-8 rounded-full"
-                                            src="/docs/images/people/profile-picture-3.jpg"
-                                            alt="user pic"
-                                        />
-                                    </button>
-                                    <div
-                                        className={`absolute right-0 top-6 z-50 ${
-                                            dropdownOpen ? "block" : "hidden"
-                                        } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600`}
-                                        id="user-dropdown"
-                                    >
-                                        <div className="px-4 py-3">
-                                            <span className="block text-sm text-gray-900 dark:text-white">
-                                                {user?.username}
-                                            </span>
-                                            <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                                                {user?.email}
-                                            </span>
+
+                        </div>
+                        
+                        {/* Mobile user section */}
+                        <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+                            {isAuth ? (
+                                <>
+                                    <div className="flex items-center px-5">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                                            {getUserInitials()}
                                         </div>
-                                        <ul
-                                            className="py-2"
-                                            aria-labelledby="user-menu-button"
-                                        >
-                                            <li>
-                                                <Link
-                                                    to={`/profile/${user?.userId}`}
-                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                                                >
-                                                    Dashboard
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="/"
-                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                                                    onClick={handleLogout}
-                                                >
-                                                    Sign out
-                                                </Link>
-                                            </li>
-                                        </ul>
+                                        <div className="ml-3">
+                                            <div className="text-base font-medium text-gray-800 dark:text-white">
+                                                {user?.firstName} {user?.lastName}
+                                            </div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                {user?.email}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        ) : (
-                            <li>
-                                <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                                    <div className="mt-3 px-2 space-y-1">
+                                        <Link
+                                            to="/profile"
+                                            onClick={closeMobileMenu}
+                                            className="block px-3 py-2 rounded-lg text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                        >
+                                            Sign out
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="px-5">
                                     <Link
                                         to="/login"
-                                        className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+                                        onClick={closeMobileMenu}
+                                        className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center px-4 py-2 rounded-lg text-base font-medium"
                                     >
-                                        Sign Up / Log In{" "}
-                                        <span aria-hidden="true">&rarr;</span>
+                                        Sign In
                                     </Link>
                                 </div>
-                            </li>
-                        )}
-                    </ul>
-                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </nav>
     );
