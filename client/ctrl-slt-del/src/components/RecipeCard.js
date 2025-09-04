@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../helpers/AuthContext";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import LazyImage from "./LazyImage";
 import { API_ENDPOINTS } from "../config/api";
 
 const PLACEHOLDER_IMG =
@@ -104,31 +105,33 @@ function RecipeCard({ recipe, onImageLoad }) {
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="recipe-card flex flex-col md:flex-row w-full bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden transition-all duration-300"
+      className="recipe-card flex flex-col md:flex-row w-full h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md overflow-hidden transition-all duration-300"
     >
-      <Link to={`/recipe/${recipeId}`} className="md:w-48 w-full">
-        <img
-          ref={imageRef}
-          className="object-cover w-full h-64 md:h-full md:rounded-l-xl rounded-t-xl"
-          src={recipe.imageUrl || PLACEHOLDER_IMG}
-          alt={recipe.name}
-          onLoad={onImageLoad}
-        />
+      <Link to={`/recipe/${recipeId}`} className="md:w-48 w-full flex-shrink-0">
+        <div ref={imageRef} className="w-full h-64 md:h-full md:min-h-[200px]">
+          <LazyImage
+            src={recipe.imageUrl}
+            alt={recipe.name}
+            placeholder={PLACEHOLDER_IMG}
+            className="object-cover w-full h-full md:rounded-l-xl rounded-t-xl"
+            onLoad={onImageLoad}
+          />
+        </div>
       </Link>
 
       <div className="flex flex-col justify-between p-4 flex-1">
         <div>
-          <h5 className="text-2xl font-semibold text-gray-900 mb-1">
+          <h5 className="text-2xl font-semibold text-gray-900 dark:text-white mb-1">
             {recipe.name}
           </h5>
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
             by <span className="font-semibold">{recipe.author}</span>
           </p>
-          <p className="text-gray-700 text-sm mb-3 line-clamp-3">
+          <p className="text-gray-700 dark:text-gray-300 text-sm mb-3 line-clamp-3">
             {recipe.description}
           </p>
 
-          <div className="text-sm text-gray-600 space-y-1">
+          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <p>
               ⏱️ <span className="font-medium">{recipe.cookTime} min</span>
             </p>
@@ -149,8 +152,8 @@ function RecipeCard({ recipe, onImageLoad }) {
               onClick={toggleFavorite}
               className={`text-sm px-4 py-2 rounded-md font-medium shadow-sm transition ${
                 favorited
-                  ? "bg-red-100 text-red-700 hover:bg-red-200"
-                  : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                  ? "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800"
+                  : "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-800"
               }`}
             >
               {favorited ? "★ Remove from Favorites" : "☆ Add to Favorites"}

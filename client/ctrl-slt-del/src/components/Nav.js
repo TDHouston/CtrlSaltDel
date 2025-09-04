@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import { RecipeContext } from "../helpers/RecipeContext";
+import ThemeToggle from "./ThemeToggle";
 import Recipe from "../pages/Recipe";
 import { API_ENDPOINTS } from "../config/api";
 
@@ -110,6 +111,7 @@ function Nav() {
                 </div>
 
                 <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                    <ThemeToggle className="mr-4" />
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                         <li>
                             <Link
@@ -202,7 +204,7 @@ function Nav() {
                                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                                     <Link
                                         to="/login"
-                                        className="text-sm/6 font-semibold text-gray-900"
+                                        className="text-sm/6 font-semibold text-gray-900 dark:text-white"
                                     >
                                         Sign Up / Log In{" "}
                                         <span aria-hidden="true">&rarr;</span>

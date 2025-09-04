@@ -44,8 +44,8 @@ function Home() {
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-10 text-gray-900">
-            See what’s cooking in the community!
+          <h1 className="text-4xl sm:text-5xl font-bold mb-10 text-gray-900 dark:text-white">
+            See what's cooking in the community!
           </h1>
 
           <Carousel
@@ -147,13 +147,13 @@ function Home() {
       </section>
 
       {/* Moderator Picks */}
-      <section className="bg-white py-20">
+      <section className="bg-white dark:bg-gray-900 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
               Picks from Our Moderators
             </h2>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
               Handpicked favorites by our trusted community leaders
             </p>
           </div>
@@ -163,7 +163,7 @@ function Home() {
               <Link
                 to={`/recipe/${recipe.recipeId}`}
                 key={recipe.recipeId}
-                className="group rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition"
+                className="group rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow hover:shadow-lg transition"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -176,13 +176,13 @@ function Home() {
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-1 group-hover:text-purple-700 transition">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition">
                     {recipe.name}
                   </h3>
-                  <p className="text-sm text-gray-500 mb-2 line-clamp-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
                     {recipe.description}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
                     by <span className="font-medium">{recipe.author}</span> •{" "}
                     {recipe.favorited} favorites
                   </p>
