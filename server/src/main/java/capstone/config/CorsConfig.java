@@ -26,7 +26,7 @@ public class CorsConfig {
             "http://localhost:3000",
             "http://localhost:3001",
             "https://*.vercel.app",
-            "https://your-custom-domain.com" // Replace with your actual domain
+            "https://ctrl-salt-del.vercel.app" // Your specific Vercel domain
         ));
         
         // Allow all headers
