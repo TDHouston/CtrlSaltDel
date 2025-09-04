@@ -17,11 +17,15 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Temporarily disable credentials to allow all origins for testing
-        config.setAllowCredentials(false);
+        // Allow credentials for secure communication
+        config.setAllowCredentials(true);
         
-        // Allow all origins temporarily for testing
-        config.addAllowedOrigin("*");
+        // Allow specific origins only
+        config.setAllowedOriginPatterns(Arrays.asList(
+            "https://ctrl-salt-del.vercel.app",
+            "http://localhost:3000",
+            "http://localhost:3001"
+        ));
         
         // Allow all headers
         config.setAllowedHeaders(Arrays.asList("*"));
